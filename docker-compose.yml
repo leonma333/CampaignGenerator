@@ -2,8 +2,8 @@ version: '3.7'
 
 services:
 
-  example:
-    campaign_generator: campaign_generator
+  campaign_generator:
+    container_name: campaign_generator
     build:
       context: .
       dockerfile: Dockerfile
