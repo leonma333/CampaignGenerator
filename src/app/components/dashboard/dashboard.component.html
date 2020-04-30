@@ -2,4 +2,7 @@
 <button><a routerLink='/new'>Add Campaign</a></button>
 <div class='quill-view-container' *ngFor="let campaign of campaigns">
     <quill-view [content]="campaign.content" [preserveWhitespace]="true" format="object"></quill-view>
+    <a routerLink='/new' [queryParams]="{content:campaign.content | json }">
+      Create one from this template
+    </a>
 </div>

@@ -14,12 +14,10 @@ export class CampaignService {
   }
 
   getCampaigns(): Campaign[] {
-    console.log(this.campaigns.length);
     return this.campaigns;
   }
 
   addCampaign(content: object) {
-    console.log(this.campaigns.length);
     const newCampaign: Campaign = {
       id: 1,
       content: content
