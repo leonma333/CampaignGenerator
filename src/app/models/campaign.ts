@@ -1,4 +1,4 @@
 export interface Campaign {
-  id: number;
+  id: string;
   content: object;
 }

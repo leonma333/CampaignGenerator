@@ -49,4 +49,4 @@ log:
 
 install:
 	$(call check_defined, package, package name not specified)
-	docker exec -it $(CONTAINER) npm install $(package) --save-dev
+	docker exec -it $(CONTAINER) npm install $(package) --save
