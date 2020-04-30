@@ -9,12 +9,12 @@ import { CampaignService } from '../../services/campaign.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-	campaigns: Campaign[] = [];
+  campaigns: Campaign[] = [];
 
   constructor(private campaignService: CampaignService) { }
 
   ngOnInit(): void {
-  	this.campaigns = this.campaignService.getCampaigns();
+    this.campaigns = this.campaignService.getCampaigns();
   }
 
 }
