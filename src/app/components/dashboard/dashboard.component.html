@@ -1,2 +1,5 @@
 <h2>My Campaigns</h2>
 <button><a href='/new'>Add Campaign</a></button>
+<div *ngFor="let campaign of campaigns">
+    <quill-view [content]="campaign.content" [preserveWhitespace]="true" format="object"></quill-view>
+</div>
