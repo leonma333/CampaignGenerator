@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { CampaignService } from '../../services/campaign.service';
 
@@ -10,12 +12,22 @@ import { CampaignService } from '../../services/campaign.service';
 export class NewCampaignComponent implements OnInit {
   content: object;
 
-  constructor(private campaignService: CampaignService) { }
+  constructor(
+    private campaignService: CampaignService,
+    private route: ActivatedRoute,
+    private location: Location
+  ) { }
 
   ngOnInit(): void {
+    this.route.queryParams
+      .subscribe(params => {
+        if ('content' in params)
+          this.content = JSON.parse(params.content);
+      });
   }
 
   save() {
     this.campaignService.addCampaign(this.content);
+    this.location.back();
   }
 }
