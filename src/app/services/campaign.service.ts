@@ -10,7 +10,7 @@ export class CampaignService {
   private campaigns: Campaign[] = [];
 
   constructor() { 
-    this.campaigns = CAMPAIGNS;
+    //this.campaigns = CAMPAIGNS;
   }
 
   getCampaigns(): Campaign[] {
@@ -19,6 +19,7 @@ export class CampaignService {
   }
 
   addCampaign(content: object) {
+    console.log(this.campaigns.length);
     const newCampaign: Campaign = {
       id: 1,
       content: content
