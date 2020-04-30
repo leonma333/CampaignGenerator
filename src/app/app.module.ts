@@ -8,12 +8,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NewCampaignComponent } from './components/new-campaign/new-campaign.component';
+import { EditCampaignComponent } from './components/edit-campaign/edit-campaign.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    NewCampaignComponent
+    NewCampaignComponent,
+    EditCampaignComponent
   ],
   imports: [
     FormsModule,

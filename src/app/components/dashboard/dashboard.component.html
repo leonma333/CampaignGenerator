@@ -5,4 +5,8 @@
     <a routerLink='/new' [queryParams]="{content:campaign.content | json }">
       Create one from this template
     </a>
+    |
+    <a [routerLink]="['/edit', campaign.id]">
+      Edit
+    </a>
 </div>
