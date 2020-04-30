@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
 import { QuillModule } from 'ngx-quill';
@@ -15,6 +16,7 @@ import { NewCampaignComponent } from './components/new-campaign/new-campaign.com
     NewCampaignComponent
   ],
   imports: [
+    FormsModule,
     BrowserModule,
     AppRoutingModule,
     QuillModule.forRoot()
