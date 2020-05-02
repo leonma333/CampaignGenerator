@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { CampaignService } from '../../services/campaign.service';
 
@@ -12,6 +13,7 @@ import { CampaignService } from '../../services/campaign.service';
 export class NewCampaignComponent implements OnInit {
   content: object;
   name: string;
+  campaignForm: FormGroup;
 
   constructor(
     private campaignService: CampaignService,
@@ -25,6 +27,10 @@ export class NewCampaignComponent implements OnInit {
         if ('content' in params)
           this.content = JSON.parse(params.content);
       });
+
+    this.campaignForm = new FormGroup({
+      'name': new FormControl(this.name, Validators.required)
+    });
   }
 
   save() {

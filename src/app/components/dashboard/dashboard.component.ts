@@ -9,15 +9,27 @@ import { CampaignService } from '../../services/campaign.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  campaigns: Campaign[];
   campaignGroups: Campaign[][] = [[]];
 
   constructor(private campaignService: CampaignService) { }
 
   ngOnInit(): void {
-    const campaigns: Campaign[] = this.campaignService.getAll();
-    for (var i = 0; i < campaigns.length; i += 3) {
-        this.campaignGroups.push(campaigns.slice(i, i + 3));
+    this.campaigns = this.campaignService.getAll();
+    this.resetCampaignGroups();
+  }
+
+  resetCampaignGroups(): void {
+    this.campaignGroups = [];
+    for (var i = 0; i < this.campaigns.length; i += 3) {
+      this.campaignGroups.push(this.campaigns.slice(i, i + 3));
     }
+  }
+
+  delete(event: string): void {
+    this.campaigns = this.campaigns.filter(c => c.id !== event);
+    this.resetCampaignGroups();
+    this.campaignService.delete(event);
   }
 
 }

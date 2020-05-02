@@ -1,9 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { faPlus, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { Campaign } from '../../models/campaign';
-import { CampaignService } from '../../services/campaign.service';
 
 @Component({
   selector: 'app-dashboard-preview',
@@ -12,19 +11,15 @@ import { CampaignService } from '../../services/campaign.service';
 })
 export class DashboardPreviewComponent implements OnInit {
   @Input() campaign: Campaign;
+  @Output() deleteId: EventEmitter<string> = new EventEmitter();
 
   faPlus = faPlus;
   faPen = faPen;
   faTrash = faTrash;
 
-  constructor(private campaignService: CampaignService) { }
+  constructor() { }
 
   ngOnInit(): void {
-  }
-
-  delete(): void {
-    console.log("delete");
-    this.campaignService.delete(this.campaign.id);
   }
 
 }

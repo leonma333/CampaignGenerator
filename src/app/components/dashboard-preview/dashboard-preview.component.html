@@ -1,7 +1,7 @@
 <h3>{{campaign.name}}</h3>
 <div>
   <div class="border">
-    <quill-view [content]="campaign.content" [preserveWhitespace]="true" format="object"></quill-view>
+    <quill-view class="preview-quill" [content]="campaign.content" [preserveWhitespace]="true" format="object"></quill-view>
   </div>
   <div class="btn-group" role="group">
     <a type="button" class="btn btn-primary btn-sm" routerLink='/new' [queryParams]="{content:campaign.content | json }">
@@ -10,7 +10,7 @@
     <a type="button" class="btn btn-light btn-sm" [routerLink]="['/edit', campaign.id]">
       <fa-icon [icon]="faPen"></fa-icon>
     </a>
-    <a type="button" class="btn btn-danger btn-sm" [routerLink]="" (click)="delete()">
+    <a type="button" class="btn btn-danger btn-sm" [routerLink]="" (click)="deleteId.emit(campaign.id)">
       <fa-icon [icon]="faTrash" [styles]="{'color': 'white'}"></fa-icon>
     </a>
   </div>
