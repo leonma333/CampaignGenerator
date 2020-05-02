@@ -11,6 +11,7 @@ import { CampaignService } from '../../services/campaign.service';
 })
 export class NewCampaignComponent implements OnInit {
   content: object;
+  name: string;
 
   constructor(
     private campaignService: CampaignService,
@@ -27,7 +28,11 @@ export class NewCampaignComponent implements OnInit {
   }
 
   save() {
-    this.campaignService.addCampaign(this.content);
+    this.campaignService.add(this.name, this.content);
+    this.location.back();
+  }
+
+  back() {
     this.location.back();
   }
 }

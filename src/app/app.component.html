@@ -1,23 +1,6 @@
-<nav class='navbar navbar-expand-lg navbar-dark bg-dark'>
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" (click)="isCollapsed = !isCollapsed" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class='navbar-brand' routerLink='/'>
-        <img src='assets/img/logo.svg' width='35' alt='CampaignGenerator'>
-        CampaignGenerator
-      </a>
-    </div>
-    <div class="collapse navbar-collapse" [collapse]=isCollapsed>
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Link</a></li>
-      </ul>
-    </div>
+<app-header></app-header>
+<main class="px-md-5 py-md-5 px-3 py-3">
+  <div class="container">
+    <router-outlet></router-outlet>
   </div>
-</nav>
-<router-outlet></router-outlet>
+</main>

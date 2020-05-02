@@ -50,3 +50,7 @@ log:
 install:
 	$(call check_defined, package, package name not specified)
 	docker exec -it $(CONTAINER) npm install $(package) --save
+
+uninstall:
+	$(call check_defined, package, package name not specified)
+	docker exec -it $(CONTAINER) npm uninstall $(package) --save
