@@ -1,7 +1,6 @@
-<h1>{{title}}</h1>
-<nav>
-    <ul>
-        <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-    </ul>
-</nav>
-<router-outlet></router-outlet>
+<app-header></app-header>
+<main class="py-md-5 py-3">
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
+</main>

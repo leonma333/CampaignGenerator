@@ -1,8 +1,16 @@
-<div class="editor-container">
-  <quill-editor
-    [styles]="{height: '300px'}"
-    format="object"
-    [(ngModel)]="content">
-  </quill-editor>
-  <button (click)="save()">Save</button>
-</div>
+<form [formGroup]="campaignForm">
+  <div>
+    <input type="text" class="form-control" placeholder="Campaign's name" aria-label="Campaign's name" aria-describedby="button-addon2" formControlName="name" required>
+  </div>
+  <div class="mt-2">
+    <quill-editor
+      [styles]="{height: 'auto', 'min-height': '300px'}"
+      format="object"
+      formControlName="content">
+    </quill-editor>
+  </div>
+  <div class="mt-2">
+    <button type="button" class="btn btn-primary mr-1" (click)="save()" [disabled]="campaignForm.get('name').invalid">Save</button>
+    <button type="button" class="btn btn-secondary" (click)="back()">Discard</button>
+  </div>
+</form>

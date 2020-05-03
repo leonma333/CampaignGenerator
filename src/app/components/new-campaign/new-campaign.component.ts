@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
 
 @Component({
@@ -10,7 +12,7 @@ import { CampaignService } from '../../services/campaign.service';
   styleUrls: ['./new-campaign.component.scss']
 })
 export class NewCampaignComponent implements OnInit {
-  content: object;
+  campaignForm: FormGroup;
 
   constructor(
     private campaignService: CampaignService,
@@ -19,15 +21,29 @@ export class NewCampaignComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.campaignForm = new FormGroup({
+      'name': new FormControl('', Validators.required),
+      'content': new FormControl(null)
+    });
+
     this.route.queryParams
       .subscribe(params => {
-        if ('content' in params)
-          this.content = JSON.parse(params.content);
+        if ('id' in params) {
+          const campaign: Campaign = this.campaignService.byId(params.id);
+          this.campaignForm.patchValue({
+            'name': campaign.name,
+            'content': campaign.content
+          });
+        }
       });
   }
 
   save() {
-    this.campaignService.addCampaign(this.content);
+    this.campaignService.add(this.campaignForm.get('name').value, this.campaignForm.get('content').value);
+    this.location.back();
+  }
+
+  back() {
     this.location.back();
   }
 }

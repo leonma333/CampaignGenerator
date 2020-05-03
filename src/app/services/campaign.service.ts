@@ -14,24 +14,29 @@ export class CampaignService {
     this.campaigns = CAMPAIGNS;
   }
 
-  getCampaigns(): Campaign[] {
+  getAll(): Campaign[] {
     return this.campaigns;
   }
 
-  getCampaign(id: string): Campaign {
+  byId(id: string): Campaign {
     return this.campaigns.find(c => c.id === id);
   }
 
-  addCampaign(content: object): void {
+  add(name: string, content: object): void {
     const newCampaign: Campaign = {
       id: uuidv4(),
+      name: name,
       content: content
     };
     this.campaigns.push(newCampaign);
   }
 
-  saveCampaign(campaign: Campaign): void {
+  save(campaign: Campaign): void {
     const index = this.campaigns.findIndex(c => c.id === campaign.id);
     this.campaigns[index] = campaign;
+  }
+
+  delete(id: string): void {
+    this.campaigns = this.campaigns.filter(c => c.id !== id);
   }
 }

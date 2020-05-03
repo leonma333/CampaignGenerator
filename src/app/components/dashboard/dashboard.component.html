@@ -1,12 +1,8 @@
-<h2>My Campaigns</h2>
-<button><a routerLink='/new'>Add Campaign</a></button>
-<div class='quill-view-container' *ngFor="let campaign of campaigns">
-    <quill-view [content]="campaign.content" [preserveWhitespace]="true" format="object"></quill-view>
-    <a routerLink='/new' [queryParams]="{content:campaign.content | json }">
-      Create one from this template
-    </a>
-    |
-    <a [routerLink]="['/edit', campaign.id]">
-      Edit
-    </a>
+<h1 class="bd-title">My Campaigns</h1>
+<hr>
+<button class="btn btn-primary mb-3 mb-md-5" routerLink='/new'>Add Campaign</button>
+<div class="row" *ngFor="let group of campaignGroups">
+  <div class="col-md-4 mb-md-4 mb-2" *ngFor="let campaign of group">
+    <app-dashboard-preview [campaign]="campaign" (deleteId)="delete($event)"></app-dashboard-preview>
+  </div>
 </div>
