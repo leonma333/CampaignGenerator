@@ -4,14 +4,17 @@
     <quill-view class="preview-quill" [content]="campaign.content" [preserveWhitespace]="true" format="object"></quill-view>
   </div>
   <div class="btn-group" role="group">
-    <a type="button" class="btn btn-primary btn-sm" routerLink='/new' [queryParams]="{content:campaign.content | json }">
+    <button class="btn btn-primary btn-sm" routerLink='/new' [queryParams]="{ id: campaign.id }">
       <fa-icon [icon]="faPlus"></fa-icon>
-    </a>
-    <a type="button" class="btn btn-light btn-sm" [routerLink]="['/edit', campaign.id]">
+    </button>
+    <button class="btn btn-light btn-sm" [routerLink]="['/view', campaign.id]">
+      <fa-icon [icon]="faSearch"></fa-icon>
+    </button>
+    <button class="btn btn-light btn-sm" [routerLink]="['/edit', campaign.id]">
       <fa-icon [icon]="faPen"></fa-icon>
-    </a>
-    <a type="button" class="btn btn-danger btn-sm" [routerLink]="" (click)="deleteId.emit(campaign.id)">
+    </button>
+    <button class="btn btn-danger btn-sm" [routerLink]="" (click)="delete()">
       <fa-icon [icon]="faTrash" [styles]="{'color': 'white'}"></fa-icon>
-    </a>
+    </button>
   </div>
 </div>

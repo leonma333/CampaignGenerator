@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
@@ -11,9 +12,8 @@ import { CampaignService } from '../../services/campaign.service';
   styleUrls: ['./edit-campaign.component.scss']
 })
 export class EditCampaignComponent implements OnInit {
-  name: string;
-  content: object;
   campaign: Campaign;
+  campaignForm: FormGroup;
 
   constructor(
     private campaignService: CampaignService,
@@ -24,13 +24,15 @@ export class EditCampaignComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     this.campaign = this.campaignService.byId(id);
-    this.name = this.campaign.name;
-    this.content = this.campaign.content;
+    this.campaignForm = new FormGroup({
+      'name': new FormControl(this.campaign.name, Validators.required),
+      'content': new FormControl(this.campaign.content)
+    });
   }
 
   save(): void {
-    this.campaign.name = this.name;
-    this.campaign.content = this.content;
+    this.campaign.name = this.campaignForm.get('name').value;
+    this.campaign.content = this.campaignForm.get('content').value;
     this.campaignService.save(this.campaign);
     this.location.back();
   }
