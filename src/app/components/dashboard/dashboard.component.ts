@@ -9,8 +9,8 @@ import { CampaignService } from '../../services/campaign.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  campaigns: Campaign[];
-  campaignGroups: Campaign[][] = [[]];
+  campaigns: Array<Campaign>;
+  campaignGroups: Array<Array<Campaign>>;
 
   constructor(private campaignService: CampaignService) { }
 

@@ -8,13 +8,13 @@ import { CAMPAIGNS } from '../mocks/campaigns';
   providedIn: 'root'
 })
 export class CampaignService {
-  private campaigns: Campaign[];
+  private campaigns: Array<Campaign>;
 
   constructor() { 
     this.campaigns = CAMPAIGNS;
   }
 
-  getAll(): Campaign[] {
+  getAll(): Array<Campaign> {
     return this.campaigns;
   }
 
@@ -38,5 +38,9 @@ export class CampaignService {
 
   delete(id: string): void {
     this.campaigns = this.campaigns.filter(c => c.id !== id);
+  }
+
+  clear(): void {
+    this.campaigns = [];
   }
 }

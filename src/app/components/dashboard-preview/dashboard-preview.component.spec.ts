@@ -1,8 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { Campaign } from '../../models/campaign';
 import { DashboardPreviewComponent } from './dashboard-preview.component';
 
 describe('DashboardPreviewComponent', () => {
+  const campaign: Campaign = {
+    id: '1',
+    name: 'My campaign',
+    content: { ops: [] }
+  }
+
   let component: DashboardPreviewComponent;
   let fixture: ComponentFixture<DashboardPreviewComponent>;
 
@@ -16,6 +23,7 @@ describe('DashboardPreviewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardPreviewComponent);
     component = fixture.componentInstance;
+    component.campaign = campaign;
     fixture.detectChanges();
   });
 
