@@ -10,7 +10,7 @@ import { CAMPAIGNS } from '../mocks/campaigns';
 export class CampaignService {
   private campaigns: Array<Campaign>;
 
-  constructor() { 
+  constructor() {
     this.campaigns = CAMPAIGNS;
   }
 
@@ -25,8 +25,8 @@ export class CampaignService {
   add(name: string, content: object): void {
     const newCampaign: Campaign = {
       id: uuidv4(),
-      name: name,
-      content: content
+      name,
+      content
     };
     this.campaigns.push(newCampaign);
   }

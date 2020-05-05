@@ -14,29 +14,29 @@ import { ModalConfirmComponent } from '../shared/modal-confirm/modal-confirm.com
   styleUrls: ['./view-campaign.component.scss']
 })
 export class ViewCampaignComponent implements OnInit {
-	campaign: Campaign;
+  campaign: Campaign;
 
   constructor(
-  	private campaignService: CampaignService,
+    private campaignService: CampaignService,
     private route: ActivatedRoute,
     private location: Location,
     private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
-  	const id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
     this.campaign = this.campaignService.byId(id);
   }
 
   back(): void {
-  	this.location.back();
+    this.location.back();
   }
 
   delete(): void {
     const modalRef = this.modalService.open(ModalConfirmComponent);
-    modalRef.componentInstance.title = "Campaign deletion"
-    modalRef.componentInstance.question = "Are you sure you want to delete this campaign?";
-    modalRef.componentInstance.note = "All information associated with \"" + this.campaign.name + "\" will be permanently deleted.";
+    modalRef.componentInstance.title = 'Campaign deletion';
+    modalRef.componentInstance.question = 'Are you sure you want to delete this campaign?';
+    modalRef.componentInstance.note = 'All information associated with "' + this.campaign.name + '" will be permanently deleted.';
     modalRef.componentInstance.irreversible = true;
     modalRef.result.then(result => {
       if (result) {

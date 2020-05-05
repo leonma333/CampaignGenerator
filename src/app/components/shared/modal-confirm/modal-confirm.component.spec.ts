@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from "@angular/core";
-import { By } from "@angular/platform-browser";
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -38,9 +38,9 @@ describe('Component: ModalConfirmComponent', () => {
     fixture.detectChanges();
 
     const de: DebugElement = fixture.debugElement;
-    const titleEl :DebugElement = de.query(By.css('.modal-title'));
-    const questionEl :DebugElement = de.query(By.css('.modal-question'));
-    const noteEl :DebugElement = de.query(By.css('.modal-note'));
+    const titleEl: DebugElement = de.query(By.css('.modal-title'));
+    const questionEl: DebugElement = de.query(By.css('.modal-question'));
+    const noteEl: DebugElement = de.query(By.css('.modal-note'));
 
     expect(titleEl.nativeElement.textContent).toBe('My Campaign');
     expect(questionEl.nativeElement.textContent).toBe('Are you sure?');
@@ -48,7 +48,7 @@ describe('Component: ModalConfirmComponent', () => {
   });
 
   it('should dismiss modal with close', () => {
-    const activeModel = TestBed.get(NgbActiveModal);
+    const activeModel = TestBed.inject(NgbActiveModal) as jasmine.SpyObj<NgbActiveModal>;
     spyOn(activeModel, 'dismiss');
 
     const de: DebugElement = fixture.debugElement;
@@ -61,7 +61,7 @@ describe('Component: ModalConfirmComponent', () => {
   });
 
   it('should dismiss modal with cancel', () => {
-    const activeModel = TestBed.get(NgbActiveModal);
+    const activeModel = TestBed.inject(NgbActiveModal) as jasmine.SpyObj<NgbActiveModal>;
     spyOn(activeModel, 'dismiss');
 
     const de: DebugElement = fixture.debugElement;
@@ -74,7 +74,7 @@ describe('Component: ModalConfirmComponent', () => {
   });
 
   it('should close modal with confirm', () => {
-    const activeModel = TestBed.get(NgbActiveModal);
+    const activeModel = TestBed.inject(NgbActiveModal) as jasmine.SpyObj<NgbActiveModal>;
     spyOn(activeModel, 'close');
 
     const de: DebugElement = fixture.debugElement;

@@ -10,7 +10,7 @@ describe('EditCampaignComponent', () => {
     id: '1',
     name: 'My campaign',
     content: { ops: [] }
-  }
+  };
 
   let component: EditCampaignComponent;
   let fixture: ComponentFixture<EditCampaignComponent>;

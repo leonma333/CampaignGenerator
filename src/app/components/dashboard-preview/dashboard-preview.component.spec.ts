@@ -8,7 +8,7 @@ describe('DashboardPreviewComponent', () => {
     id: '1',
     name: 'My campaign',
     content: { ops: [] }
-  }
+  };
 
   let component: DashboardPreviewComponent;
   let fixture: ComponentFixture<DashboardPreviewComponent>;
@@ -27,7 +27,7 @@ describe('DashboardPreviewComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should be created', () => {
     expect(component).toBeTruthy();
   });
 });

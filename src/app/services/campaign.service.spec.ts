@@ -5,7 +5,7 @@ import { CampaignService } from './campaign.service';
 
 describe('Service: CampaignService', () => {
   let service: CampaignService;
-  let campaigns: Array<Campaign> = [
+  const campaigns: Array<Campaign> = [
     {
       id: '1',
       name: 'first campaign',

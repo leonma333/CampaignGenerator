@@ -22,8 +22,8 @@ export class NewCampaignComponent implements OnInit {
 
   ngOnInit(): void {
     this.campaignForm = new FormGroup({
-      'name': new FormControl('', Validators.required),
-      'content': new FormControl(null)
+      name: new FormControl('', Validators.required),
+      content: new FormControl(null)
     });
 
     this.route.queryParams
@@ -31,8 +31,8 @@ export class NewCampaignComponent implements OnInit {
         if ('id' in params) {
           const campaign: Campaign = this.campaignService.byId(params.id);
           this.campaignForm.patchValue({
-            'name': campaign.name,
-            'content': campaign.content
+            name: campaign.name,
+            content: campaign.content
           });
         }
       });
