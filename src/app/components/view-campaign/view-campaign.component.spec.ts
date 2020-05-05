@@ -86,19 +86,24 @@ describe('Component: ViewCampaignComponent', () => {
   }));
 
   describe('#delete', () => {
-    it('should delete if confirm on modal', fakeAsync(() => {
-      const mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
+    let mockLocation: any;
+    let mockCampaignServiceDup: any;
+
+    beforeEach(() => {
+      mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
       spyOn(mockLocation, 'back');
 
+      mockCampaignServiceDup = TestBed.inject(CampaignService) as jasmine.SpyObj<CampaignService>;
+      spyOn(mockCampaignServiceDup, 'delete');
+    });
+
+    it('should delete if confirm on modal', fakeAsync(() => {
       const mockNbgModalRef = jasmine.createSpyObj('mockNbgModalRef', ['componentInstance'], {
         result: new Promise(resolve => resolve(true))
       });
 
       const mockNgbModal = TestBed.inject(NgbModal) as jasmine.SpyObj<NgbModal>;
       spyOn(mockNgbModal, 'open').and.returnValue(mockNbgModalRef);
-
-      const mockCampaignServiceDup = TestBed.inject(CampaignService) as jasmine.SpyObj<CampaignService>;
-      spyOn(mockCampaignServiceDup, 'delete');
 
       const deleteEl: DebugElement = fixture.debugElement.query(By.css('button.delete'));
       deleteEl.nativeElement.click();
@@ -108,6 +113,23 @@ describe('Component: ViewCampaignComponent', () => {
       expect(mockLocation.back.calls.count()).toEqual(1);
       expect(mockCampaignServiceDup.delete.calls.count()).toEqual(1);
       expect(mockCampaignServiceDup.delete).toHaveBeenCalledWith(campaign.id);
+    }));
+
+    it('should not delete if dismiss on modal', fakeAsync(() => {
+      const mockNbgModalRef = jasmine.createSpyObj('mockNbgModalRef', ['componentInstance'], {
+        result: new Promise(resolve => resolve(false))
+      });
+
+      const mockNgbModal = TestBed.inject(NgbModal) as jasmine.SpyObj<NgbModal>;
+      spyOn(mockNgbModal, 'open').and.returnValue(mockNbgModalRef);
+
+      const deleteEl: DebugElement = fixture.debugElement.query(By.css('button.delete'));
+      deleteEl.nativeElement.click();
+
+      tick();
+
+      expect(mockLocation.back.calls.count()).toEqual(0);
+      expect(mockCampaignServiceDup.delete.calls.count()).toEqual(0);
     }));
   });
 
