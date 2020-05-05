@@ -1,0 +1,32 @@
+dist: trusty
+sudo: false
+
+language: node_js
+node_js:
+  - "12"
+
+addons:
+  chrome: stable
+
+env:
+  global:
+    CODECOV_TOKEN=$CODECOV_TOKEN
+
+cache:
+  directories:
+     - ./node_modules
+
+install:
+  - npm install
+
+jobs:
+  include:
+    - stage: Lint
+      script:
+        - npm run lint
+
+    - stage: Test
+      script:
+        - npm run test -- --no-watch --no-progress --code-coverage --browsers=ChromeHeadless
+      after_script:
+        - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./node_modules/.bin/codecov; fi

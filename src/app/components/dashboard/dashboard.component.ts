@@ -9,8 +9,8 @@ import { CampaignService } from '../../services/campaign.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  campaigns: Campaign[];
-  campaignGroups: Campaign[][] = [[]];
+  campaigns: Array<Campaign>;
+  campaignGroups: Array<Array<Campaign>>;
 
   constructor(private campaignService: CampaignService) { }
 
@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit {
 
   resetCampaignGroups(): void {
     this.campaignGroups = [];
-    for (var i = 0; i < this.campaigns.length; i += 3) {
+    for (let i = 0; i < this.campaigns.length; i += 3) {
       this.campaignGroups.push(this.campaigns.slice(i, i + 3));
     }
   }

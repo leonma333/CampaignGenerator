@@ -25,8 +25,8 @@ export class EditCampaignComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     this.campaign = this.campaignService.byId(id);
     this.campaignForm = new FormGroup({
-      'name': new FormControl(this.campaign.name, Validators.required),
-      'content': new FormControl(this.campaign.content)
+      name: new FormControl(this.campaign.name, Validators.required),
+      content: new FormControl(this.campaign.content)
     });
   }
 

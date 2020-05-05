@@ -44,6 +44,10 @@ e2etest:
 	$(info Make: Running E2E tests.)
 	@docker-compose exec $(CONTAINER) ng e2e --port 4202
 
+lint:
+	$(info Make: Linting files)
+	@docker-compose exec $(CONTAINER) ng lint
+
 log:
 	@docker-compose logs -f $(CONTAINER)
 
