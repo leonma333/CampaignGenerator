@@ -24,4 +24,14 @@ describe('NewCampaignComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('form invalid when empty', () => {
+    expect(component.campaignForm.valid).toBeFalsy();
+
+    const name = component.campaignForm.controls['name'];
+    expect(name.valid).toBeFalsy();
+
+    const errors = name.errors;
+    expect(errors['required']).toBeTruthy();
+  });
 });

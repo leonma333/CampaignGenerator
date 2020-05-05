@@ -1,11 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { RouterTestingModule } from "@angular/router/testing";
+import { By } from "@angular/platform-browser";
+import { DebugElement } from "@angular/core";
+import { Location } from '@angular/common';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
 import { ViewCampaignComponent } from './view-campaign.component';
+import { EditCampaignComponent } from '../edit-campaign/edit-campaign.component';
 
-describe('ViewCampaignComponent', () => {
+describe('Component: ViewCampaignComponent', () => {
   const campaign: Campaign = {
     id: '1',
     name: 'My campaign',
@@ -18,8 +25,15 @@ describe('ViewCampaignComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule.withRoutes([
+          { path: 'edit/:id', component: EditCampaignComponent }
+        ])
+      ],
       providers: [
-        CampaignService, {
+        CampaignService,
+        Location,
+        NgbModal, {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
@@ -48,4 +62,51 @@ describe('ViewCampaignComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should call back when click back button', () => {
+    const mockLocation = TestBed.get(Location);
+    spyOn(mockLocation, 'back');
+
+    const closeEl: DebugElement = fixture.debugElement.query(By.css('button.back'));
+
+    closeEl.nativeElement.click();
+    fixture.detectChanges();
+    expect(mockLocation.back.calls.count()).toEqual(1);
+  });
+
+  it('should direct to edit page with id when click edit button', fakeAsync(() => {
+    const location: Location = TestBed.get(Location);
+
+    const editEl = fixture.debugElement.query(By.css('button.edit'));
+    editEl.nativeElement.click();
+
+    tick();
+
+    expect(location.path()).toBe('/edit/1');
+  }));
+
+  describe('#delete', () => {
+    it('should delete if confirm on modal', fakeAsync(() => {
+      const mockLocation = TestBed.get(Location);
+      spyOn(mockLocation, 'back');
+
+      const mockNbgModalRef = jasmine.createSpyObj('mockNbgModalRef', ['componentInstance'], {result: new Promise(resolve => resolve(true))});
+
+      const mockNgbModal = TestBed.get(NgbModal);
+      spyOn(mockNgbModal, 'open').and.returnValue(mockNbgModalRef);
+
+      const _mockCampaignService = TestBed.get(CampaignService);
+      spyOn(_mockCampaignService, 'delete');
+
+      const deleteEl: DebugElement = fixture.debugElement.query(By.css('button.delete'));
+      deleteEl.nativeElement.click();
+
+      tick();
+
+      expect(mockLocation.back.calls.count()).toEqual(1);
+      expect(_mockCampaignService.delete.calls.count()).toEqual(1);
+      expect(_mockCampaignService.delete).toHaveBeenCalledWith(campaign.id);
+    }));
+  });
+
 });
