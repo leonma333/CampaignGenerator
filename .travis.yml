@@ -27,6 +27,6 @@ jobs:
 
     - stage: Test
       script:
-        - npm run test -- --no-watch --no-progress -code-coverage --browsers=ChromeHeadless
+        - npm run test -- --no-watch --no-progress --code-coverage --browsers=ChromeHeadless
       after_script:
         - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./node_modules/.bin/codecov; fi
