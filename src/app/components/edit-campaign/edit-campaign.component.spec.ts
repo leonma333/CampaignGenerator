@@ -12,12 +12,6 @@ import { CampaignService } from '../../services/campaign.service';
 import { EditCampaignComponent } from './edit-campaign.component';
 
 describe('Component: EditCampaignComponent', () => {
-  const campaign: Campaign = {
-    id: '1',
-    name: 'My campaign',
-    content: { ops: [{insert: 'Hello world'}] }
-  };
-
   let component: EditCampaignComponent;
   let fixture: ComponentFixture<EditCampaignComponent>;
   let mockCampaignService: any;
@@ -48,6 +42,12 @@ describe('Component: EditCampaignComponent', () => {
     fixture = TestBed.createComponent(EditCampaignComponent);
     component = fixture.componentInstance;
 
+    const campaign: Campaign = {
+      id: '1',
+      name: 'My campaign',
+      content: { ops: [{insert: 'Hello world'}] }
+    };
+
     mockCampaignService = TestBed.inject(CampaignService) as jasmine.SpyObj<CampaignService>;
     spyOn(mockCampaignService, 'byId').and.returnValue(campaign);
     spyOn(mockCampaignService, 'save');
@@ -55,7 +55,6 @@ describe('Component: EditCampaignComponent', () => {
     mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
     spyOn(mockLocation, 'back');
 
-    component.ngOnInit();
     fixture.detectChanges();
   });
 
@@ -110,6 +109,18 @@ describe('Component: EditCampaignComponent', () => {
     expect(editorEl.nativeElement.innerText.trim()).toBe('Hello world');
   });
 
+  it('should display campaign', () => {
+    component.ngOnInit();
+    fixture.detectChanges();
+
+    const de: DebugElement = fixture.debugElement;
+    const nameEl: DebugElement = de.query(By.css('input.name'));
+    const editorEl: DebugElement = de.query(By.css('.ql-editor'));
+
+    expect(nameEl.nativeElement.value).toBe('My campaign');
+    expect(editorEl.nativeElement.innerText.trim()).toBe('Hello world');
+  });
+
   it('should save edited campaign', () => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('input.name'));
@@ -119,11 +130,17 @@ describe('Component: EditCampaignComponent', () => {
     nameEl.nativeElement.value = 'Another campaign';
     nameEl.nativeElement.dispatchEvent(new Event('input'));
 
-    component.campaignForm.controls.content.setValue('This is another campaign');
+    component.campaignForm.controls.content.setValue({ ops: [{insert: 'This is another campaign'}] });
 
     fixture.detectChanges();
     saveEl.nativeElement.click();
     fixture.detectChanges();
+
+    const campaign: Campaign = {
+      id: '1',
+      name: 'Another campaign',
+      content: { ops: [{insert: 'This is another campaign'}] }
+    };
 
     expect(mockLocation.back.calls.count()).toEqual(1);
     expect(mockCampaignService.save.calls.count()).toEqual(1);

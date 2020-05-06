@@ -111,7 +111,7 @@ describe('Component: DashboardPreviewComponent', () => {
 
       tick();
 
-     expect(id).toBe('1');
+      expect(id).toBe('1');
     }));
 
     it('should not delete if dismiss on modal', fakeAsync(() => {

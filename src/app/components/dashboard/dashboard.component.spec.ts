@@ -7,8 +7,8 @@ import { CampaignService } from '../../services/campaign.service';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardPreviewComponent } from '../dashboard-preview/dashboard-preview.component';
 
-describe('DashboardComponent', () => {
-  const campaigns: Array<Campaign> =[
+describe('Component: DashboardComponent', () => {
+  const campaigns: Array<Campaign> = [
     {id: '1', name: '', content: {ops: []}},
     {id: '2', name: '', content: {ops: []}},
     {id: '3', name: '', content: {ops: []}},
@@ -42,6 +42,11 @@ describe('DashboardComponent', () => {
 
     const previewComponents: Array<DebugElement> = fixture.debugElement.queryAll(By.directive(DashboardPreviewComponent));
     expect(previewComponents.length).toBe(4);
+
+    const rowEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('div.row'));
+    expect(rowEl.length).toBe(2);
+    expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(3);
+    expect(rowEl[1].nativeElement.querySelectorAll('div.col-md-4').length).toBe(1);
   });
 
   it('should delete campaign', () => {
@@ -52,5 +57,9 @@ describe('DashboardComponent', () => {
 
     previewComponents = fixture.debugElement.queryAll(By.directive(DashboardPreviewComponent));
     expect(previewComponents.length).toBe(3);
+
+    const rowEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('div.row'));
+    expect(rowEl.length).toBe(1);
+    expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(3);
   });
 });
