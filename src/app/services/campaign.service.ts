@@ -32,8 +32,12 @@ export class CampaignService {
   }
 
   save(campaign: Campaign): void {
-    const index = this.campaigns.findIndex(c => c.id === campaign.id);
-    this.campaigns[index] = campaign;
+    const index: number = this.campaigns.findIndex(c => c.id === campaign.id);
+    if (index === -1) {
+      this.add(campaign.name, campaign.content);
+    } else {
+      this.campaigns[index] = campaign;
+    }
   }
 
   delete(id: string): void {
