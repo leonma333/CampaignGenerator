@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
@@ -109,7 +109,7 @@ describe('Component: NewCampaignComponent', () => {
       const de: DebugElement = fixture.debugElement;
       const nameEl: DebugElement = de.query(By.css('input.name'));
       const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
-      
+
       nameEl.nativeElement.value = 'My campaign';
       nameEl.nativeElement.dispatchEvent(new Event('input'));
 
@@ -118,7 +118,7 @@ describe('Component: NewCampaignComponent', () => {
       fixture.detectChanges();
 
       expect(component.campaignForm.controls.name.value).toEqual('My campaign');
-      
+
       saveEl.nativeElement.click();
       fixture.detectChanges();
 
