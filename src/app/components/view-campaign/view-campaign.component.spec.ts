@@ -6,6 +6,7 @@ import { DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { QuillModule, QuillViewComponent } from 'ngx-quill';
 
 import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
@@ -16,16 +17,16 @@ describe('Component: ViewCampaignComponent', () => {
   const campaign: Campaign = {
     id: '1',
     name: 'My campaign',
-    content: { ops: [] }
+    content: { ops: [{insert: 'Hello world'}] }
   };
 
   let component: ViewCampaignComponent;
   let fixture: ComponentFixture<ViewCampaignComponent>;
-  let mockCampaignService: CampaignService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        QuillModule.forRoot(),
         RouterTestingModule.withRoutes([
           { path: 'edit/:id', component: EditCampaignComponent }
         ])
@@ -44,7 +45,7 @@ describe('Component: ViewCampaignComponent', () => {
           }
         }
       ],
-      declarations: [ ViewCampaignComponent ]
+      declarations: [ ViewCampaignComponent, QuillViewComponent ]
     })
     .compileComponents();
   }));
@@ -53,7 +54,7 @@ describe('Component: ViewCampaignComponent', () => {
     fixture = TestBed.createComponent(ViewCampaignComponent);
     component = fixture.componentInstance;
 
-    mockCampaignService = fixture.debugElement.injector.get(CampaignService);
+    const mockCampaignService = fixture.debugElement.injector.get(CampaignService);
     spyOn(mockCampaignService, 'byId').and.returnValue(campaign);
 
     fixture.detectChanges();
@@ -61,6 +62,18 @@ describe('Component: ViewCampaignComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+
+    const nameEl: DebugElement = fixture.debugElement.query(By.css('input.name'));
+    expect(nameEl.nativeElement.readOnly).toBeTrue();
+  });
+
+  it('should display campaign', () => {
+    const de: DebugElement = fixture.debugElement;
+    const nameEl: DebugElement = de.query(By.css('input.name'));
+    const editorEl: DebugElement = de.query(By.css('.ql-editor'));
+
+    expect(nameEl.nativeElement.value).toBe('My campaign');
+    expect(editorEl.nativeElement.innerText.trim()).toBe('Hello world');
   });
 
   it('should call back when click back button', () => {
@@ -75,7 +88,7 @@ describe('Component: ViewCampaignComponent', () => {
   });
 
   it('should direct to edit page with id when click edit button', fakeAsync(() => {
-    const location: Location = TestBed.inject(Location) as jasmine.SpyObj<Location>;
+    const location: Location = TestBed.inject(Location);
 
     const editEl = fixture.debugElement.query(By.css('button.edit'));
     editEl.nativeElement.click();
@@ -87,14 +100,14 @@ describe('Component: ViewCampaignComponent', () => {
 
   describe('#delete', () => {
     let mockLocation: any;
-    let mockCampaignServiceDup: any;
+    let mockCampaignService: any;
 
     beforeEach(() => {
       mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
       spyOn(mockLocation, 'back');
 
-      mockCampaignServiceDup = TestBed.inject(CampaignService) as jasmine.SpyObj<CampaignService>;
-      spyOn(mockCampaignServiceDup, 'delete');
+      mockCampaignService = TestBed.inject(CampaignService) as jasmine.SpyObj<CampaignService>;
+      spyOn(mockCampaignService, 'delete');
     });
 
     it('should delete if confirm on modal', fakeAsync(() => {
@@ -111,8 +124,8 @@ describe('Component: ViewCampaignComponent', () => {
       tick();
 
       expect(mockLocation.back.calls.count()).toEqual(1);
-      expect(mockCampaignServiceDup.delete.calls.count()).toEqual(1);
-      expect(mockCampaignServiceDup.delete).toHaveBeenCalledWith(campaign.id);
+      expect(mockCampaignService.delete.calls.count()).toEqual(1);
+      expect(mockCampaignService.delete).toHaveBeenCalledWith(campaign.id);
     }));
 
     it('should not delete if dismiss on modal', fakeAsync(() => {
@@ -129,7 +142,7 @@ describe('Component: ViewCampaignComponent', () => {
       tick();
 
       expect(mockLocation.back.calls.count()).toEqual(0);
-      expect(mockCampaignServiceDup.delete.calls.count()).toEqual(0);
+      expect(mockCampaignService.delete.calls.count()).toEqual(0);
     }));
   });
 
