@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
 import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
 
@@ -15,6 +17,9 @@ export class EditCampaignComponent implements OnInit {
   campaign: Campaign;
   campaignForm: FormGroup;
 
+  saving = false;
+  faSpinner = faSpinner;
+
   constructor(
     private campaignService: CampaignService,
     private route: ActivatedRoute,
@@ -22,19 +27,26 @@ export class EditCampaignComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.campaign = this.campaignService.byId(id);
     this.campaignForm = new FormGroup({
-      name: new FormControl(this.campaign.name, Validators.required),
-      content: new FormControl(this.campaign.content)
+      name: new FormControl('', Validators.required),
+      content: new FormControl(null)
+    });
+
+    const id = this.route.snapshot.paramMap.get('id');
+    this.campaignService.byId(id).subscribe(campaign => {
+      this.campaign = campaign;
+      this.campaignForm.controls.name.setValue(campaign.name);
+      this.campaignForm.controls.content.setValue(campaign.content);
     });
   }
 
   save(): void {
+    this.saving = true;
     this.campaign.name = this.campaignForm.get('name').value;
     this.campaign.content = this.campaignForm.get('content').value;
-    this.campaignService.save(this.campaign);
-    this.location.back();
+    this.campaignService.save(this.campaign).then(() => {
+      this.location.back();
+    });
   }
 
   back() {
