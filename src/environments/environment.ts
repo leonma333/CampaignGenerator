@@ -5,13 +5,13 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: 'AIzaSyAY9FcNhbMXnS7ak_9aFJVd3uNSc4UIZB4',
-    authDomain: 'campaign-generator-333.firebaseapp.com',
-    databaseURL: 'https://campaign-generator-333.firebaseio.com',
-    projectId: 'campaign-generator-333',
-    storageBucket: 'campaign-generator-333.appspot.com',
-    messagingSenderId: '305863371753',
-    appId: '1:305863371753:web:f7b7fdb5a4b53f47b67978'
+    apiKey: window['env']['firebase_apikey'],
+    authDomain: window['env']['firebase_authDomain'],
+    databaseURL: window['env']['firebase_databaseURL'],
+    projectId: window['env']['firebase_projectId'],
+    storageBucket: window['env']['firebase_storageBucket'],
+    messagingSenderId: window['env']['firebase_messagingSenderId'],
+    appId: window['env']['firebase_appId']
   }
 };
 

@@ -7,6 +7,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - angular.env
     volumes:
       - '.:/app'
       - '/app/node_modules'
