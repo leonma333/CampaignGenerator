@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
@@ -13,6 +13,7 @@ import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { ViewCampaignComponent } from './view-campaign.component';
+import { DashboardComponent } from '../dashboard/dashboard.component';
 import { EditCampaignComponent } from '../edit-campaign/edit-campaign.component';
 
 describe('Component: ViewCampaignComponent', () => {
@@ -97,15 +98,19 @@ describe('Component: ViewCampaignComponent', () => {
   }));
 
   describe('#delete', () => {
+    let mockRouter: any;
     let mockLocation: any;
     let mockCampaignService: any;
 
     beforeEach(() => {
-      mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
+      mockLocation = TestBed.inject(Location);
       spyOn(mockLocation, 'back');
 
       mockCampaignService = TestBed.inject(CampaignService);
       mockCampaignService.delete.and.returnValue(new Promise(resolve => resolve(true)));
+
+      mockRouter = TestBed.inject(Router);
+      spyOn(mockRouter, 'navigate');
     });
 
     it('should delete if confirm on modal', fakeAsync(() => {
@@ -121,7 +126,8 @@ describe('Component: ViewCampaignComponent', () => {
 
       tick();
 
-      expect(mockLocation.back.calls.count()).toEqual(1);
+      expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
       expect(mockCampaignService.delete.calls.count()).toEqual(1);
       expect(mockCampaignService.delete).toHaveBeenCalledWith('1');
     }));
@@ -139,7 +145,7 @@ describe('Component: ViewCampaignComponent', () => {
 
       tick();
 
-      expect(mockLocation.back.calls.count()).toEqual(0);
+      expect(mockRouter.navigate).toHaveBeenCalledTimes(0);
       expect(mockCampaignService.delete.calls.count()).toEqual(0);
     }));
   });

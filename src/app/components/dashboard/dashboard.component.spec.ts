@@ -36,6 +36,8 @@ describe('Component: DashboardComponent', () => {
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
 
+    expect(component.loading).toBeTrue();
+
     mockCampaignService = TestBed.inject(CampaignService);
     mockCampaignService.getAll.and.returnValue(campaigns);
 
@@ -44,6 +46,7 @@ describe('Component: DashboardComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.loading).toBeFalse();
 
     const previewComponents: Array<DebugElement> = fixture.debugElement.queryAll(By.directive(DashboardPreviewComponent));
     expect(previewComponents.length).toBe(4);

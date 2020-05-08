@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
@@ -18,10 +19,11 @@ describe('Component: EditCampaignComponent', () => {
   let fixture: ComponentFixture<EditCampaignComponent>;
   let mockCampaignService: any;
   let mockLocation: any;
+  let mockRouter: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [QuillModule.forRoot(), ReactiveFormsModule],
+      imports: [QuillModule.forRoot(), ReactiveFormsModule, RouterTestingModule],
       providers: [
         Location, {
           provide: CampaignService,
@@ -52,8 +54,11 @@ describe('Component: EditCampaignComponent', () => {
     mockCampaignService.byId.and.returnValue(of(campaign));
     mockCampaignService.save.and.returnValue(new Promise(resolve => resolve(true)));
 
-    mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
+    mockLocation = TestBed.inject(Location);
     spyOn(mockLocation, 'back');
+
+    mockRouter = TestBed.inject(Router);
+    spyOn(mockRouter, 'navigate');
 
     fixture.detectChanges();
   });
@@ -126,7 +131,8 @@ describe('Component: EditCampaignComponent', () => {
 
     const campaign = new Campaign('1', 'Another campaign', { ops: [{insert: 'This is another campaign'}] });
 
-    expect(mockLocation.back.calls.count()).toEqual(1);
+    expect(mockRouter.navigate.calls.count()).toBe(1);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
     expect(mockCampaignService.save.calls.count()).toEqual(1);
     expect(mockCampaignService.save).toHaveBeenCalledWith(campaign);
   }));

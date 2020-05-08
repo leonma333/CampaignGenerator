@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
 import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
 
@@ -12,12 +14,16 @@ export class DashboardComponent implements OnInit {
   campaigns: Array<Campaign>;
   campaignGroups: Array<Array<Campaign>>;
 
+  loading = true;
+  faSpinner = faSpinner;
+
   constructor(private campaignService: CampaignService) { }
 
   ngOnInit(): void {
     this.campaignService.getAll().subscribe(campaigns => {
       this.campaigns = campaigns;
       this.resetCampaignGroups();
+      this.loading = false;
     });
   }
 

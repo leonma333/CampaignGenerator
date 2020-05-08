@@ -53,6 +53,21 @@ describe('Service: CampaignService', () => {
     });
   });
 
+  describe('#add', () => {
+    it('should add new campaign#3', (done) => {
+      const campaign = new Campaign('3', 'My campaign', {ops: [{insert: 'Hello world'}]});
+      service.add(campaign.name, campaign.content).then(result => {
+        expect(result).toBe('You just added it');
+        expect(firestore.collection().add).toHaveBeenCalledTimes(1);
+        expect(firestore.collection().add).toHaveBeenCalledWith({
+          name: campaign.name,
+          content: campaign.content
+        });
+        done();
+      });
+    });
+  });
+
   describe('#save', () => {
     it('should override campaign#1', (done) => {
       const campaign = new Campaign('1', 'My campaign', {ops: [{insert: 'Hello world'}]});

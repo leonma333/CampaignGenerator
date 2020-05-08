@@ -35,7 +35,7 @@ export class CampaignService {
     );
   }
 
-  add(name: string, content: object): Promise<DocumentReference> {
+  add(name: string, content: object): Promise<any> {
     return this.db.collection(this.collection).add({
       name,
       content: Object.assign({}, content)

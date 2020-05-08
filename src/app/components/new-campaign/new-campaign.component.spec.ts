@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
@@ -19,10 +20,11 @@ describe('Component: NewCampaignComponent', () => {
   let fixture: ComponentFixture<NewCampaignComponent>;
   let mockCampaignService: any;
   let mockLocation: any;
+  let mockRouter: any;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [QuillModule.forRoot(), ReactiveFormsModule],
+      imports: [QuillModule.forRoot(), ReactiveFormsModule, RouterTestingModule],
       providers: [
         Location, {
           provide: CampaignService,
@@ -47,8 +49,11 @@ describe('Component: NewCampaignComponent', () => {
     mockCampaignService.byId.and.returnValue(of(campaigns[0]));
     mockCampaignService.add.and.returnValue(new Promise(resolve => resolve(true)));
 
-    mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
+    mockLocation = TestBed.inject(Location);
     spyOn(mockLocation, 'back');
+
+    mockRouter = TestBed.inject(Router);
+    spyOn(mockRouter, 'navigate');
 
     fixture.detectChanges();
   });
@@ -120,7 +125,8 @@ describe('Component: NewCampaignComponent', () => {
       saveEl.nativeElement.click();
       tick();
 
-      expect(mockLocation.back.calls.count()).toEqual(1);
+      expect(mockRouter.navigate.calls.count()).toBe(1);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
       expect(mockCampaignService.add.calls.count()).toEqual(1);
       expect(mockCampaignService.add).toHaveBeenCalledWith('My campaign', 'This is my campaign');
     }));
@@ -159,7 +165,8 @@ describe('Component: NewCampaignComponent', () => {
       saveEl.nativeElement.click();
       tick();
 
-      expect(mockLocation.back.calls.count()).toEqual(1);
+      expect(mockRouter.navigate.calls.count()).toBe(1);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
       expect(mockCampaignService.add.calls.count()).toEqual(1);
       expect(mockCampaignService.add).toHaveBeenCalledWith('Another campaign', 'This is another campaign');
     }));
