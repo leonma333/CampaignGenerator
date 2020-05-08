@@ -2,18 +2,20 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
+import { of } from 'rxjs';
+
 import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardPreviewComponent } from '../dashboard-preview/dashboard-preview.component';
 
 describe('Component: DashboardComponent', () => {
-  const campaigns: Array<Campaign> = [
-    {id: '1', name: '', content: {ops: []}},
-    {id: '2', name: '', content: {ops: []}},
-    {id: '3', name: '', content: {ops: []}},
-    {id: '4', name: '', content: {ops: []}},
-  ];
+  const campaigns = of([
+    new Campaign('1', '', {ops: []}),
+    new Campaign('2', '', {ops: []}),
+    new Campaign('3', '', {ops: []}),
+    new Campaign('4', '', {ops: []}),
+  ]);
 
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
@@ -21,7 +23,10 @@ describe('Component: DashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [ CampaignService ],
+      providers: [{
+        provide: CampaignService,
+        useValue: jasmine.createSpyObj('mockCampaignService', ['getAll'])
+      }],
       declarations: [ DashboardComponent, DashboardPreviewComponent ]
     })
     .compileComponents();
@@ -31,8 +36,8 @@ describe('Component: DashboardComponent', () => {
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
 
-    mockCampaignService = fixture.debugElement.injector.get(CampaignService);
-    spyOn(mockCampaignService, 'getAll').and.returnValue(campaigns);
+    mockCampaignService = TestBed.inject(CampaignService);
+    mockCampaignService.getAll.and.returnValue(campaigns);
 
     fixture.detectChanges();
   });

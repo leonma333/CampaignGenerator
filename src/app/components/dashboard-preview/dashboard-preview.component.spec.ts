@@ -8,17 +8,14 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuillModule, QuillViewComponent } from 'ngx-quill';
 
 import { Campaign } from '../../models/campaign';
+import { campaigns } from '../../mocks/campaigns';
 import { DashboardPreviewComponent } from './dashboard-preview.component';
 import { NewCampaignComponent } from '../new-campaign/new-campaign.component';
 import { ViewCampaignComponent } from '../view-campaign/view-campaign.component';
 import { EditCampaignComponent } from '../edit-campaign/edit-campaign.component';
 
 describe('Component: DashboardPreviewComponent', () => {
-  const campaign: Campaign = {
-    id: '1',
-    name: 'My campaign',
-    content: { ops: [{insert: 'Hello world'}] }
-  };
+  const campaign: Campaign = campaigns[0];
 
   let component: DashboardPreviewComponent;
   let fixture: ComponentFixture<DashboardPreviewComponent>;
@@ -59,8 +56,8 @@ describe('Component: DashboardPreviewComponent', () => {
     const nameEl: DebugElement = de.query(By.css('h3'));
     const editorEl: DebugElement = de.query(By.css('.ql-editor'));
 
-    expect(nameEl.nativeElement.innerText).toBe('My campaign');
-    expect(editorEl.nativeElement.innerText.trim()).toBe('Hello world');
+    expect(nameEl.nativeElement.innerText).toBe('first campaign');
+    expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
   });
 
   it('should direct to new page with id when click new button', fakeAsync(() => {

@@ -14,11 +14,4 @@ export class Campaign implements ICampaign {
     this.name = name;
     this.content = content;
   }
-
-  get value(): object {
-    return {
-      name: this.name,
-      content: Object.assign({}, this.content)
-    };
-  }
 }

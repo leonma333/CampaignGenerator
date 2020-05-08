@@ -16,7 +16,7 @@ export class CampaignService {
   constructor(public db: AngularFirestore) {}
 
   getAll(): Observable<Array<Campaign>> {
-    return this.db.collection('campaigns').snapshotChanges().pipe(
+    return this.db.collection(this.collection).snapshotChanges().pipe(
       map(snapshots => {
         return snapshots.map(snapshot => {
           const doc = snapshot.payload.doc as any;
@@ -42,11 +42,15 @@ export class CampaignService {
     });
   }
 
-  save(campaign: Campaign): Promise<void> {
-    return this.db.collection(this.collection).doc(campaign.id).set(campaign.value);
+  save(campaign: Campaign): Promise<any> {
+    const value = {
+      name: campaign.name,
+      content: Object.assign({}, campaign.content)
+    };
+    return this.db.collection(this.collection).doc(campaign.id).set(value);
   }
 
-  delete(id: string): Promise<void> {
+  delete(id: string): Promise<any> {
     return this.db.collection(this.collection).doc(id).delete();
   }
 }
