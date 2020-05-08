@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
@@ -9,16 +10,11 @@ import { of } from 'rxjs';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 
 import { Campaign } from '../../models/campaign';
+import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { NewCampaignComponent } from './new-campaign.component';
 
 describe('Component: NewCampaignComponent', () => {
-  const campaign: Campaign = {
-    id: '1',
-    name: 'My campaign',
-    content: { ops: [{insert: 'Hello world'}] }
-  };
-
   let component: NewCampaignComponent;
   let fixture: ComponentFixture<NewCampaignComponent>;
   let mockCampaignService: any;
@@ -28,8 +24,10 @@ describe('Component: NewCampaignComponent', () => {
     TestBed.configureTestingModule({
       imports: [QuillModule.forRoot(), ReactiveFormsModule],
       providers: [
-        CampaignService,
         Location, {
+          provide: CampaignService,
+          useValue: jasmine.createSpyObj('mockCampaignService', ['byId', 'add'])
+        }, {
           provide: ActivatedRoute,
           useValue: {
             queryParams: of({})
@@ -45,9 +43,9 @@ describe('Component: NewCampaignComponent', () => {
     fixture = TestBed.createComponent(NewCampaignComponent);
     component = fixture.componentInstance;
 
-    mockCampaignService = fixture.debugElement.injector.get(CampaignService);
-    spyOn(mockCampaignService, 'byId').and.returnValue(campaign);
-    spyOn(mockCampaignService, 'add');
+    mockCampaignService = TestBed.inject(CampaignService);
+    mockCampaignService.byId.and.returnValue(of(campaigns[0]));
+    mockCampaignService.add.and.returnValue(new Promise(resolve => resolve(true)));
 
     mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
     spyOn(mockLocation, 'back');
@@ -73,7 +71,7 @@ describe('Component: NewCampaignComponent', () => {
   });
 
   it('form valid when name not empty', () => {
-    component.campaignForm.controls.name.setValue('My campaign');
+    component.campaignForm.controls.name.setValue('first campaign');
     fixture.detectChanges();
 
     expect(component.campaignForm.controls.name.valid).toBeTruthy();
@@ -105,7 +103,7 @@ describe('Component: NewCampaignComponent', () => {
       expect(component.campaignForm.controls.content.value).toBeNull();
     });
 
-    it('should change value and save', () => {
+    it('should change value and save', fakeAsync(() => {
       const de: DebugElement = fixture.debugElement;
       const nameEl: DebugElement = de.query(By.css('input.name'));
       const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
@@ -120,12 +118,12 @@ describe('Component: NewCampaignComponent', () => {
       expect(component.campaignForm.controls.name.value).toEqual('My campaign');
 
       saveEl.nativeElement.click();
-      fixture.detectChanges();
+      tick();
 
       expect(mockLocation.back.calls.count()).toEqual(1);
       expect(mockCampaignService.add.calls.count()).toEqual(1);
       expect(mockCampaignService.add).toHaveBeenCalledWith('My campaign', 'This is my campaign');
-    });
+    }));
   });
 
   describe('with id param', () => {
@@ -142,11 +140,11 @@ describe('Component: NewCampaignComponent', () => {
       const nameEl: DebugElement = de.query(By.css('input.name'));
       const editorEl: DebugElement = de.query(By.css('.ql-editor'));
 
-      expect(nameEl.nativeElement.value).toBe('My campaign');
-      expect(editorEl.nativeElement.innerText.trim()).toBe('Hello world');
+      expect(nameEl.nativeElement.value).toBe('first campaign');
+      expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
     });
 
-    it('should add new campaign', () => {
+    it('should add new campaign', fakeAsync(() => {
       const de: DebugElement = fixture.debugElement;
       const nameEl: DebugElement = de.query(By.css('input.name'));
       const editorEl: DebugElement = de.query(By.css('.ql-editor'));
@@ -159,11 +157,11 @@ describe('Component: NewCampaignComponent', () => {
 
       fixture.detectChanges();
       saveEl.nativeElement.click();
-      fixture.detectChanges();
+      tick();
 
       expect(mockLocation.back.calls.count()).toEqual(1);
       expect(mockCampaignService.add.calls.count()).toEqual(1);
       expect(mockCampaignService.add).toHaveBeenCalledWith('Another campaign', 'This is another campaign');
-    });
+    }));
   });
 });

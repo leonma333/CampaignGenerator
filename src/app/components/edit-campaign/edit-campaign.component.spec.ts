@@ -1,13 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
 
+import { of } from 'rxjs';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 
 import { Campaign } from '../../models/campaign';
+import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { EditCampaignComponent } from './edit-campaign.component';
 
@@ -21,8 +23,10 @@ describe('Component: EditCampaignComponent', () => {
     TestBed.configureTestingModule({
       imports: [QuillModule.forRoot(), ReactiveFormsModule],
       providers: [
-        CampaignService,
         Location, {
+          provide: CampaignService,
+          useValue: jasmine.createSpyObj('mockCampaignService', ['byId', 'save'])
+        }, {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
@@ -42,15 +46,11 @@ describe('Component: EditCampaignComponent', () => {
     fixture = TestBed.createComponent(EditCampaignComponent);
     component = fixture.componentInstance;
 
-    const campaign: Campaign = {
-      id: '1',
-      name: 'My campaign',
-      content: { ops: [{insert: 'Hello world'}] }
-    };
+    const campaign = new Campaign(campaigns[0].id, campaigns[0].name, campaigns[0].content);
 
-    mockCampaignService = TestBed.inject(CampaignService) as jasmine.SpyObj<CampaignService>;
-    spyOn(mockCampaignService, 'byId').and.returnValue(campaign);
-    spyOn(mockCampaignService, 'save');
+    mockCampaignService = TestBed.inject(CampaignService);
+    mockCampaignService.byId.and.returnValue(of(campaign));
+    mockCampaignService.save.and.returnValue(new Promise(resolve => resolve(true)));
 
     mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
     spyOn(mockLocation, 'back');
@@ -105,23 +105,11 @@ describe('Component: EditCampaignComponent', () => {
     const nameEl: DebugElement = de.query(By.css('input.name'));
     const editorEl: DebugElement = de.query(By.css('.ql-editor'));
 
-    expect(nameEl.nativeElement.value).toBe('My campaign');
-    expect(editorEl.nativeElement.innerText.trim()).toBe('Hello world');
+    expect(nameEl.nativeElement.value).toBe('first campaign');
+    expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
   });
 
-  it('should display campaign', () => {
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    const de: DebugElement = fixture.debugElement;
-    const nameEl: DebugElement = de.query(By.css('input.name'));
-    const editorEl: DebugElement = de.query(By.css('.ql-editor'));
-
-    expect(nameEl.nativeElement.value).toBe('My campaign');
-    expect(editorEl.nativeElement.innerText.trim()).toBe('Hello world');
-  });
-
-  it('should save edited campaign', () => {
+  it('should save edited campaign', fakeAsync(() => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('input.name'));
     const editorEl: DebugElement = de.query(By.css('.ql-editor'));
@@ -134,16 +122,12 @@ describe('Component: EditCampaignComponent', () => {
 
     fixture.detectChanges();
     saveEl.nativeElement.click();
-    fixture.detectChanges();
+    tick();
 
-    const campaign: Campaign = {
-      id: '1',
-      name: 'Another campaign',
-      content: { ops: [{insert: 'This is another campaign'}] }
-    };
+    const campaign = new Campaign('1', 'Another campaign', { ops: [{insert: 'This is another campaign'}] });
 
     expect(mockLocation.back.calls.count()).toEqual(1);
     expect(mockCampaignService.save.calls.count()).toEqual(1);
     expect(mockCampaignService.save).toHaveBeenCalledWith(campaign);
-  });
+  }));
 });

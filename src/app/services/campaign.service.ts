@@ -1,50 +1,56 @@
 import { Injectable } from '@angular/core';
-import { v4 as uuidv4 } from 'uuid';
+import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+
+import { Observable, pipe } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 
 import { Campaign } from '../models/campaign';
-import { CAMPAIGNS } from '../mocks/campaigns';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CampaignService {
-  private campaigns: Array<Campaign>;
+  private collection = 'campaigns';
 
-  constructor() {
-    this.campaigns = CAMPAIGNS;
+  constructor(public db: AngularFirestore) {}
+
+  getAll(): Observable<Array<Campaign>> {
+    return this.db.collection(this.collection).snapshotChanges().pipe(
+      map(snapshots => {
+        return snapshots.map(snapshot => {
+          const doc = snapshot.payload.doc as any;
+          return new Campaign(doc.id, doc.data().name, doc.data().content);
+        });
+      })
+    );
   }
 
-  getAll(): Array<Campaign> {
-    return this.campaigns;
+  byId(id: string): Observable<Campaign> {
+    return this.db.collection(this.collection).doc(id).valueChanges().pipe(
+      map(value => {
+        const data = value as any;
+        return new Campaign(id, data.name, data.content);
+      })
+    );
   }
 
-  byId(id: string): Campaign {
-    return this.campaigns.find(c => c.id === id);
-  }
-
-  add(name: string, content: object): void {
-    const newCampaign: Campaign = {
-      id: uuidv4(),
+  add(name: string, content: object): Promise<DocumentReference> {
+    return this.db.collection(this.collection).add({
       name,
-      content
+      content: Object.assign({}, content)
+    });
+  }
+
+  save(campaign: Campaign): Promise<any> {
+    const value = {
+      name: campaign.name,
+      content: Object.assign({}, campaign.content)
     };
-    this.campaigns.push(newCampaign);
+    return this.db.collection(this.collection).doc(campaign.id).set(value);
   }
 
-  save(campaign: Campaign): void {
-    const index: number = this.campaigns.findIndex(c => c.id === campaign.id);
-    if (index === -1) {
-      this.add(campaign.name, campaign.content);
-    } else {
-      this.campaigns[index] = campaign;
-    }
-  }
-
-  delete(id: string): void {
-    this.campaigns = this.campaigns.filter(c => c.id !== id);
-  }
-
-  clear(): void {
-    this.campaigns = [];
+  delete(id: string): Promise<any> {
+    return this.db.collection(this.collection).doc(id).delete();
   }
 }

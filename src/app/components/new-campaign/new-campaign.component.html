@@ -1,16 +1,19 @@
-<form [formGroup]="campaignForm">
+<form [formGroup]="campaignForm" (ngSubmit)="save()">
   <div>
     <input type="text" class="form-control name" placeholder="Campaign's name" aria-label="Campaign's name" aria-describedby="button-addon2" formControlName="name" required>
   </div>
   <div class="mt-2">
     <quill-editor
-      [styles]="{height: 'auto', 'min-height': '300px'}"
+      [styles]="{'min-height': '300px'}"
       format="object"
       formControlName="content">
     </quill-editor>
   </div>
   <div class="mt-2">
-    <button type="button" class="btn btn-primary mr-1 save" (click)="save()" [disabled]="campaignForm.invalid">Save</button>
+    <button type="submit" class="btn btn-primary mr-1 save" [disabled]="campaignForm.invalid || saving">
+      <fa-icon [icon]="faSpinner" [spin]="true" *ngIf="saving"></fa-icon>
+      <span *ngIf="!saving">Save</span>
+    </button>
     <button type="button" class="btn btn-secondary back" (click)="back()">Discard</button>
   </div>
 </form>

@@ -15,8 +15,10 @@ export class DashboardComponent implements OnInit {
   constructor(private campaignService: CampaignService) { }
 
   ngOnInit(): void {
-    this.campaigns = this.campaignService.getAll();
-    this.resetCampaignGroups();
+    this.campaignService.getAll().subscribe(campaigns => {
+      this.campaigns = campaigns;
+      this.resetCampaignGroups();
+    });
   }
 
   resetCampaignGroups(): void {
@@ -29,7 +31,7 @@ export class DashboardComponent implements OnInit {
   delete(event: string): void {
     this.campaigns = this.campaigns.filter(c => c.id !== event);
     this.resetCampaignGroups();
-    this.campaignService.delete(event);
+    this.campaignService.delete(event).then();
   }
 
 }

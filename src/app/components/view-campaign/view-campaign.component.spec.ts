@@ -5,21 +5,17 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
 
+import { of } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuillModule, QuillViewComponent } from 'ngx-quill';
 
 import { Campaign } from '../../models/campaign';
+import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { ViewCampaignComponent } from './view-campaign.component';
 import { EditCampaignComponent } from '../edit-campaign/edit-campaign.component';
 
 describe('Component: ViewCampaignComponent', () => {
-  const campaign: Campaign = {
-    id: '1',
-    name: 'My campaign',
-    content: { ops: [{insert: 'Hello world'}] }
-  };
-
   let component: ViewCampaignComponent;
   let fixture: ComponentFixture<ViewCampaignComponent>;
 
@@ -32,9 +28,11 @@ describe('Component: ViewCampaignComponent', () => {
         ])
       ],
       providers: [
-        CampaignService,
         Location,
         NgbModal, {
+          provide: CampaignService,
+          useValue: jasmine.createSpyObj('mockCampaignService', ['byId', 'delete'])
+        }, {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
@@ -54,8 +52,8 @@ describe('Component: ViewCampaignComponent', () => {
     fixture = TestBed.createComponent(ViewCampaignComponent);
     component = fixture.componentInstance;
 
-    const mockCampaignService = fixture.debugElement.injector.get(CampaignService);
-    spyOn(mockCampaignService, 'byId').and.returnValue(campaign);
+    const mockCampaignService = TestBed.inject(CampaignService) as jasmine.SpyObj<CampaignService>;
+    mockCampaignService.byId.and.returnValue(of(campaigns[0]));
 
     fixture.detectChanges();
   });
@@ -72,8 +70,8 @@ describe('Component: ViewCampaignComponent', () => {
     const nameEl: DebugElement = de.query(By.css('input.name'));
     const editorEl: DebugElement = de.query(By.css('.ql-editor'));
 
-    expect(nameEl.nativeElement.value).toBe('My campaign');
-    expect(editorEl.nativeElement.innerText.trim()).toBe('Hello world');
+    expect(nameEl.nativeElement.value).toBe('first campaign');
+    expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
   });
 
   it('should call back when click back button', () => {
@@ -106,8 +104,8 @@ describe('Component: ViewCampaignComponent', () => {
       mockLocation = TestBed.inject(Location) as jasmine.SpyObj<Location>;
       spyOn(mockLocation, 'back');
 
-      mockCampaignService = TestBed.inject(CampaignService) as jasmine.SpyObj<CampaignService>;
-      spyOn(mockCampaignService, 'delete');
+      mockCampaignService = TestBed.inject(CampaignService);
+      mockCampaignService.delete.and.returnValue(new Promise(resolve => resolve(true)));
     });
 
     it('should delete if confirm on modal', fakeAsync(() => {
@@ -125,7 +123,7 @@ describe('Component: ViewCampaignComponent', () => {
 
       expect(mockLocation.back.calls.count()).toEqual(1);
       expect(mockCampaignService.delete.calls.count()).toEqual(1);
-      expect(mockCampaignService.delete).toHaveBeenCalledWith(campaign.id);
+      expect(mockCampaignService.delete).toHaveBeenCalledWith('1');
     }));
 
     it('should not delete if dismiss on modal', fakeAsync(() => {

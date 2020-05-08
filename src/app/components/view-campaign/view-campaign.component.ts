@@ -25,7 +25,7 @@ export class ViewCampaignComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    this.campaign = this.campaignService.byId(id);
+    this.campaignService.byId(id).subscribe(campaign => this.campaign = campaign);
   }
 
   back(): void {
@@ -40,8 +40,7 @@ export class ViewCampaignComponent implements OnInit {
     modalRef.componentInstance.irreversible = true;
     modalRef.result.then(result => {
       if (result) {
-        this.campaignService.delete(this.campaign.id);
-        this.location.back();
+        this.campaignService.delete(this.campaign.id).then(() => this.location.back());
       }
     });
   }
