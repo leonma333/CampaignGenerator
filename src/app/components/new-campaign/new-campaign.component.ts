@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -22,7 +22,8 @@ export class NewCampaignComponent implements OnInit {
   constructor(
     private campaignService: CampaignService,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -48,7 +49,7 @@ export class NewCampaignComponent implements OnInit {
     this.saving = true;
     this.campaignService.add(this.campaignForm.get('name').value, this.campaignForm.get('content').value)
       .then(() => {
-        this.location.back();
+        this.router.navigate(['/']);
       });
   }
 

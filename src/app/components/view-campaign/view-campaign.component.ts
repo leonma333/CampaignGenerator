@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -14,12 +14,13 @@ import { ModalConfirmComponent } from '../shared/modal-confirm/modal-confirm.com
   styleUrls: ['./view-campaign.component.scss']
 })
 export class ViewCampaignComponent implements OnInit {
-  campaign: Campaign;
+  campaign = new Campaign('', '', {});
 
   constructor(
     private campaignService: CampaignService,
     private route: ActivatedRoute,
     private location: Location,
+    private router: Router,
     private modalService: NgbModal
   ) { }
 
@@ -40,7 +41,7 @@ export class ViewCampaignComponent implements OnInit {
     modalRef.componentInstance.irreversible = true;
     modalRef.result.then(result => {
       if (result) {
-        this.campaignService.delete(this.campaign.id).then(() => this.location.back());
+        this.campaignService.delete(this.campaign.id).then(() => this.router.navigate(['/']));
       }
     });
   }

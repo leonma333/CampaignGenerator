@@ -50,6 +50,7 @@ const docValueStub = {
 
 const collectionValueStub = {
   doc: jasmine.createSpy('doc').and.returnValue(docValueStub),
+  add: jasmine.createSpy('add').and.returnValue(new Promise<string>(resolve => resolve('You just added it'))),
   valueChanges: jasmine.createSpy('valueChanges').and.returnValue(of(campaignObjs)),
   snapshotChanges: jasmine.createSpy('snapshotChanges').and.returnValue(of(campaignDocs))
 };
