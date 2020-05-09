@@ -36,7 +36,6 @@ jobs:
         - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./node_modules/.bin/codecov; fi
 
     - stage: Deploy to Firebase
-      if: branch = master
       script: skip
       before_deploy:
         - envsubst < ./src/assets/env.template.js > ./src/assets/env.js 
@@ -44,3 +43,8 @@ jobs:
         provider: firebase
         token: $FIREBASE_TOKEN
         edge: true
+
+stages:
+  - name: Lint & Test
+  - name: Deploy to Firebase
+    if: branch = master
