@@ -43,3 +43,8 @@ jobs:
         provider: firebase
         token: $FIREBASE_TOKEN
         edge: true
+
+stages:
+  - name: Lint & Test
+  - name: Deploy to Firebase
+    if: branch = master
