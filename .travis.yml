@@ -43,9 +43,9 @@ jobs:
     - stage: Deploy to Firebase
       skip_cleanup: true
       script:
-        - npm run build -- --prod
+        - npm run build -- --prod --output-path=dist
       before_deploy:
-        - envsubst < ./src/assets/env.template.js > ./src/assets/env.js 
+        - envsubst < ./dist/assets/env.template.js > ./dist/assets/env.js 
       deploy:
         provider: firebase
         token: $FIREBASE_TOKEN
