@@ -41,7 +41,7 @@ jobs:
         - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./node_modules/.bin/codecov; fi
 
     - stage: Deploy to Firebase
-      script: skip
+      skip_cleanup: true
       before_deploy:
         - envsubst < ./src/assets/env.template.js > ./src/assets/env.js 
       deploy:
