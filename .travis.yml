@@ -42,7 +42,8 @@ jobs:
 
     - stage: Deploy to Firebase
       skip_cleanup: true
-      script: skip
+      script:
+        - npm run build -- --prod
       before_deploy:
         - envsubst < ./src/assets/env.template.js > ./src/assets/env.js 
       deploy:
