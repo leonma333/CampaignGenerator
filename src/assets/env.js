@@ -9,4 +9,5 @@
   window['env']['firebase_storageBucket'] = window['env']['firebase_storageBucket'];
   window['env']['firebase_messagingSenderId'] = window['env']['firebase_messagingSenderId'];
   window['env']['firebase_appId'] = window['env']['firebase_appId'];
+  window['env']['firebase_measurementId'] = window['env']['firebase_measurementId'];
 })(this);

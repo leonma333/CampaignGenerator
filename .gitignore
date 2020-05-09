@@ -47,4 +47,3 @@ Thumbs.db
 
 # Environment variables file
 *.env
-/src/assets/env.js

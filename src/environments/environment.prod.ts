@@ -7,6 +7,7 @@ export const environment = {
     projectId: window['env']['firebase_projectId'],
     storageBucket: window['env']['firebase_storageBucket'],
     messagingSenderId: window['env']['firebase_messagingSenderId'],
-    appId: window['env']['firebase_appId']
+    appId: window['env']['firebase_appId'],
+    measurementId: window['env']['firebase_measurementId']
   }
 };

@@ -7,6 +7,10 @@ node_js:
 
 addons:
   chrome: stable
+  apt:
+    update: true
+    packages:
+      - gettext-base
 
 env:
   global:
@@ -21,12 +25,21 @@ install:
 
 jobs:
   include:
-    - stage: Lint
+    - stage: Lint & Test
       script:
         - npm run lint
 
-    - stage: Test
+    - stage: Lint & Test
       script:
         - npm run test -- --no-watch --no-progress --code-coverage --browsers=ChromeHeadless
       after_script:
         - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./node_modules/.bin/codecov; fi
+
+    - stage: Deploy to Firebase
+      script: skip
+      before_deploy:
+        - envsubst < /app/src/assets/env.template.js > /app/src/assets/env.js 
+      deploy:
+        provider: firebase
+        token: $FIREBASE_TOKEN
+        edge: true
