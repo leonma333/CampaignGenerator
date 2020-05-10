@@ -1,0 +1,76 @@
+<ngb-tabset type="pills" [activeId]="activeTab" (tabChange)="activeTab = $event.nextId">
+  <ngb-tab title="One time" id="onetime">
+    <ng-template ngbTabContent>
+      <div class="row mt-2">
+        <div class="col-lg-4 col-md-5">
+          <ngb-datepicker [(ngModel)]="selectedDate" [minDate]="minDate"></ngb-datepicker>
+        </div>
+        <div class="col-lg-8 col-md-7">
+          <ngb-timepicker [(ngModel)]="selectedTime"></ngb-timepicker>
+          <p>It will be scheduled on <b>{{ dateFormatter.format(selectedDate) }}</b> @ <b>{{ pad(selectedTime.hour) }}:{{ pad(selectedTime.minute) }}</b></p>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab title="Recurring" id="recurring">
+    <ng-template ngbTabContent>
+      <div class="row mt-2">
+        <div class="col-lg-4 col-md-5">
+          <ngb-datepicker #dp [dayTemplate]="t" [minDate]="minDate"></ngb-datepicker>
+          <ng-template #t let-date let-focused="focused" let-disabled="disabled" let-outside="outside">
+            <div class="custom-day"
+              [class.text-muted]="disabled"
+              [class.focused]="focused"
+              [class.range]="isRange(date)"
+              [class.faded]="isHovered(date) || isInside(date)"
+              (click)="!disabled && onDateSelection(date)"
+              (mouseenter)="hoveredDate = date"
+              (mouseleave)="hoveredDate = null">
+              {{ date.day }}
+            </div>
+          </ng-template>
+        </div>
+        <div class="d-md-none col">
+          <hr>
+        </div>
+        <div class="col-lg-8 col-md-7">
+          Repeat every:
+          <div ngbDropdown class="d-inline-block">
+            <button type="button" class="btn btn-link" id="repeatPeriod" ngbDropdownToggle>{{repeatPeriods[selectedRepeatPeriod]}}</button>
+            <div ngbDropdownMenu aria-labelledby="repeatPeriod">
+              <button type="button" *ngFor="let repeatPeriod of repeatPeriods | keyvalue" (click)="changeRepeatPeriod(repeatPeriod.key)" ngbDropdownItem>{{repeatPeriod.value}}</button>
+            </div>
+          </div>
+          <form [formGroup]="weekGroupForm" *ngIf="selectedRepeatPeriod == 'week'">
+            <div class="btn-group btn-group-toggle">
+              <label class="btn-light" ngbButtonLabel>
+                <input type="checkbox" formControlName="1" ngbButton>Mon
+              </label>
+              <label class="btn-light" ngbButtonLabel>
+                <input type="checkbox" formControlName="2" ngbButton>Tus
+              </label>
+              <label class="btn-light" ngbButtonLabel>
+                <input type="checkbox" formControlName="3" ngbButton>Wed
+              </label>
+              <label class="btn-light" ngbButtonLabel>
+                <input type="checkbox" formControlName="4" ngbButton>Thu
+              </label>
+              <label class="btn-light" ngbButtonLabel>
+                <input type="checkbox" formControlName="5" ngbButton>Fri
+              </label>
+              <label class="btn-light" ngbButtonLabel>
+                <input type="checkbox" formControlName="6" ngbButton>Sat
+              </label>
+              <label class="btn-light" ngbButtonLabel>
+                <input type="checkbox" formControlName="7" ngbButton>Sun
+              </label>
+            </div>
+          </form>
+          <br>
+          <p>Occurs {{repeatFormat}} from <b>{{ dateFormatter.format(selectedDate) }}</b> to <b>{{ dateFormatter.format(toDate) }}</b> @ <b>{{ pad(selectedTime.hour) }}:{{ pad(selectedTime.minute) }}</b></p>
+          <ngb-timepicker [(ngModel)]="selectedTime"></ngb-timepicker>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

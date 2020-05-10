@@ -18,6 +18,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { DashboardPreviewComponent } from './components/dashboard-preview/dashboard-preview.component';
 import { ViewCampaignComponent } from './components/view-campaign/view-campaign.component';
 import { ModalConfirmComponent } from './components/shared/modal-confirm/modal-confirm.component';
+import { SchedulePickerComponent } from './components/shared/schedule-picker/schedule-picker.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { ModalConfirmComponent } from './components/shared/modal-confirm/modal-c
     HeaderComponent,
     DashboardPreviewComponent,
     ViewCampaignComponent,
-    ModalConfirmComponent
+    ModalConfirmComponent,
+    SchedulePickerComponent
   ],
   imports: [
     FormsModule,
