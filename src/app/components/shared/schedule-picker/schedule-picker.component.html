@@ -1,94 +1,96 @@
-<ngb-tabset type="pills" [activeId]="activeTab" (tabChange)="activeTab = $event.nextId">
-  <ngb-tab title="One time" id="onetime">
-    <ng-template ngbTabContent>
-      <div class="row mt-2">
-        <div class="col-lg-4 col-md-5">
-          <ngb-datepicker [(ngModel)]="selectedDate" [minDate]="minDate"></ngb-datepicker>
-        </div>
-        <div class="col-lg-8 col-md-7 border-left">
-          <ngb-timepicker [(ngModel)]="selectedTime"></ngb-timepicker>
-          <p>It will be scheduled on <b>{{ dateFormatter.format(selectedDate) }}</b> @ <b>{{ pad(selectedTime.hour) }}:{{ pad(selectedTime.minute) }}</b></p>
-        </div>
-      </div>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab title="Recurring" id="recurring">
-    <ng-template ngbTabContent>
-      <div class="row mt-2">
-        <div class="col-lg-4 col-md-5">
-          <ngb-datepicker #dp [dayTemplate]="t" [minDate]="minDate"></ngb-datepicker>
-          <ng-template #t let-date let-focused="focused" let-disabled="disabled" let-outside="outside">
-            <div class="custom-day"
-              [class.text-muted]="disabled"
-              [class.focused]="focused"
-              [class.range]="isRange(date)"
-              [class.faded]="isHovered(date) || isInside(date)"
-              (click)="!disabled && onDateSelection(date)"
-              (mouseenter)="hoveredDate = date"
-              (mouseleave)="hoveredDate = null">
-              {{ date.day }}
-            </div>
-          </ng-template>
-        </div>
-        <div class="d-md-none col">
-          <hr>
-        </div>
-        <div class="col-lg-8 col-md-7 border-left">
-          Repeat
-          <div ngbDropdown class="d-inline-block mb-2">
-            <button type="button" class="btn btn-link" id="repeatPeriod" ngbDropdownToggle>{{repeatPeriods[selectedRepeatPeriod]}}</button>
-            <div ngbDropdownMenu aria-labelledby="repeatPeriod">
-              <button type="button" *ngFor="let repeatPeriod of repeatPeriods | keyvalue: asIsOrder" (click)="changeRepeatPeriod(repeatPeriod.key)" ngbDropdownItem>{{repeatPeriod.value}}</button>
-            </div>
+<form [formGroup]="mainForm">
+  <ngb-tabset type="pills" [activeId]="mainForm.controls.activeTab.value" (tabChange)="mainForm.controls.activeTab.setValue($event.nextId)">
+    <ngb-tab title="One time" id="onetime">
+      <ng-template ngbTabContent>
+        <div class="row mt-2">
+          <div class="col-lg-4 col-md-5">
+            <ngb-datepicker formControlName="selectedDate" [minDate]="minDate.value"></ngb-datepicker>
           </div>
-          <form [formGroup]="weekGroupForm" *ngIf="selectedRepeatPeriod == 'week' || selectedRepeatPeriod == 'day'">
-            <div class="btn-group btn-group-toggle">
-              <label class="btn-light" ngbButtonLabel>
-                <input type="checkbox" formControlName="1" ngbButton>Mon
-              </label>
-              <label class="btn-light" ngbButtonLabel>
-                <input type="checkbox" formControlName="2" ngbButton>Tus
-              </label>
-              <label class="btn-light" ngbButtonLabel>
-                <input type="checkbox" formControlName="3" ngbButton>Wed
-              </label>
-              <label class="btn-light" ngbButtonLabel>
-                <input type="checkbox" formControlName="4" ngbButton>Thu
-              </label>
-              <label class="btn-light" ngbButtonLabel>
-                <input type="checkbox" formControlName="5" ngbButton>Fri
-              </label>
-              <label class="btn-light" ngbButtonLabel>
-                <input type="checkbox" formControlName="6" ngbButton>Sat
-              </label>
-              <label class="btn-light" ngbButtonLabel>
-                <input type="checkbox" formControlName="7" ngbButton>Sun
-              </label>
-            </div>
-          </form>
-          <form [formGroup]="monthYearGroupForm">
-            <div ngbRadioGroup name="radioBasic" *ngIf="selectedRepeatPeriod == 'month'" formControlName="selectedMonthType">
-              <label ngbButtonLabel>
-                <input ngbButton type="radio" value="monthday"> On {{selectedDate.day}}
-              </label>
-              <label ngbButtonLabel>
-                <input ngbButton type="radio" value="weekday"> On the {{formatRepeatMonthType()}}
-              </label>
-            </div>
-            <div ngbRadioGroup name="radioBasic" *ngIf="selectedRepeatPeriod == 'year'" formControlName="selectedYearType">
-              <label ngbButtonLabel>
-                <input ngbButton type="radio" value="monthday"> On {{formatRepeatYearType(true)}}
-              </label>
-              <label ngbButtonLabel>
-                <input ngbButton type="radio" value="weekday"> On the {{formatRepeatYearType(false)}}
-              </label>
-            </div>
-          </form>
-          <br>
-          <p>Occurs {{repeatFormat}} from <b>{{ dateFormatter.format(selectedDate) }}</b> {{toDate == null ? '' : 'to'}} <b>{{ dateFormatter.format(toDate) }}</b> @ <b>{{ pad(selectedTime.hour) }}:{{ pad(selectedTime.minute) }}</b></p>
-          <ngb-timepicker [(ngModel)]="selectedTime"></ngb-timepicker>
+          <div class="col-lg-8 col-md-7 border-left">
+            <ngb-timepicker formControlName="selectedTime"></ngb-timepicker>
+            <p>It will be scheduled on <b>{{ dateFormatter.format(mainForm.controls.selectedDate.value) }}</b> @ <b>{{ pad(mainForm.controls.selectedTime.value.hour) }}:{{ pad(mainForm.controls.selectedTime.value.minute) }}</b></p>
+          </div>
         </div>
-      </div>
-    </ng-template>
-  </ngb-tab>
-</ngb-tabset>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="Recurring" id="recurring">
+      <ng-template ngbTabContent>
+        <div class="row mt-2">
+          <div class="col-lg-4 col-md-5">
+            <ngb-datepicker #dp [dayTemplate]="t" [minDate]="minDate"></ngb-datepicker>
+            <ng-template #t let-date let-focused="focused" let-disabled="disabled" let-outside="outside">
+              <div class="custom-day"
+                [class.text-muted]="disabled"
+                [class.focused]="focused"
+                [class.range]="isRange(date)"
+                [class.faded]="isHovered(date) || isInside(date)"
+                (click)="!disabled && onDateSelection(date)"
+                (mouseenter)="hoveredDate = date"
+                (mouseleave)="hoveredDate = null">
+                {{ date.day }}
+              </div>
+            </ng-template>
+          </div>
+          <div class="d-md-none col">
+            <hr>
+          </div>
+          <div class="col-lg-8 col-md-7 border-left">
+            Repeat
+            <div ngbDropdown class="d-inline-block mb-2">
+              <button type="button" class="btn btn-link" id="repeatPeriod" ngbDropdownToggle>{{repeatPeriods[mainForm.controls.selectedRepeatPeriod.value]}}</button>
+              <div ngbDropdownMenu aria-labelledby="repeatPeriod">
+                <button type="button" *ngFor="let repeatPeriod of repeatPeriods | keyvalue: asIsOrder" (click)="changeRepeatPeriod(repeatPeriod.key)" ngbDropdownItem>{{repeatPeriod.value}}</button>
+              </div>
+            </div>
+            <div formGroupName="weekGroupForm" *ngIf="mainForm.controls.selectedRepeatPeriod.value == 'week' || mainForm.controls.selectedRepeatPeriod.value == 'day'">
+              <div class="btn-group btn-group-toggle">
+                <label class="btn-light" ngbButtonLabel>
+                  <input type="checkbox" formControlName="1" ngbButton>Mon
+                </label>
+                <label class="btn-light" ngbButtonLabel>
+                  <input type="checkbox" formControlName="2" ngbButton>Tus
+                </label>
+                <label class="btn-light" ngbButtonLabel>
+                  <input type="checkbox" formControlName="3" ngbButton>Wed
+                </label>
+                <label class="btn-light" ngbButtonLabel>
+                  <input type="checkbox" formControlName="4" ngbButton>Thu
+                </label>
+                <label class="btn-light" ngbButtonLabel>
+                  <input type="checkbox" formControlName="5" ngbButton>Fri
+                </label>
+                <label class="btn-light" ngbButtonLabel>
+                  <input type="checkbox" formControlName="6" ngbButton>Sat
+                </label>
+                <label class="btn-light" ngbButtonLabel>
+                  <input type="checkbox" formControlName="7" ngbButton>Sun
+                </label>
+              </div>
+            </div>
+            <div formGroupName="monthYearGroupForm">
+              <div ngbRadioGroup name="radioBasic" *ngIf="mainForm.controls.selectedRepeatPeriod.value == 'month'" formControlName="selectedMonthType">
+                <label ngbButtonLabel>
+                  <input ngbButton type="radio" value="monthday"> On {{mainForm.controls.selectedDate.value.day}}
+                </label>
+                <label ngbButtonLabel>
+                  <input ngbButton type="radio" value="weekday"> On the {{formatRepeatMonthType()}}
+                </label>
+              </div>
+              <div ngbRadioGroup name="radioBasic" *ngIf="mainForm.controls.selectedRepeatPeriod.value == 'year'" formControlName="selectedYearType">
+                <label ngbButtonLabel>
+                  <input ngbButton type="radio" value="monthday"> On {{formatRepeatYearType(true)}}
+                </label>
+                <label ngbButtonLabel>
+                  <input ngbButton type="radio" value="weekday"> On the {{formatRepeatYearType(false)}}
+                </label>
+              </div>
+            </div>
+            <br>
+            <p>Occurs {{repeatFormat}} from <b>{{ dateFormatter.format(mainForm.controls.selectedDate.value) }}</b> {{mainForm.controls.toDate.value == null ? '' : 'to'}} <b>{{ dateFormatter.format(mainForm.controls.toDate.value) }}</b> @ <b>{{ pad(mainForm.controls.selectedTime.value.hour) }}:{{ pad(mainForm.controls.selectedTime.value.minute) }}</b></p>
+            <ngb-timepicker formControlName="selectedTime"></ngb-timepicker>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</form>
