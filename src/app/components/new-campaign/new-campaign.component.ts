@@ -15,8 +15,8 @@ import { CampaignService } from '../../services/campaign.service';
 })
 export class NewCampaignComponent implements OnInit {
   campaignForm: FormGroup;
-  saving = false;
 
+  saving = false;
   faSpinner = faSpinner;
 
   constructor(
@@ -29,7 +29,8 @@ export class NewCampaignComponent implements OnInit {
   ngOnInit(): void {
     this.campaignForm = new FormGroup({
       name: new FormControl('', Validators.required),
-      content: new FormControl(null)
+      content: new FormControl(null),
+      schedule: new FormControl(null)
     });
 
     this.route.queryParams
@@ -47,10 +48,11 @@ export class NewCampaignComponent implements OnInit {
 
   save() {
     this.saving = true;
-    this.campaignService.add(this.campaignForm.get('name').value, this.campaignForm.get('content').value)
-      .then(() => {
-        this.router.navigate(['/']);
-      });
+    // this.campaignService.add(this.campaignForm.get('name').value, this.campaignForm.get('content').value)
+    //   .then(() => {
+    //     this.router.navigate(['/']);
+    //   });
+    console.log(this.campaignForm.controls.schedule.value);
   }
 
   back() {

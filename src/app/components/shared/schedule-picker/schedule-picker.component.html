@@ -5,7 +5,7 @@
         <div class="col-lg-4 col-md-5">
           <ngb-datepicker [(ngModel)]="selectedDate" [minDate]="minDate"></ngb-datepicker>
         </div>
-        <div class="col-lg-8 col-md-7">
+        <div class="col-lg-8 col-md-7 border-left">
           <ngb-timepicker [(ngModel)]="selectedTime"></ngb-timepicker>
           <p>It will be scheduled on <b>{{ dateFormatter.format(selectedDate) }}</b> @ <b>{{ pad(selectedTime.hour) }}:{{ pad(selectedTime.minute) }}</b></p>
         </div>
@@ -33,15 +33,15 @@
         <div class="d-md-none col">
           <hr>
         </div>
-        <div class="col-lg-8 col-md-7">
-          Repeat every:
-          <div ngbDropdown class="d-inline-block">
+        <div class="col-lg-8 col-md-7 border-left">
+          Repeat
+          <div ngbDropdown class="d-inline-block mb-2">
             <button type="button" class="btn btn-link" id="repeatPeriod" ngbDropdownToggle>{{repeatPeriods[selectedRepeatPeriod]}}</button>
             <div ngbDropdownMenu aria-labelledby="repeatPeriod">
-              <button type="button" *ngFor="let repeatPeriod of repeatPeriods | keyvalue" (click)="changeRepeatPeriod(repeatPeriod.key)" ngbDropdownItem>{{repeatPeriod.value}}</button>
+              <button type="button" *ngFor="let repeatPeriod of repeatPeriods | keyvalue: asIsOrder" (click)="changeRepeatPeriod(repeatPeriod.key)" ngbDropdownItem>{{repeatPeriod.value}}</button>
             </div>
           </div>
-          <form [formGroup]="weekGroupForm" *ngIf="selectedRepeatPeriod == 'week'">
+          <form [formGroup]="weekGroupForm" *ngIf="selectedRepeatPeriod == 'week' || selectedRepeatPeriod == 'day'">
             <div class="btn-group btn-group-toggle">
               <label class="btn-light" ngbButtonLabel>
                 <input type="checkbox" formControlName="1" ngbButton>Mon
@@ -66,8 +66,26 @@
               </label>
             </div>
           </form>
+          <form [formGroup]="monthYearGroupForm">
+            <div ngbRadioGroup name="radioBasic" *ngIf="selectedRepeatPeriod == 'month'" formControlName="selectedMonthType">
+              <label ngbButtonLabel>
+                <input ngbButton type="radio" value="monthday"> On {{selectedDate.day}}
+              </label>
+              <label ngbButtonLabel>
+                <input ngbButton type="radio" value="weekday"> On the {{formatRepeatMonthType()}}
+              </label>
+            </div>
+            <div ngbRadioGroup name="radioBasic" *ngIf="selectedRepeatPeriod == 'year'" formControlName="selectedYearType">
+              <label ngbButtonLabel>
+                <input ngbButton type="radio" value="monthday"> On {{formatRepeatYearType(true)}}
+              </label>
+              <label ngbButtonLabel>
+                <input ngbButton type="radio" value="weekday"> On the {{formatRepeatYearType(false)}}
+              </label>
+            </div>
+          </form>
           <br>
-          <p>Occurs {{repeatFormat}} from <b>{{ dateFormatter.format(selectedDate) }}</b> to <b>{{ dateFormatter.format(toDate) }}</b> @ <b>{{ pad(selectedTime.hour) }}:{{ pad(selectedTime.minute) }}</b></p>
+          <p>Occurs {{repeatFormat}} from <b>{{ dateFormatter.format(selectedDate) }}</b> {{toDate == null ? '' : 'to'}} <b>{{ dateFormatter.format(toDate) }}</b> @ <b>{{ pad(selectedTime.hour) }}:{{ pad(selectedTime.minute) }}</b></p>
           <ngb-timepicker [(ngModel)]="selectedTime"></ngb-timepicker>
         </div>
       </div>

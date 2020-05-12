@@ -1,21 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms'
+import { Component, OnInit, forwardRef } from '@angular/core';
+import { FormBuilder, FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
-import { NgbCalendar, NgbDate, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDate, NgbTimeStruct, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
-import { Schedule } from '../../../models/schedule';
+import { Schedule, LongRepeat } from '../../../models/schedule';
 
 @Component({
   selector: 'app-schedule-picker',
   templateUrl: './schedule-picker.component.html',
-  styleUrls: ['./schedule-picker.component.scss']
+  styleUrls: ['./schedule-picker.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => SchedulePickerComponent),
+      multi: true,
+    }
+  ]
 })
-export class SchedulePickerComponent implements OnInit {
-  activeTab = 'onetime';
+export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
+  scheduleData: Schedule;
 
+  activeTab = 'onetime';
   minDate: NgbDate;
   selectedDate: NgbDate;
-  selectedTime = {hour: 12, minute: 0};
+  selectedTime: NgbTimeStruct = {hour: 12, minute: 0, second: 0};
 
   hoveredDate: NgbDate | null = null;
   toDate: NgbDate | null = null;
@@ -29,14 +37,22 @@ export class SchedulePickerComponent implements OnInit {
   repeatFormat: string;
   selectedRepeatPeriod: string;
   weekGroupForm: FormGroup;
+  monthYearGroupForm: FormGroup;
+
+  pad = (i: number): string => i < 10 ? `0${i}` : `${i}`;
+  asIsOrder = (a, b) => 1;
 
   private now = new Date();
+  private propagateChange = (_: any) => { };
 
   constructor(
     public dateFormatter: NgbDateParserFormatter,
     private calendar: NgbCalendar,
     private formBuilder: FormBuilder
-  ) { }
+  ) {
+    this.scheduleData = new Schedule(this.activeTab, this.selectedDate, this.toDate, this.selectedTime,
+      this.selectedRepeatPeriod, [], null, null);
+  }
 
   ngOnInit(): void {
     this.minDate = this.calendar.getToday();
@@ -53,16 +69,23 @@ export class SchedulePickerComponent implements OnInit {
       7: false
     });
     this.weekGroupForm.controls[this.calendar.getWeekday(this.selectedDate)].setValue(true);
+    this.monthYearGroupForm = this.formBuilder.group({
+      selectedMonthType: 'monthday',
+      selectedYearType: 'monthday'
+    });
     this.formatRepeat();
+    this.formatRepeatMonthType();
     this.weekGroupForm.valueChanges.subscribe(() => {
-      this.updatePeriod();
+      this.updateWeekPeriod();
+      this.formatRepeat();
+    });
+    this.monthYearGroupForm.valueChanges.subscribe(() => {
       this.formatRepeat();
     });
   }
 
-  pad = (i: number): string => i < 10 ? `0${i}` : `${i}`;
-
-  changeRepeatPeriod(newRepeatPeriod: string) { 
+  changeRepeatPeriod(newRepeatPeriod: string) {
+    this.updatePeriod(newRepeatPeriod);
     this.selectedRepeatPeriod = newRepeatPeriod;
     this.formatRepeat();
   }
@@ -90,7 +113,48 @@ export class SchedulePickerComponent implements OnInit {
     return date.equals(this.selectedDate) || (this.toDate && date.equals(this.toDate)) || this.isInside(date) || this.isHovered(date);
   }
 
-  private updatePeriod(): void {
+  formatRepeatMonthType(): string {
+    const date: string = this.dateFormatter.format(this.selectedDate);
+    return Schedule.getWeekOfMonth(date) + ' ' + Schedule.getWeekDayNameFromDate(date);
+  }
+
+  formatRepeatYearType(isSpecificDate: boolean): string {
+    const date: string = this.dateFormatter.format(this.selectedDate);
+    if (isSpecificDate) {
+      return Schedule.getMonthDateNameFromDate(date);
+    }
+    return Schedule.getWeekOfMonth(date) + ' ' + Schedule.getWeekDayNameFromDate(date) + ' of ' + Schedule.getMonthNameFromDate(date);
+  }
+
+  writeValue(obj: any) {
+    if (obj) {
+      this.scheduleData.from(obj);
+    }
+  }
+
+  registerOnChange(fn: any) {
+    this.propagateChange = fn;
+  }
+
+  registerOnTouched() { }
+
+  private updatePeriod(newRepeatPeriod: string): void {
+    if (newRepeatPeriod == 'day') {
+      Object.keys(this.weekGroupForm.controls).forEach(key => {
+        this.weekGroupForm.controls[key].setValue(true);
+      });
+    } else if (newRepeatPeriod == 'week') {
+      Object.keys(this.weekGroupForm.controls).forEach(key => {
+        if (+key == this.calendar.getWeekday(this.selectedDate)) {
+          this.weekGroupForm.controls[key].setValue(true);
+        } else {
+          this.weekGroupForm.controls[key].setValue(false);
+        }
+      });
+    }
+  }
+
+  private updateWeekPeriod(): void {
     let allDay = true;
     Object.keys(this.weekGroupForm.controls).forEach(key => {
       if (!this.weekGroupForm.controls[key].value) {
@@ -99,6 +163,8 @@ export class SchedulePickerComponent implements OnInit {
     });
     if (allDay) {
       this.selectedRepeatPeriod = 'day';
+    } else {
+      this.selectedRepeatPeriod = 'week';
     }
   }
 
@@ -107,16 +173,28 @@ export class SchedulePickerComponent implements OnInit {
 
     if (this.selectedRepeatPeriod == 'day') {
       result = 'day';
-    } if (this.selectedRepeatPeriod == 'week') {
+    } else if (this.selectedRepeatPeriod == 'week') {
       let allDay = true;
       Object.keys(this.weekGroupForm.controls).forEach(key => {
         if (this.weekGroupForm.controls[key].value) {
-          result += Schedule.getDayName(+key) + ', ';
+          result += Schedule.getWeekDayName(+key) + ', ';
         } else {
           allDay = false;
         }
       });
-      result = result.slice(0, -2);
+      if (allDay) {
+        result = 'day';
+      } else {
+        result = result.slice(0, -2);
+      }
+    } else if (this.selectedRepeatPeriod == 'month') {
+      if (this.monthYearGroupForm.controls.selectedMonthType.value == 'monthday') {
+        result = this.selectedDate.day.toString();
+      } else {
+        result = this.formatRepeatMonthType();
+      }
+    } else if (this.selectedRepeatPeriod == 'year') {
+      result = this.formatRepeatYearType(this.monthYearGroupForm.controls.selectedYearType.value == 'monthday');
     }
 
     this.repeatFormat = 'every ' + result;

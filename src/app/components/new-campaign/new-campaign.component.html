@@ -9,8 +9,14 @@
       formControlName="content">
     </quill-editor>
   </div>
-  <div class="mt-2 p-2 border">
-    <app-schedule-picker></app-schedule-picker>
+  <div class="mt-2">
+    <ngb-accordion [closeOthers]="true" activeIds="static-1">
+      <ngb-panel id="static-1" title="Schedule">
+        <ng-template ngbPanelContent>
+          <app-schedule-picker formControlName="schedule"></app-schedule-picker>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
   </div>
   <div class="mt-2">
     <button type="submit" class="btn btn-primary mr-1 save" [disabled]="campaignForm.invalid || saving">
