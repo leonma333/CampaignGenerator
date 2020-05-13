@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
-import { FormBuilder, FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { FormBuilder, FormGroup, FormArray, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 
 import { NgbCalendar, NgbDate, NgbTimeStruct, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
@@ -18,8 +18,6 @@ import { Schedule, LongRepeat } from '../../../models/schedule';
   ]
 })
 export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
-  scheduleData: Schedule;
-
   minDate: NgbDate;
   hoveredDate: NgbDate | null = null;
 
@@ -33,9 +31,10 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
 
   mainForm: FormGroup;
 
-  pad = (i: number): string => i < 10 ? `0${i}` : `${i}`;
+  padTime = Schedule.padTime;
   asIsOrder = (a, b) => 1;
 
+  private scheduleData: Schedule;
   private propagateChange = (_: any) => { };
 
   constructor(
@@ -72,7 +71,7 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
     this.mainForm.get('weekGroupForm').get(this.calendar.getWeekday(this.mainForm.controls.selectedDate.value).toString()).setValue(true);
 
     this.formatRepeat();
-    this.formatRepeatMonthType();
+    this.mainForm.valueChanges.subscribe(() => this.output());
     this.mainForm.get('weekGroupForm').valueChanges.subscribe(() => {
       this.updateWeekPeriod();
       this.formatRepeat();
@@ -111,7 +110,7 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
 
   formatRepeatMonthType(): string {
     const date: string = this.dateFormatter.format(this.mainForm.get('selectedDate').value);
-    return Schedule.getWeekOfMonth(date) + ' ' + Schedule.getWeekDayNameFromDate(date);
+    return Schedule.getWeekOfMonthNameFromDate(date) + ' ' + Schedule.getWeekDayNameFromDate(date);
   }
 
   formatRepeatYearType(isSpecificDate: boolean): string {
@@ -119,12 +118,33 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
     if (isSpecificDate) {
       return Schedule.getMonthDateNameFromDate(date);
     }
-    return Schedule.getWeekOfMonth(date) + ' ' + Schedule.getWeekDayNameFromDate(date) + ' of ' + Schedule.getMonthNameFromDate(date);
+    return Schedule.getWeekOfMonthNameFromDate(date) + ' ' + Schedule.getWeekDayNameFromDate(date) + ' of ' + Schedule.getMonthNameFromDate(date);
   }
 
   writeValue(obj: any) {
     if (obj) {
-      this.scheduleData.from(obj);
+      this.mainForm.get('activeTab').setValue(obj.type || this.mainForm.get('activeTab').value);
+      this.mainForm.get('selectedDate').setValue(obj.dateStart || this.mainForm.get('selectedDate').value);
+      this.mainForm.get('toDate').setValue(obj.dateEnd);
+      this.mainForm.get('selectedTime').setValue(obj.time || this.mainForm.get('selectedTime').value);
+      this.mainForm.get('selectedRepeatPeriod').setValue(obj.repeat || this.mainForm.get('selectedRepeatPeriod').value);
+      if (obj.weekDays) {
+        for (let i = 1; i <= 7; i++) {
+          if (obj.weekDays.includes(i)) {
+            this.mainForm.get('weekGroupForm').get(i.toString()).setValue(true);
+          } else {
+            this.mainForm.get('weekGroupForm').get(i.toString()).setValue(false);
+          }
+        }
+      } else if (obj.monthDay) {
+        const selectedType = obj.monthDay.number === null ? 'monthday' : 'weekday';
+        this.mainForm.get('monthYearGroupForm').get('selectedMonthType').setValue(selectedType);
+      } else if (obj.yearDay) {
+        const selectedType = obj.yearDay.number === null ? 'monthday' : 'weekday';
+        this.mainForm.get('monthYearGroupForm').get('selectedYearType').setValue(selectedType);
+      } else {
+        this.updatePeriod(this.mainForm.get('selectedRepeatPeriod').value);
+      }
     }
   }
 
@@ -134,17 +154,66 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
 
   registerOnTouched() { }
 
+  private getWeekGroupControls() {
+    return (this.mainForm.get('weekGroupForm') as FormArray).controls;
+  }
+
+  private output() {
+    this.scheduleData.setType(this.mainForm.get('activeTab').value);
+    this.scheduleData.dateStart = this.mainForm.get('selectedDate').value;
+    this.scheduleData.dateEnd = this.mainForm.get('toDate').value;
+    this.scheduleData.time = this.mainForm.get('selectedTime').value;
+    this.scheduleData.setRepeat(this.mainForm.get('selectedRepeatPeriod').value);
+
+    const weekDays = new Array<number>();
+    const controls = this.getWeekGroupControls();
+    Object.keys(controls).forEach(key => {
+      if (controls[key].value) {
+        weekDays.push(+key);
+      }
+    });
+    this.scheduleData.weekDays = weekDays;
+
+    const date: string = this.dateFormatter.format(this.scheduleData.dateStart);
+    let selectType = this.mainForm.get('monthYearGroupForm').get('selectedMonthType').value;
+    if (this.scheduleData.repeat == 'month') {
+      this.scheduleData.monthDay = {
+        day: this.calendar.getWeekday(this.scheduleData.dateStart),
+        number: selectType === 'weekday' ? Schedule.getWeekOfMonth(date) : null,
+        month: null,
+        date: null
+      }
+    } else {
+      this.scheduleData.monthDay = null;
+    }
+
+    selectType = this.mainForm.get('monthYearGroupForm').get('selectedYearType').value;
+    if (this.scheduleData.repeat == 'year') {
+      this.scheduleData.yearDay = {
+        date: selectType === 'monthday' ? this.scheduleData.dateStart : null,
+        month: selectType === 'weekday' ? this.scheduleData.dateStart.month : null,
+        day: selectType === 'weekday' ? this.scheduleData.dateStart.day : null,
+        number: selectType === 'weekday' ? Schedule.getWeekOfMonth(date) : null,
+      }
+    } else {
+      this.scheduleData.yearDay = null;
+    }
+
+    this.propagateChange(this.scheduleData.value());
+  }
+
   private updatePeriod(newRepeatPeriod: string): void {
+    const controls = this.getWeekGroupControls();
     if (newRepeatPeriod == 'day') {
-      Object.keys(this.mainForm.get('weekGroupForm').controls).forEach(key => {
-        this.mainForm.get('weekGroupForm').controls[key].setValue(true);
+      Object.keys(controls).forEach(key => {
+        controls[key].setValue(true);
       });
     } else if (newRepeatPeriod == 'week') {
-      Object.keys(this.mainForm.get('weekGroupForm').controls).forEach(key => {
+      Object.keys(controls).forEach(key => {
         if (+key == this.calendar.getWeekday(this.mainForm.get('selectedDate').value)) {
-          this.mainForm.get('weekGroupForm').controls[key].setValue(true);
+          controls[key].setValue(true);
         } else {
-          this.mainForm.get('weekGroupForm').controls[key].setValue(false);
+          controls[key].setValue(false);
         }
       });
     }
@@ -152,8 +221,9 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
 
   private updateWeekPeriod(): void {
     let allDay = true;
-    Object.keys(this.mainForm.get('weekGroupForm').controls).forEach(key => {
-      if (!this.mainForm.get('weekGroupForm').controls[key].value) {
+    const controls = this.getWeekGroupControls();
+    Object.keys(controls).forEach(key => {
+      if (!controls[key].value) {
         allDay = false;
       }
     });
@@ -166,13 +236,13 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
 
   private formatRepeat(): void {
     let result: string = '';
-
     if (this.mainForm.get('selectedRepeatPeriod').value == 'day') {
       result = 'day';
     } else if (this.mainForm.get('selectedRepeatPeriod').value == 'week') {
       let allDay = true;
-      Object.keys(this.mainForm.get('weekGroupForm').controls).forEach(key => {
-        if (this.mainForm.get('weekGroupForm').controls[key].value) {
+      const controls = this.getWeekGroupControls();
+      Object.keys(controls).forEach(key => {
+        if (controls[key].value) {
           result += Schedule.getWeekDayName(+key) + ', ';
         } else {
           allDay = false;

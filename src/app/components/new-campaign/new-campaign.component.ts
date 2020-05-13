@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { Campaign } from '../../models/campaign';
+import { Schedule } from '../../models/schedule';
 import { CampaignService } from '../../services/campaign.service';
 
 @Component({
@@ -30,7 +31,7 @@ export class NewCampaignComponent implements OnInit {
     this.campaignForm = new FormGroup({
       name: new FormControl('', Validators.required),
       content: new FormControl(null),
-      schedule: new FormControl(null)
+      schedule: new FormControl(Schedule.default())
     });
 
     this.route.queryParams
@@ -39,7 +40,8 @@ export class NewCampaignComponent implements OnInit {
           this.campaignService.byId(params.id).subscribe(campaign => {
             this.campaignForm.patchValue({
               name: campaign.name,
-              content: campaign.content
+              content: campaign.content,
+              schedule: campaign.schedule
             });
           });
         }
@@ -48,11 +50,13 @@ export class NewCampaignComponent implements OnInit {
 
   save() {
     this.saving = true;
-    // this.campaignService.add(this.campaignForm.get('name').value, this.campaignForm.get('content').value)
-    //   .then(() => {
-    //     this.router.navigate(['/']);
-    //   });
-    console.log(this.campaignForm.controls.schedule.value);
+    this.campaignService.add(
+      this.campaignForm.get('name').value,
+      this.campaignForm.get('content').value,
+      this.campaignForm.get('schedule').value
+    ).then(() => {
+      this.router.navigate(['/']);
+    });
   }
 
   back() {
