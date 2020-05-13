@@ -1,9 +1,9 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { FormBuilder, FormGroup, FormArray, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { NgbCalendar, NgbDate, NgbTimeStruct, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDate, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
-import { Schedule, LongRepeat } from '../../../models/schedule';
+import { Schedule } from '../../../models/schedule';
 
 @Component({
   selector: 'app-schedule-picker',
@@ -32,7 +32,6 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
   mainForm: FormGroup;
 
   padTime = Schedule.padTime;
-  asIsOrder = (a, b) => 1;
 
   private scheduleData: Schedule;
   private propagateChange = (_: any) => { };
@@ -44,6 +43,8 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
   ) {
     this.scheduleData = new Schedule(null, null, null, null, null, null, null, null);
   }
+
+  asIsOrder = (a, b) => 1;
 
   ngOnInit(): void {
     this.minDate = this.calendar.getToday();
@@ -88,7 +89,8 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
   onDateSelection(date: NgbDate) {
     if (!this.mainForm.get('selectedDate').value && !this.mainForm.get('toDate').value) {
       this.mainForm.get('selectedDate').setValue(date);
-    } else if (this.mainForm.get('selectedDate').value && !this.mainForm.get('toDate').value && date.after(this.mainForm.get('selectedDate').value)) {
+    } else if (this.mainForm.get('selectedDate').value && !this.mainForm.get('toDate').value
+      && date.after(this.mainForm.get('selectedDate').value)) {
       this.mainForm.get('toDate').setValue(date);
     } else {
       this.mainForm.get('toDate').setValue(null);
@@ -97,7 +99,8 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
   }
 
   isHovered(date: NgbDate) {
-    return this.mainForm.get('selectedDate').value && !this.mainForm.get('toDate').value && this.hoveredDate && date.after(this.mainForm.get('selectedDate').value) && date.before(this.hoveredDate);
+    return this.mainForm.get('selectedDate').value && !this.mainForm.get('toDate').value && this.hoveredDate
+      && date.after(this.mainForm.get('selectedDate').value) && date.before(this.hoveredDate);
   }
 
   isInside(date: NgbDate) {
@@ -118,7 +121,8 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
     if (isSpecificDate) {
       return Schedule.getMonthDateNameFromDate(date);
     }
-    return Schedule.getWeekOfMonthNameFromDate(date) + ' ' + Schedule.getWeekDayNameFromDate(date) + ' of ' + Schedule.getMonthNameFromDate(date);
+    return Schedule.getWeekOfMonthNameFromDate(date) + ' ' + Schedule.getWeekDayNameFromDate(date) + ' of '
+      + Schedule.getMonthNameFromDate(date);
   }
 
   writeValue(obj: any) {
@@ -176,25 +180,25 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
 
     const date: string = this.dateFormatter.format(this.scheduleData.dateStart);
     let selectType = this.mainForm.get('monthYearGroupForm').get('selectedMonthType').value;
-    if (this.scheduleData.repeat == 'month') {
+    if (this.scheduleData.repeat === 'month') {
       this.scheduleData.monthDay = {
         day: this.calendar.getWeekday(this.scheduleData.dateStart),
         number: selectType === 'weekday' ? Schedule.getWeekOfMonth(date) : null,
         month: null,
         date: null
-      }
+      };
     } else {
       this.scheduleData.monthDay = null;
     }
 
     selectType = this.mainForm.get('monthYearGroupForm').get('selectedYearType').value;
-    if (this.scheduleData.repeat == 'year') {
+    if (this.scheduleData.repeat === 'year') {
       this.scheduleData.yearDay = {
         date: selectType === 'monthday' ? this.scheduleData.dateStart : null,
         month: selectType === 'weekday' ? this.scheduleData.dateStart.month : null,
         day: selectType === 'weekday' ? this.scheduleData.dateStart.day : null,
         number: selectType === 'weekday' ? Schedule.getWeekOfMonth(date) : null,
-      }
+      };
     } else {
       this.scheduleData.yearDay = null;
     }
@@ -204,13 +208,13 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
 
   private updatePeriod(newRepeatPeriod: string): void {
     const controls = this.getWeekGroupControls();
-    if (newRepeatPeriod == 'day') {
+    if (newRepeatPeriod === 'day') {
       Object.keys(controls).forEach(key => {
         controls[key].setValue(true);
       });
-    } else if (newRepeatPeriod == 'week') {
+    } else if (newRepeatPeriod === 'week') {
       Object.keys(controls).forEach(key => {
-        if (+key == this.calendar.getWeekday(this.mainForm.get('selectedDate').value)) {
+        if (+key === this.calendar.getWeekday(this.mainForm.get('selectedDate').value)) {
           controls[key].setValue(true);
         } else {
           controls[key].setValue(false);
@@ -235,10 +239,10 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
   }
 
   private formatRepeat(): void {
-    let result: string = '';
-    if (this.mainForm.get('selectedRepeatPeriod').value == 'day') {
+    let result = '';
+    if (this.mainForm.get('selectedRepeatPeriod').value === 'day') {
       result = 'day';
-    } else if (this.mainForm.get('selectedRepeatPeriod').value == 'week') {
+    } else if (this.mainForm.get('selectedRepeatPeriod').value === 'week') {
       let allDay = true;
       const controls = this.getWeekGroupControls();
       Object.keys(controls).forEach(key => {
@@ -253,14 +257,14 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
       } else {
         result = result.slice(0, -2);
       }
-    } else if (this.mainForm.get('selectedRepeatPeriod').value == 'month') {
-      if (this.mainForm.get('monthYearGroupForm').get('selectedMonthType').value == 'monthday') {
+    } else if (this.mainForm.get('selectedRepeatPeriod').value === 'month') {
+      if (this.mainForm.get('monthYearGroupForm').get('selectedMonthType').value === 'monthday') {
         result = this.mainForm.get('selectedDate').value.day.toString();
       } else {
         result = this.formatRepeatMonthType();
       }
-    } else if (this.mainForm.get('selectedRepeatPeriod').value == 'year') {
-      result = this.formatRepeatYearType(this.mainForm.get('monthYearGroupForm').get('selectedYearType').value == 'monthday');
+    } else if (this.mainForm.get('selectedRepeatPeriod').value === 'year') {
+      result = this.formatRepeatYearType(this.mainForm.get('monthYearGroupForm').get('selectedYearType').value === 'monthday');
     }
 
     this.repeatFormat = 'every ' + result;

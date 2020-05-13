@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -10,7 +9,6 @@ import { Location } from '@angular/common';
 import { of } from 'rxjs';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 
-import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { NewCampaignComponent } from './new-campaign.component';
@@ -153,7 +151,6 @@ describe('Component: NewCampaignComponent', () => {
     it('should add new campaign', fakeAsync(() => {
       const de: DebugElement = fixture.debugElement;
       const nameEl: DebugElement = de.query(By.css('input.name'));
-      const editorEl: DebugElement = de.query(By.css('.ql-editor'));
       const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
 
       nameEl.nativeElement.value = 'Another campaign';

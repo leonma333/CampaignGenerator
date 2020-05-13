@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { NgbModal, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign } from '../../models/campaign';
 import { Schedule } from '../../models/schedule';
@@ -23,8 +23,7 @@ export class ViewCampaignComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private router: Router,
-    private modalService: NgbModal,
-    private dateFormatter: NgbDateParserFormatter
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {

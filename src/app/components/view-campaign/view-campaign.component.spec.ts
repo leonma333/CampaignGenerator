@@ -9,11 +9,9 @@ import { of } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuillModule, QuillViewComponent } from 'ngx-quill';
 
-import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { ViewCampaignComponent } from './view-campaign.component';
-import { DashboardComponent } from '../dashboard/dashboard.component';
 import { EditCampaignComponent } from '../edit-campaign/edit-campaign.component';
 
 describe('Component: ViewCampaignComponent', () => {

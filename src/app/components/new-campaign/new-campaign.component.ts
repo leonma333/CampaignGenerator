@@ -5,7 +5,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-import { Campaign } from '../../models/campaign';
 import { Schedule } from '../../models/schedule';
 import { CampaignService } from '../../services/campaign.service';
 

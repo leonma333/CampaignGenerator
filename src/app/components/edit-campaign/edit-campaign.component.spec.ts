@@ -117,7 +117,6 @@ describe('Component: EditCampaignComponent', () => {
   it('should save edited campaign', fakeAsync(() => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('input.name'));
-    const editorEl: DebugElement = de.query(By.css('.ql-editor'));
     const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
 
     nameEl.nativeElement.value = 'Another campaign';

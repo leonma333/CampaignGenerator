@@ -1,8 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
 
-import { of } from 'rxjs';
-
 import { Campaign } from '../models/campaign';
 import { CampaignService } from './campaign.service';
 import { FirestoreStub } from '../mocks/firestore';
