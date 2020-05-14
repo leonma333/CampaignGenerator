@@ -25,7 +25,7 @@ describe('Component: DashboardComponent', () => {
     TestBed.configureTestingModule({
       providers: [{
         provide: CampaignService,
-        useValue: jasmine.createSpyObj('mockCampaignService', ['getAll'])
+        useValue: jasmine.createSpyObj('mockCampaignService', ['getAll', 'delete'])
       }],
       declarations: [ DashboardComponent, DashboardPreviewComponent ]
     })
@@ -40,6 +40,7 @@ describe('Component: DashboardComponent', () => {
 
     mockCampaignService = TestBed.inject(CampaignService);
     mockCampaignService.getAll.and.returnValue(campaigns);
+    mockCampaignService.delete.and.returnValue(new Promise(resolve => resolve(true)));
 
     fixture.detectChanges();
   });
@@ -69,5 +70,7 @@ describe('Component: DashboardComponent', () => {
     const rowEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('div.row'));
     expect(rowEl.length).toBe(1);
     expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(3);
+    expect(mockCampaignService.delete).toHaveBeenCalledTimes(1);
+    expect(mockCampaignService.delete).toHaveBeenCalledWith('2');
   });
 });

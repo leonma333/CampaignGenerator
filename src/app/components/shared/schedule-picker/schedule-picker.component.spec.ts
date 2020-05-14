@@ -1,5 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder } from '@angular/forms';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ReactiveFormsModule, FormsModule, FormBuilder } from '@angular/forms';
+
+import * as moment from 'moment';
+import { NgbModule, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 import { SchedulePickerComponent } from './schedule-picker.component';
 
@@ -9,7 +12,8 @@ describe('SchedulePickerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [ FormBuilder ],
+      imports: [ ReactiveFormsModule, FormsModule, NgbModule ],
+      providers: [ FormBuilder, NgbCalendar, NgbDateParserFormatter ],
       declarations: [ SchedulePickerComponent ]
     })
     .compileComponents();
@@ -18,6 +22,7 @@ describe('SchedulePickerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SchedulePickerComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
