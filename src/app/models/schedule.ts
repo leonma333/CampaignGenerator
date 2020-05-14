@@ -25,7 +25,6 @@ enum Repeat {
 }
 
 export type LongRepeat = {
-  date: NgbDate,
   month: number;
   number: number;
   day: number;
@@ -95,15 +94,16 @@ export class Schedule extends Model {
   }
 
   value(): object {
+    const isRepeat = this.type === Type.recurring;
     return {
       type: this.type,
       dateStart: this.sanitize(this.dateStart),
       dateEnd: this.type === Type.recurring ? this.sanitize(this.dateEnd) : null,
       time: this.sanitize(this.time),
-      repeat: this.type === Type.recurring ? this.repeat : null,
-      weekDays: this.repeat === Repeat.week ? this.weekDays : null,
-      monthDay: this.repeat === Repeat.month ? this.sanitize(this.monthDay) : null,
-      yearDay: this.repeat === Repeat.year ? this.sanitize(this.yearDay) : null
+      repeat: isRepeat ? this.repeat : null,
+      weekDays: isRepeat && this.repeat === Repeat.week ? this.weekDays : null,
+      monthDay: isRepeat && this.repeat === Repeat.month ? this.sanitize(this.monthDay) : null,
+      yearDay: isRepeat && this.repeat === Repeat.year ? this.sanitize(this.yearDay) : null
     };
   }
 
@@ -152,11 +152,11 @@ export class Schedule extends Model {
         result = Schedule.getWeekOfMonthNameFromDate(date) + ' ' + Schedule.getWeekDayNameFromDate(date);
       }
     } else if (this.repeat === Repeat.year) {
-      if (this.yearDay.date) {
-        result = Schedule.getMonthDateNameFromDate(date);
-      } else {
+      if (this.yearDay.number) {
         result = Schedule.getWeekOfMonthNameFromDate(date) + ' ' + Schedule.getWeekDayNameFromDate(date) + ' of '
           + Schedule.getMonthNameFromDate(date);
+      } else {
+        result = Schedule.getMonthDateNameFromDate(date);
       }
     } else {
       return 'Scheduled on ' + date.format('YYYY-MM-DD') + ' @ ' + Schedule.padTime(this.time);

@@ -3,10 +3,12 @@ import { of } from 'rxjs';
 const campaignObjs = [
   {
     name: 'first campaign',
-    content: {ops: [{insert: 'Foo'}]}
+    content: {ops: [{insert: 'Foo'}]},
+    schedule: {type: 'onetime'}
   }, {
     name: 'second campaign',
-    content: {ops: [{insert: 'Bar'}]}
+    content: {ops: [{insert: 'Bar'}]},
+    schedule: {type: 'recurring'}
   }
 ];
 
@@ -14,18 +16,21 @@ class Doc {
   public id: string;
   private name: string;
   private content: object;
+  private schedule: object;
 
-  constructor(id: string, name: string, content: object) {
+  constructor(id: string, name: string, content: object, schedule: object) {
     this.id = id;
     this.name = name;
     this.content = content;
+    this.schedule = schedule;
   }
 
   data() {
     return {
       id: this.id,
       name: this.name,
-      content: this.content
+      content: this.content,
+      schedule: this.schedule
     };
   }
 }
@@ -33,11 +38,11 @@ class Doc {
 const campaignDocs = [
   {
     payload: {
-      doc: new Doc('1', 'first campaign', {ops: [{insert: 'Foo'}]})
+      doc: new Doc('1', 'first campaign', {ops: [{insert: 'Foo'}]}, {type: 'onetime'})
     }
   }, {
     payload: {
-      doc: new Doc('2', 'second campaign', {ops: [{insert: 'Bar'}]})
+      doc: new Doc('2', 'second campaign', {ops: [{insert: 'Bar'}]}, {type: 'recurring'})
     }
   }
 ];

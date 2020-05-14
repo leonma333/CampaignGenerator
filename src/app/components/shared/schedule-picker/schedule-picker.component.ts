@@ -184,8 +184,7 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
       this.scheduleData.monthDay = {
         day: this.calendar.getWeekday(this.scheduleData.dateStart),
         number: selectType === 'weekday' ? Schedule.getWeekOfMonth(date) : null,
-        month: null,
-        date: null
+        month: null
       };
     } else {
       this.scheduleData.monthDay = null;
@@ -194,10 +193,9 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
     selectType = this.mainForm.get('monthYearGroupForm').get('selectedYearType').value;
     if (this.scheduleData.repeat === 'year') {
       this.scheduleData.yearDay = {
-        date: selectType === 'monthday' ? this.scheduleData.dateStart : null,
         month: selectType === 'weekday' ? this.scheduleData.dateStart.month : null,
         day: selectType === 'weekday' ? this.scheduleData.dateStart.day : null,
-        number: selectType === 'weekday' ? Schedule.getWeekOfMonth(date) : null,
+        number: selectType === 'weekday' ? Schedule.getWeekOfMonth(date) : null
       };
     } else {
       this.scheduleData.yearDay = null;
