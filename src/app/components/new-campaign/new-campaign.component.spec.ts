@@ -163,7 +163,7 @@ describe('Component: NewCampaignComponent', () => {
       nameEl.nativeElement.dispatchEvent(new Event('input'));
 
       component.campaignForm.controls.content.setValue('This is another campaign');
-      component.campaignForm.controls.schedule.setValue({type: 'recurring'})
+      component.campaignForm.controls.schedule.setValue({type: 'recurring'});
 
       fixture.detectChanges();
       saveEl.nativeElement.click();

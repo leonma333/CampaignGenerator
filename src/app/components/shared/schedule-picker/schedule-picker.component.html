@@ -8,7 +8,7 @@
           </div>
           <div class="col-lg-8 col-md-7 border-left">
             <ngb-timepicker formControlName="selectedTime"></ngb-timepicker>
-            <p>It will be scheduled on <b>{{ dateFormatter.format(mainForm.controls.selectedDate.value) }}</b> @ <b>{{ padTime(mainForm.controls.selectedTime.value) }}</b></p>
+            <p class="onetime-format">It will be scheduled on <b>{{ dateFormatter.format(mainForm.controls.selectedDate.value) }}</b> @ <b>{{ padTime(mainForm.controls.selectedTime.value) }}</b></p>
           </div>
         </div>
       </ng-template>
@@ -86,7 +86,7 @@
               </div>
             </div>
             <br>
-            <p>Occurs {{repeatFormat}} from <b>{{ dateFormatter.format(mainForm.controls.selectedDate.value) }}</b> {{mainForm.controls.toDate.value == null ? '' : 'to'}} <b>{{ dateFormatter.format(mainForm.controls.toDate.value) }}</b> @ <b>{{ padTime(mainForm.controls.selectedTime.value) }}</b></p>
+            <p class="repeat-format">Occurs {{repeatFormat}} from <b>{{ dateFormatter.format(mainForm.controls.selectedDate.value) }}</b> {{mainForm.controls.toDate.value == null ? '' : 'to'}} <b>{{ dateFormatter.format(mainForm.controls.toDate.value) }}</b> @ <b>{{ padTime(mainForm.controls.selectedTime.value) }}</b></p>
             <ngb-timepicker formControlName="selectedTime"></ngb-timepicker>
           </div>
         </div>

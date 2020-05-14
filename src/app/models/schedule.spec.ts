@@ -1,5 +1,3 @@
-import { TestBed } from '@angular/core/testing';
-
 import * as moment from 'moment';
 import { NgbDate, NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 
@@ -24,7 +22,7 @@ describe('Model: Schedule', () => {
       type: 'onetime',
       dateStart: dateStruct,
       dateEnd: null,
-      time: time,
+      time,
       repeat: null,
       weekDays: null,
       monthDay: null,
@@ -77,7 +75,7 @@ describe('Model: Schedule', () => {
 
   describe('#value', () => {
     it('onetime', () => {
-      const schedule = new Schedule('onetime', date, dateEnd, time, 'week', [1,3], month, year);
+      const schedule = new Schedule('onetime', date, dateEnd, time, 'week', [1, 3], month, year);
       expect(schedule.value()).toEqual({
         type: 'onetime',
         dateStart: dateStruct,
@@ -91,12 +89,12 @@ describe('Model: Schedule', () => {
     });
 
     it('recurring day', () => {
-      const schedule = new Schedule('recurring', date, dateEnd, time, 'day', [1,3], month, year);
+      const schedule = new Schedule('recurring', date, dateEnd, time, 'day', [1, 3], month, year);
       expect(schedule.value()).toEqual({
         type: 'recurring',
         dateStart: dateStruct,
         dateEnd: dateEndStruct,
-        time: time,
+        time,
         repeat: 'day',
         weekDays: null,
         monthDay: null,
@@ -105,26 +103,26 @@ describe('Model: Schedule', () => {
     });
 
     it('recurring week', () => {
-      const schedule = new Schedule('recurring', date, dateEnd, time, 'week', [1,3], month, year);
+      const schedule = new Schedule('recurring', date, dateEnd, time, 'week', [1, 3], month, year);
       expect(schedule.value()).toEqual({
         type: 'recurring',
         dateStart: dateStruct,
         dateEnd: dateEndStruct,
-        time: time,
+        time,
         repeat: 'week',
-        weekDays: [1,3],
+        weekDays: [1, 3],
         monthDay: null,
         yearDay: null
       });
     });
 
     it('recurring month', () => {
-      const schedule = new Schedule('recurring', date, dateEnd, time, 'month', [1,3], month, year);
+      const schedule = new Schedule('recurring', date, dateEnd, time, 'month', [1, 3], month, year);
       expect(schedule.value()).toEqual({
         type: 'recurring',
         dateStart: dateStruct,
         dateEnd: dateEndStruct,
-        time: time,
+        time,
         repeat: 'month',
         weekDays: null,
         monthDay: month,
@@ -133,12 +131,12 @@ describe('Model: Schedule', () => {
     });
 
     it('recurring year', () => {
-      const schedule = new Schedule('recurring', date, dateEnd, time, 'year', [1,3], month, year);
+      const schedule = new Schedule('recurring', date, dateEnd, time, 'year', [1, 3], month, year);
       expect(schedule.value()).toEqual({
         type: 'recurring',
         dateStart: dateStruct,
         dateEnd: dateEndStruct,
-        time: time,
+        time,
         repeat: 'year',
         weekDays: null,
         monthDay: null,
@@ -158,10 +156,10 @@ describe('Model: Schedule', () => {
       schedule.from({
         type: 'onetime',
         dateStart: date,
-        dateEnd: dateEnd,
-        time: time,
+        dateEnd,
+        time,
         repeat: 'week',
-        weekDays: [1,3],
+        weekDays: [1, 3],
         monthDay: month,
         yearDay: year
       });
@@ -170,7 +168,7 @@ describe('Model: Schedule', () => {
       expect(schedule.dateEnd).toEqual(dateEnd);
       expect(schedule.time).toEqual(time);
       expect(schedule.repeat).toBe('week');
-      expect(schedule.weekDays).toEqual([1,3]);
+      expect(schedule.weekDays).toEqual([1, 3]);
       expect(schedule.monthDay).toEqual(month);
       expect(schedule.yearDay).toEqual(year);
     });
@@ -233,7 +231,7 @@ describe('Model: Schedule', () => {
         type: 'onetime',
         dateStart: date,
         dateEnd: null,
-        time: time,
+        time,
         repeat: null,
         weekDays: null,
         monthDay: null,
@@ -247,7 +245,7 @@ describe('Model: Schedule', () => {
         type: 'recurring',
         dateStart: date,
         dateEnd: null,
-        time: time,
+        time,
         repeat: 'week',
         weekDays: [1, 3],
         monthDay: null,
@@ -261,7 +259,7 @@ describe('Model: Schedule', () => {
         type: 'recurring',
         dateStart: date,
         dateEnd: null,
-        time: time,
+        time,
         repeat: 'day',
         weekDays: null,
         monthDay: null,
@@ -275,7 +273,7 @@ describe('Model: Schedule', () => {
         type: 'recurring',
         dateStart: date,
         dateEnd: null,
-        time: time,
+        time,
         repeat: 'month',
         weekDays: null,
         monthDay: month,
@@ -291,7 +289,7 @@ describe('Model: Schedule', () => {
         type: 'recurring',
         dateStart: date,
         dateEnd: null,
-        time: time,
+        time,
         repeat: 'year',
         weekDays: null,
         monthDay: null,
@@ -306,8 +304,8 @@ describe('Model: Schedule', () => {
       schedule.from({
         type: 'recurring',
         dateStart: date,
-        dateEnd: dateEnd,
-        time: time,
+        dateEnd,
+        time,
         repeat: 'week',
         weekDays: [1, 3],
         monthDay: null,

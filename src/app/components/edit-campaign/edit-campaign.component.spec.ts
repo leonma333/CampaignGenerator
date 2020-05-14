@@ -10,7 +10,6 @@ import { of } from 'rxjs';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 
 import { Campaign } from '../../models/campaign';
-import { Schedule } from '../../models/schedule';
 import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { EditCampaignComponent } from './edit-campaign.component';
