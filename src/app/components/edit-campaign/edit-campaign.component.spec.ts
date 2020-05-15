@@ -106,6 +106,21 @@ describe('Component: EditCampaignComponent', () => {
     expect(mockLocation.back.calls.count()).toEqual(1);
   });
 
+  it('should handle error', fakeAsync(() => {
+    mockCampaignService.save.and.returnValue(Promise.reject(new Error('error')));
+
+    let alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl).toBeNull();
+
+    const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
+    saveEl.nativeElement.click();
+    tick();
+    fixture.detectChanges();
+
+    alertEl = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl.nativeElement.textContent).toBe('error');
+  }));
+
   it('should display campaign', () => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('input.name'));

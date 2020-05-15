@@ -95,6 +95,24 @@ describe('Component: NewCampaignComponent', () => {
     expect(mockLocation.back.calls.count()).toEqual(1);
   });
 
+  it('should handle error', fakeAsync(() => {
+    mockCampaignService.add.and.returnValue(Promise.reject(new Error('error')));
+
+    let alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl).toBeNull();
+
+    component.campaignForm.controls.name.setValue('test');
+    fixture.detectChanges();
+
+    const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
+    saveEl.nativeElement.click();
+    tick();
+    fixture.detectChanges();
+
+    alertEl = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl.nativeElement.textContent).toBe('error');
+  }));
+
   describe('without id param', () => {
     it('should not display anything', () => {
       const de: DebugElement = fixture.debugElement;
@@ -111,7 +129,7 @@ describe('Component: NewCampaignComponent', () => {
     it('should change value and save', fakeAsync(() => {
       const de: DebugElement = fixture.debugElement;
       const nameEl: DebugElement = de.query(By.css('input.name'));
-      const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
+      const saveEl: DebugElement = de.query(By.css('button.save'));
 
       nameEl.nativeElement.value = 'My campaign';
       nameEl.nativeElement.dispatchEvent(new Event('input'));
@@ -157,7 +175,7 @@ describe('Component: NewCampaignComponent', () => {
     it('should add new campaign', fakeAsync(() => {
       const de: DebugElement = fixture.debugElement;
       const nameEl: DebugElement = de.query(By.css('input.name'));
-      const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
+      const saveEl: DebugElement = de.query(By.css('button.save'));
 
       nameEl.nativeElement.value = 'Another campaign';
       nameEl.nativeElement.dispatchEvent(new Event('input'));
