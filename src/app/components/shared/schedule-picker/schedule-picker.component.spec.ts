@@ -504,5 +504,25 @@ describe('Component: SchedulePickerComponent', () => {
       fixture.detectChanges();
       expectOutputFormat('Occurs every third Monday of June from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
     });
+
+    it('change date', () => {
+      let dateEl: DebugElement = fixture.debugElement.query(By.css('[aria-label="Saturday, June 20, 2020"] div'));
+      dateEl.nativeElement.click();
+      fixture.detectChanges();
+      expect(component.scheduleData.value.dateEnd).toBeNull();
+      expectOutputFormat('Occurs every Tuesday, Thursday, Saturday from 2020-06-20 @ 05:30', false, fixture);
+
+      dateEl = fixture.debugElement.query(By.css('[aria-label="Tuesday, June 30, 2020"] div'));
+      dateEl.nativeElement.click();
+      fixture.detectChanges();
+      expect(component.scheduleData.value.dateEnd).toEqual({year: 2020, month: 6, day: 30});
+      expectOutputFormat('Occurs every Tuesday, Thursday, Saturday from 2020-06-20 to 2020-06-30 @ 05:30', false, fixture);
+
+      dateEl = fixture.debugElement.query(By.css('[aria-label="Thursday, June 18, 2020"] div'));
+      dateEl.nativeElement.click();
+      fixture.detectChanges();
+      expect(component.scheduleData.value.dateEnd).toBeNull();
+      expectOutputFormat('Occurs every Tuesday, Thursday, Saturday from 2020-06-18 @ 05:30', false, fixture);
+    });
   });
 });
