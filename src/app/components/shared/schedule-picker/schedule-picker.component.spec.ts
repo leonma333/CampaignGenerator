@@ -54,6 +54,15 @@ class NgbDateISOParserFormatter extends NgbDateParserFormatter {
 @Component({
   template: '<app-schedule-picker [formControl]="scheduleData"></app-schedule-picker>'
 })
+class TestDefaultSchedulePickerComponent {
+  @ViewChild(SchedulePickerComponent)
+  schedulePickerComponent: SchedulePickerComponent;
+  scheduleData: FormControl = new FormControl({});
+}
+
+@Component({
+  template: '<app-schedule-picker [formControl]="scheduleData"></app-schedule-picker>'
+})
 class TestOnetimeSchedulePickerComponent {
   @ViewChild(SchedulePickerComponent)
   schedulePickerComponent: SchedulePickerComponent;
@@ -158,6 +167,41 @@ describe('Component: SchedulePickerComponent', () => {
         1: false, 2: false, 3: true, 4: false, 5: false, 6: false, 7: false
       });
       expectOutputFormat('Occurs every Wednesday from 2020-06-10 to 2020-06-20 @ 12:00', false, fixture);
+    });
+  });
+
+  describe('with empty input', () => {
+    let component: TestDefaultSchedulePickerComponent;
+    let fixture: ComponentFixture<TestDefaultSchedulePickerComponent>;
+
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule, FormsModule, NgbModule ],
+        providers: [
+          FormBuilder, {
+            privide: NgbDateParserFormatter,
+            useClass: NgbDateISOParserFormatter
+          }, {
+            provider: NgbCalendar,
+            useClass: NgbCalendarGregorian
+          }
+        ],
+        declarations: [ TestDefaultSchedulePickerComponent, SchedulePickerComponent ]
+      })
+      .compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TestDefaultSchedulePickerComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should create', () => {
+      expect(component.schedulePickerComponent).toBeTruthy();
+      expect(component.schedulePickerComponent.mainForm.controls.selectedDate.value).toEqual(new NgbDate(2020, 6, 10));
+      expect(component.schedulePickerComponent.mainForm.controls.selectedTime.value).toEqual({hour: 12, minute: 0, second: 0});
+      expectOutputFormat('It will be scheduled on 2020-06-10 @ 12:00', true, fixture);
     });
   });
 
@@ -432,6 +476,33 @@ describe('Component: SchedulePickerComponent', () => {
         monthDay: null,
         yearDay: {day: 15, month: 6, number: 3}
       });
+    });
+
+    it('change parent propagate to child', () => {
+      component.scheduleData.setValue({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'month',
+        weekDays: null,
+        monthDay: {day: 1, month: null, number: 3},
+        yearDay: null
+      });
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every third Monday from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      component.scheduleData.setValue({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'year',
+        weekDays: null,
+        monthDay: null,
+        yearDay: {day: 15, month: 6, number: 3}
+      });
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every third Monday of June from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
     });
   });
 });

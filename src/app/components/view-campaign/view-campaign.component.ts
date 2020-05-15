@@ -15,7 +15,7 @@ import { ModalConfirmComponent } from '../shared/modal-confirm/modal-confirm.com
   styleUrls: ['./view-campaign.component.scss']
 })
 export class ViewCampaignComponent implements OnInit {
-  campaign = new Campaign('', '', {}, {});
+  campaign = new Campaign('', '', {}, Schedule.default());
   scheduleFormat: string;
 
   constructor(
@@ -50,7 +50,7 @@ export class ViewCampaignComponent implements OnInit {
 
   formatSchedule(): string {
     const schedule = new Schedule(null, null, null, null, null, null, null, null);
-    schedule.from(Object.keys(this.campaign.schedule).length ? this.campaign.schedule : Schedule.default());
+    schedule.from(this.campaign.schedule);
     return schedule.format();
   }
 
