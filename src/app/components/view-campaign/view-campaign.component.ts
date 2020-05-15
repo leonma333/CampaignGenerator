@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign } from '../../models/campaign';
+import { Schedule } from '../../models/schedule';
 import { CampaignService } from '../../services/campaign.service';
 import { ModalConfirmComponent } from '../shared/modal-confirm/modal-confirm.component';
 
@@ -14,7 +15,8 @@ import { ModalConfirmComponent } from '../shared/modal-confirm/modal-confirm.com
   styleUrls: ['./view-campaign.component.scss']
 })
 export class ViewCampaignComponent implements OnInit {
-  campaign = new Campaign('', '', {});
+  campaign = new Campaign('', '', {}, {});
+  scheduleFormat: string;
 
   constructor(
     private campaignService: CampaignService,
@@ -44,6 +46,12 @@ export class ViewCampaignComponent implements OnInit {
         this.campaignService.delete(this.campaign.id).then(() => this.router.navigate(['/']));
       }
     });
+  }
+
+  formatSchedule(): string {
+    const schedule = new Schedule(null, null, null, null, null, null, null, null);
+    schedule.from(Object.keys(this.campaign.schedule).length ? this.campaign.schedule : Schedule.default());
+    return schedule.format();
   }
 
 }

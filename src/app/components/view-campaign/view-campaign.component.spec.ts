@@ -6,14 +6,12 @@ import { DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { of } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuillModule, QuillViewComponent } from 'ngx-quill';
+import { NgbModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { ViewCampaignComponent } from './view-campaign.component';
-import { DashboardComponent } from '../dashboard/dashboard.component';
 import { EditCampaignComponent } from '../edit-campaign/edit-campaign.component';
 
 describe('Component: ViewCampaignComponent', () => {
@@ -23,6 +21,7 @@ describe('Component: ViewCampaignComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        NgbModule,
         QuillModule.forRoot(),
         RouterTestingModule.withRoutes([
           { path: 'edit/:id', component: EditCampaignComponent }
@@ -70,9 +69,11 @@ describe('Component: ViewCampaignComponent', () => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('input.name'));
     const editorEl: DebugElement = de.query(By.css('.ql-editor'));
+    const scheduleEl: DebugElement = de.query(By.css('div#static-1 .card-body'));
 
     expect(nameEl.nativeElement.value).toBe('first campaign');
     expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
+    expect(scheduleEl.nativeElement.innerText).toBe('Scheduled on 2020-06-30 @ 12:00');
   });
 
   it('should call back when click back button', () => {

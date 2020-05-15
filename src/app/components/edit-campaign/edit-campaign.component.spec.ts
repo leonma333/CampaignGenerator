@@ -13,6 +13,7 @@ import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { EditCampaignComponent } from './edit-campaign.component';
+import { SchedulePickerComponent } from '../shared/schedule-picker/schedule-picker.component';
 
 describe('Component: EditCampaignComponent', () => {
   let component: EditCampaignComponent;
@@ -39,7 +40,7 @@ describe('Component: EditCampaignComponent', () => {
           }
         }
       ],
-      declarations: [ EditCampaignComponent, QuillEditorComponent ]
+      declarations: [ EditCampaignComponent, QuillEditorComponent, SchedulePickerComponent ]
     })
     .compileComponents();
   }));
@@ -48,7 +49,7 @@ describe('Component: EditCampaignComponent', () => {
     fixture = TestBed.createComponent(EditCampaignComponent);
     component = fixture.componentInstance;
 
-    const campaign = new Campaign(campaigns[0].id, campaigns[0].name, campaigns[0].content);
+    const campaign = new Campaign(campaigns[0].id, campaigns[0].name, campaigns[0].content, campaigns[0].schedule);
 
     mockCampaignService = TestBed.inject(CampaignService);
     mockCampaignService.byId.and.returnValue(of(campaign));
@@ -112,24 +113,25 @@ describe('Component: EditCampaignComponent', () => {
 
     expect(nameEl.nativeElement.value).toBe('first campaign');
     expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
+    expect(component.campaignForm.controls.schedule.value).toEqual(campaigns[0].schedule);
   });
 
   it('should save edited campaign', fakeAsync(() => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('input.name'));
-    const editorEl: DebugElement = de.query(By.css('.ql-editor'));
     const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
 
     nameEl.nativeElement.value = 'Another campaign';
     nameEl.nativeElement.dispatchEvent(new Event('input'));
 
     component.campaignForm.controls.content.setValue({ ops: [{insert: 'This is another campaign'}] });
+    component.campaignForm.controls.schedule.setValue({ type: 'recurring' });
 
     fixture.detectChanges();
     saveEl.nativeElement.click();
     tick();
 
-    const campaign = new Campaign('1', 'Another campaign', { ops: [{insert: 'This is another campaign'}] });
+    const campaign = new Campaign('1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, {type: 'recurring'});
 
     expect(mockRouter.navigate.calls.count()).toBe(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);

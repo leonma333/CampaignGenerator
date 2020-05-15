@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { Campaign } from '../../models/campaign';
+import { Schedule } from '../../models/schedule';
 import { CampaignService } from '../../services/campaign.service';
 
 @Component({
@@ -30,14 +31,18 @@ export class EditCampaignComponent implements OnInit {
   ngOnInit(): void {
     this.campaignForm = new FormGroup({
       name: new FormControl('', Validators.required),
-      content: new FormControl(null)
+      content: new FormControl(null),
+      schedule: new FormControl(Schedule.default())
     });
 
     const id = this.route.snapshot.paramMap.get('id');
     this.campaignService.byId(id).subscribe(campaign => {
       this.campaign = campaign;
-      this.campaignForm.controls.name.setValue(campaign.name);
-      this.campaignForm.controls.content.setValue(campaign.content);
+      this.campaignForm.patchValue({
+        name: campaign.name,
+        content: campaign.content,
+        schedule: campaign.schedule
+      });
     });
   }
 
@@ -45,6 +50,7 @@ export class EditCampaignComponent implements OnInit {
     this.saving = true;
     this.campaign.name = this.campaignForm.get('name').value;
     this.campaign.content = this.campaignForm.get('content').value;
+    this.campaign.schedule = this.campaignForm.get('schedule').value;
     this.campaignService.save(this.campaign).then(() => {
       this.router.navigate(['/']);
     });
@@ -53,5 +59,4 @@ export class EditCampaignComponent implements OnInit {
   back() {
     this.location.back();
   }
-
 }

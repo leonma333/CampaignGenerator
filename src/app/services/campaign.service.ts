@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 
-import { Observable, pipe } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 
 import { Campaign } from '../models/campaign';
 
@@ -20,7 +19,7 @@ export class CampaignService {
       map(snapshots => {
         return snapshots.map(snapshot => {
           const doc = snapshot.payload.doc as any;
-          return new Campaign(doc.id, doc.data().name, doc.data().content);
+          return new Campaign(doc.id, doc.data().name, doc.data().content, doc.data().schedule);
         });
       })
     );
@@ -30,22 +29,24 @@ export class CampaignService {
     return this.db.collection(this.collection).doc(id).valueChanges().pipe(
       map(value => {
         const data = value as any;
-        return new Campaign(id, data.name, data.content);
+        return new Campaign(id, data.name, data.content, data.schedule);
       })
     );
   }
 
-  add(name: string, content: object): Promise<any> {
+  add(name: string, content: object, schedule: object): Promise<any> {
     return this.db.collection(this.collection).add({
       name,
-      content: Object.assign({}, content)
+      content: Object.assign({}, content),
+      schedule
     });
   }
 
   save(campaign: Campaign): Promise<any> {
     const value = {
       name: campaign.name,
-      content: Object.assign({}, campaign.content)
+      content: Object.assign({}, campaign.content),
+      schedule: campaign.schedule
     };
     return this.db.collection(this.collection).doc(campaign.id).set(value);
   }
