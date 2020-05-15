@@ -210,7 +210,7 @@ describe('Component: SchedulePickerComponent', () => {
       periodEl.nativeElement.click();
       fixture.detectChanges();
       const periodsEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('div[aria-labelledby="repeatPeriod"] button'));
-      for (let el of periodsEl) {
+      for (const el of periodsEl) {
         if (el.nativeElement.innerText === type) {
           periodEl = el;
         }
@@ -342,6 +342,35 @@ describe('Component: SchedulePickerComponent', () => {
         time: {hour: 5, minute: 30, second: 0},
         repeat: 'week',
         weekDays: [1, 2, 4, 5, 6, 7],
+        monthDay: null,
+        yearDay: null
+      });
+    });
+
+    it('change to day', () => {
+      changePeriod('Every day');
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every day from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'day',
+        weekDays: null,
+        monthDay: null,
+        yearDay: null
+      });
+      changePeriod('Every week');
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every Monday from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'week',
+        weekDays: [1],
         monthDay: null,
         yearDay: null
       });
