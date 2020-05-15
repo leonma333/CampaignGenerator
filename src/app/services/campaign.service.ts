@@ -37,17 +37,13 @@ export class CampaignService {
   add(name: string, content: object, schedule: object): Promise<any> {
     return this.db.collection(this.collection).add({
       name,
-      content: Object.assign({}, content),
-      schedule
+      content: Campaign.sanitize(content),
+      schedule: Campaign.sanitize(schedule)
     });
   }
 
   save(campaign: Campaign): Promise<any> {
-    const value = {
-      name: campaign.name,
-      content: Object.assign({}, campaign.content),
-      schedule: campaign.schedule
-    };
+    const value = campaign.value();
     return this.db.collection(this.collection).doc(campaign.id).set(value);
   }
 

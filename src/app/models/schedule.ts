@@ -97,13 +97,13 @@ export class Schedule extends Model {
     const isRepeat = this.type === Type.recurring;
     return {
       type: this.type,
-      dateStart: this.sanitize(this.dateStart),
-      dateEnd: this.type === Type.recurring ? this.sanitize(this.dateEnd) : null,
-      time: this.sanitize(this.time),
+      dateStart: Schedule.sanitize(this.dateStart),
+      dateEnd: this.type === Type.recurring ? Schedule.sanitize(this.dateEnd) : null,
+      time: Schedule.sanitize(this.time),
       repeat: isRepeat ? this.repeat : null,
       weekDays: isRepeat && this.repeat === Repeat.week ? this.weekDays : null,
-      monthDay: isRepeat && this.repeat === Repeat.month ? this.sanitize(this.monthDay) : null,
-      yearDay: isRepeat && this.repeat === Repeat.year ? this.sanitize(this.yearDay) : null
+      monthDay: isRepeat && this.repeat === Repeat.month ? Schedule.sanitize(this.monthDay) : null,
+      yearDay: isRepeat && this.repeat === Repeat.year ? Schedule.sanitize(this.yearDay) : null
     };
   }
 
