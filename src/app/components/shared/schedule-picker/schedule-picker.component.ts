@@ -182,7 +182,7 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
     let selectType = this.mainForm.get('monthYearGroupForm').get('selectedMonthType').value;
     if (this.scheduleData.repeat === 'month') {
       this.scheduleData.monthDay = {
-        day: this.calendar.getWeekday(this.scheduleData.dateStart),
+        day: selectType === 'weekday' ? this.calendar.getWeekday(this.scheduleData.dateStart) : null,
         number: selectType === 'weekday' ? Schedule.getWeekOfMonth(date) : null,
         month: null
       };

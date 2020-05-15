@@ -69,6 +69,24 @@ class TestOnetimeSchedulePickerComponent {
   });
 }
 
+@Component({
+  template: '<app-schedule-picker [formControl]="scheduleData"></app-schedule-picker>'
+})
+class TestRecurringSchedulePickerComponent {
+  @ViewChild(SchedulePickerComponent)
+  schedulePickerComponent: SchedulePickerComponent;
+  scheduleData: FormControl = new FormControl({
+    type: 'recurring',
+    dateStart: {year: 2020, month: 6, day: 15},
+    dateEnd: {year: 2020, month: 8, day: 15},
+    time: {hour: 5, minute: 30, second: 0},
+    repeat: 'week',
+    weekDays: [2, 4, 6],
+    monthDay: null,
+    yearDay: null
+  });
+}
+
 describe('Component: SchedulePickerComponent', () => {
   function expectOutputFormat(output: string, isOnetime: boolean, fixture: ComponentFixture<any>) {
     const outputEl: DebugElement = fixture.debugElement.query(By.css(isOnetime ? '.onetime-format' : '.repeat-format'));
@@ -172,6 +190,214 @@ describe('Component: SchedulePickerComponent', () => {
 
     it('should create', () => {
       expect(component.schedulePickerComponent).toBeTruthy();
+      expect(component.schedulePickerComponent.mainForm.controls.selectedDate.value).toEqual({year: 2020, month: 6, day: 15});
+      expect(component.schedulePickerComponent.mainForm.controls.selectedTime.value).toEqual({hour: 5, minute: 30, second: 0});
+      expectOutputFormat('It will be scheduled on 2020-06-15 @ 05:30', true, fixture);
+    });
+  });
+
+  describe('with recurring input', () => {
+    let component: TestRecurringSchedulePickerComponent;
+    let fixture: ComponentFixture<TestRecurringSchedulePickerComponent>;
+
+    function clickWeekDay(day: number) {
+      const dayEl: DebugElement = fixture.debugElement.query(By.css(`input[formcontrolname="${day}"`));
+      dayEl.nativeElement.click();
+    }
+
+    function changePeriod(index: number) {
+      const periodEl: DebugElement = fixture.debugElement.query(By.css('#repeatPeriod'));
+      periodEl.nativeElement.click();
+      fixture.detectChanges();
+      const periodsEl: DebugElement = fixture.debugElement.queryAll(By.css('div[aria-labelledby="repeatPeriod"] button'))[index];
+      periodsEl.nativeElement.click();
+    }
+
+    function changeMonthYearType(type: string) {
+      const typeEl: DebugElement = fixture.debugElement.query(By.css(`input[value="${type}"]`));
+      typeEl.nativeElement.click();
+    }
+
+    function expectSelectPeriod(period: string) {
+      const periodEl: DebugElement = fixture.debugElement.query(By.css('#repeatPeriod'));
+      expect(periodEl.nativeElement.innerText).toBe(period);
+    }
+
+    beforeEach(async(() => {
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule, FormsModule, NgbModule ],
+        providers: [
+          FormBuilder, {
+            privide: NgbDateParserFormatter,
+            useClass: NgbDateISOParserFormatter
+          }, {
+            provider: NgbCalendar,
+            useClass: NgbCalendarGregorian
+          }
+        ],
+        declarations: [ TestRecurringSchedulePickerComponent, SchedulePickerComponent ]
+      })
+      .compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TestRecurringSchedulePickerComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should create', () => {
+      expect(component.schedulePickerComponent).toBeTruthy();
+      expect(component.schedulePickerComponent.mainForm.controls.selectedDate.value).toEqual({year: 2020, month: 6, day: 15});
+      expect(component.schedulePickerComponent.mainForm.controls.toDate.value).toEqual({year: 2020, month: 8, day: 15});
+      expect(component.schedulePickerComponent.mainForm.controls.selectedTime.value).toEqual({hour: 5, minute: 30, second: 0});
+      expect(component.schedulePickerComponent.mainForm.controls.selectedRepeatPeriod.value).toEqual('week');
+      expect(component.schedulePickerComponent.mainForm.controls.weekGroupForm.value).toEqual({
+        1: false, 2: true, 3: false, 4: true, 5: false, 6: true, 7: false
+      });
+      expectOutputFormat('Occurs every Tuesday, Thursday, Saturday from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'week',
+        weekDays: [2, 4, 6],
+        monthDay: null,
+        yearDay: null
+      });
+    });
+
+    it('select all week days', () => {
+      clickWeekDay(1);
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every Monday, Tuesday, Thursday, Saturday from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'week',
+        weekDays: [1, 2, 4, 6],
+        monthDay: null,
+        yearDay: null
+      });
+      clickWeekDay(3);
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every Monday, Tuesday, Wednesday, Thursday, Saturday from 2020-06-15 to 2020-08-15 @ 05:30',
+        false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'week',
+        weekDays: [1, 2, 3, 4, 6],
+        monthDay: null,
+        yearDay: null
+      });
+      clickWeekDay(5);
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every Monday, Tuesday, Wednesday, Thursday, Friday, Saturday from 2020-06-15 to 2020-08-15 @ 05:30',
+        false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'week',
+        weekDays: [1, 2, 3, 4, 5, 6],
+        monthDay: null,
+        yearDay: null
+      });
+      clickWeekDay(7);
+      fixture.detectChanges();
+      expectSelectPeriod('Every day');
+      expectOutputFormat('Occurs every day from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'day',
+        weekDays: null,
+        monthDay: null,
+        yearDay: null
+      });
+
+      clickWeekDay(3);
+      fixture.detectChanges();
+      expectSelectPeriod('Every week');
+      expectOutputFormat('Occurs every Monday, Tuesday, Thursday, Friday, Saturday, Sunday from 2020-06-15 to 2020-08-15 @ 05:30',
+        false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'week',
+        weekDays: [1, 2, 4, 5, 6, 7],
+        monthDay: null,
+        yearDay: null
+      });
+    });
+
+    it('change to month', () => {
+      changePeriod(2);
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every 15 from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'month',
+        weekDays: null,
+        monthDay: {day: null, month: null, number: null},
+        yearDay: null
+      });
+      changeMonthYearType('weekday');
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every third Monday from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'month',
+        weekDays: null,
+        monthDay: {day: 1, month: null, number: 3},
+        yearDay: null
+      });
+    });
+
+    it('change to year', () => {
+      changePeriod(3);
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every June 15 from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'year',
+        weekDays: null,
+        monthDay: null,
+        yearDay: {day: null, month: null, number: null}
+      });
+      changeMonthYearType('weekday');
+      fixture.detectChanges();
+      expectOutputFormat('Occurs every third Monday of June from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
+      expect(component.scheduleData.value).toEqual({
+        type: 'recurring',
+        dateStart: {year: 2020, month: 6, day: 15},
+        dateEnd: {year: 2020, month: 8, day: 15},
+        time: {hour: 5, minute: 30, second: 0},
+        repeat: 'year',
+        weekDays: null,
+        monthDay: null,
+        yearDay: {day: 15, month: 6, number: 3}
+      });
     });
   });
 });
