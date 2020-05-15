@@ -205,12 +205,17 @@ describe('Component: SchedulePickerComponent', () => {
       dayEl.nativeElement.click();
     }
 
-    function changePeriod(index: number) {
-      const periodEl: DebugElement = fixture.debugElement.query(By.css('#repeatPeriod'));
+    function changePeriod(type: string) {
+      let periodEl: DebugElement = fixture.debugElement.query(By.css('#repeatPeriod'));
       periodEl.nativeElement.click();
       fixture.detectChanges();
-      const periodsEl: DebugElement = fixture.debugElement.queryAll(By.css('div[aria-labelledby="repeatPeriod"] button'))[index];
-      periodsEl.nativeElement.click();
+      const periodsEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('div[aria-labelledby="repeatPeriod"] button'));
+      for (let el of periodsEl) {
+        if (el.nativeElement.innerText === type) {
+          periodEl = el;
+        }
+      }
+      periodEl.nativeElement.click();
     }
 
     function changeMonthYearType(type: string) {
@@ -343,7 +348,7 @@ describe('Component: SchedulePickerComponent', () => {
     });
 
     it('change to month', () => {
-      changePeriod(2);
+      changePeriod('Every month');
       fixture.detectChanges();
       expectOutputFormat('Occurs every 15 from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
       expect(component.scheduleData.value).toEqual({
@@ -372,7 +377,7 @@ describe('Component: SchedulePickerComponent', () => {
     });
 
     it('change to year', () => {
-      changePeriod(3);
+      changePeriod('Every year');
       fixture.detectChanges();
       expectOutputFormat('Occurs every June 15 from 2020-06-15 to 2020-08-15 @ 05:30', false, fixture);
       expect(component.scheduleData.value).toEqual({
