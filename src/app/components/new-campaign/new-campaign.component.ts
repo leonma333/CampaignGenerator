@@ -19,6 +19,9 @@ export class NewCampaignComponent implements OnInit {
   saving = false;
   faSpinner = faSpinner;
 
+  showErrorAlert = false;
+  errorMessage = '';
+
   constructor(
     private campaignService: CampaignService,
     private route: ActivatedRoute,
@@ -49,12 +52,17 @@ export class NewCampaignComponent implements OnInit {
 
   save() {
     this.saving = true;
+    this.showErrorAlert = false;
     this.campaignService.add(
       this.campaignForm.get('name').value,
       this.campaignForm.get('content').value,
       this.campaignForm.get('schedule').value
     ).then(() => {
       this.router.navigate(['/']);
+    }).catch(error => {
+      this.saving = false;
+      this.showErrorAlert = true;
+      this.errorMessage = error.message;
     });
   }
 
