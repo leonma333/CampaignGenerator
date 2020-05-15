@@ -132,19 +132,12 @@ export class Schedule extends Model {
     if (this.repeat === Repeat.day) {
       result = 'day';
     } else if (this.repeat === Repeat.week) {
-      let allDay = true;
       for (let i = 1; i <= 7; i++) {
         if (this.weekDays.includes(i)) {
           result += Schedule.getWeekDayName(i) + ', ';
-        } else {
-          allDay = false;
         }
       }
-      if (allDay) {
-        result = 'day';
-      } else {
-        result = result.slice(0, -2);
-      }
+      result = result.slice(0, -2);
     } else if (this.repeat === Repeat.month) {
       if (this.monthDay.number === null) {
         result = this.dateStart.day.toString();

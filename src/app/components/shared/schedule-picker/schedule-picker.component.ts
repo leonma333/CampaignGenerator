@@ -241,20 +241,13 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
     if (this.mainForm.get('selectedRepeatPeriod').value === 'day') {
       result = 'day';
     } else if (this.mainForm.get('selectedRepeatPeriod').value === 'week') {
-      let allDay = true;
       const controls = this.getWeekGroupControls();
       Object.keys(controls).forEach(key => {
         if (controls[key].value) {
           result += Schedule.getWeekDayName(+key) + ', ';
-        } else {
-          allDay = false;
         }
       });
-      if (allDay) {
-        result = 'day';
-      } else {
-        result = result.slice(0, -2);
-      }
+      result = result.slice(0, -2);
     } else if (this.mainForm.get('selectedRepeatPeriod').value === 'month') {
       if (this.mainForm.get('monthYearGroupForm').get('selectedMonthType').value === 'monthday') {
         result = this.mainForm.get('selectedDate').value.day.toString();
