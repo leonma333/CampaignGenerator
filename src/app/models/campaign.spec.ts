@@ -8,7 +8,7 @@ type ScheduleStruct = {
   type: string;
 };
 
-fdescribe('Model: Campaign', () => {
+describe('Model: Campaign', () => {
   let campaign: Campaign;
 
   beforeEach(() => {
