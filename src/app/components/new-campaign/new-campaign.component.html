@@ -3,11 +3,7 @@
     <input type="text" class="form-control name" placeholder="Campaign's name" aria-label="Campaign's name" aria-describedby="button-addon2" formControlName="name" required>
   </div>
   <div class="mt-2">
-    <quill-editor
-      [styles]="{'min-height': '300px'}"
-      format="object"
-      formControlName="content">
-    </quill-editor>
+    <app-quill [styles]="{'min-height': '300px'}" formControlName="content"></app-quill>
   </div>
   <div class="mt-2">
     <ngb-accordion [closeOthers]="true" activeIds="static-1">

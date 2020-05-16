@@ -19,6 +19,7 @@ import { DashboardPreviewComponent } from './components/dashboard-preview/dashbo
 import { ViewCampaignComponent } from './components/view-campaign/view-campaign.component';
 import { ModalConfirmComponent } from './components/shared/modal-confirm/modal-confirm.component';
 import { SchedulePickerComponent } from './components/shared/schedule-picker/schedule-picker.component';
+import { QuillComponent } from './components/shared/quill/quill.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { SchedulePickerComponent } from './components/shared/schedule-picker/sch
     DashboardPreviewComponent,
     ViewCampaignComponent,
     ModalConfirmComponent,
-    SchedulePickerComponent
+    SchedulePickerComponent,
+    QuillComponent
   ],
   imports: [
     FormsModule,
