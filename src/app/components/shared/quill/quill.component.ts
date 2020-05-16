@@ -16,42 +16,42 @@ import 'quill-emoji/dist/quill-emoji.js';
   ]
 })
 export class QuillComponent implements OnInit, ControlValueAccessor {
-	@Input() styles: object;
+  @Input() styles: object;
 
-	modules: object;
-	content: FormControl = new FormControl(null);
+  modules: object;
+  content: FormControl = new FormControl(null);
 
-	private propagateChange = (_: any) => { };
+  private propagateChange = (_: any) => { };
 
   constructor() {
-  	this.modules = {
-  		'emoji-shortname': true,
+    this.modules = {
+      'emoji-shortname': true,
       'emoji-toolbar': true,
       toolbar: {
-      	container: [
-      		['bold', 'italic', 'underline', 'strike'],
+        container: [
+          ['bold', 'italic', 'underline', 'strike'],
           ['blockquote', 'code-block'],
-          [{ 'header': 1 }, { 'header': 2 }],
-          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-          [{ 'script': 'sub' }, { 'script': 'super' }],
-          [{ 'indent': '-1' }, { 'indent': '+1' }],
-          [{ 'direction': 'rtl' }],
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'font': [] }],
-          [{ 'align': [] }],
+          [{header: 1 }, {header: 2 }],
+          [{list: 'ordered' }, {list: 'bullet' }],
+          [{script: 'sub' }, {script: 'super' }],
+          [{indent: '-1' }, {indent: '+1' }],
+          [{direction: 'rtl' }],
+          [{header: [1, 2, 3, 4, 5, 6, false] }],
+          [{color: [] }, {background: [] }],
+          [{font: [] }],
+          [{align: [] }],
           ['clean'],
           ['emoji'],
           ['link', 'image', 'video']
         ]
       }
-    }
+    };
   }
 
   ngOnInit(): void {
-  	this.content.valueChanges.subscribe(content => {
-  		this.propagateChange(content);
-  	});
+    this.content.valueChanges.subscribe(content => {
+      this.propagateChange(content);
+    });
   }
 
   writeValue(obj: any) {
