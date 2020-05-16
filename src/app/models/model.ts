@@ -3,14 +3,14 @@ export abstract class Model {
     throw new Error('not implemented!');
   }
 
-  abstract value(): object;
-  abstract from(value: any): void;
-
-  sanitize(obj: any): object {
+  static sanitize(obj: any): object {
     try {
       return JSON.parse(JSON.stringify(obj));
     } catch {
       return {};
     }
   }
+
+  abstract value(): object;
+  abstract from(value: any): void;
 }
