@@ -2,7 +2,7 @@
 
 [![CampaignGenerator Build Status](https://travis-ci.org/Liang-Hsuan/CampaignGenerator.svg?branch=master)](https://travis-ci.org/Liang-Hsuan/CampaignGenerator)
 [![CampaignGenerator Codecov](https://codecov.io/gh/Liang-Hsuan/CampaignGenerator/branch/master/graph/badge.svg)](https://codecov.io/gh/Liang-Hsuan/CampaignGenerator)
-![CampaignGenerator Docker Pulls](https://img.shields.io/docker/pulls/leonma333/campaign-generator)
+[![CampaignGenerator Docker Pulls](https://img.shields.io/docker/pulls/leonma333/campaign-generator)](https://hub.docker.com/r/leonma333/campaign-generator)
 
 CampaignGenerator is an open-sourced web project that allows admin users to create marketing campaigns using WYSIWYG (What You See Is What You Get) editor. By using the rich text editor, admins can create nice-looking campaigns easily and quickly. Admins can also save the template and reuse it when creating a new campaign. For each campaign, the admin can apply the demographics that the campaign is targeting. In the end, there is a list of campaigns and templates for marketing.
 
