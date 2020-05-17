@@ -3,18 +3,21 @@
   <div class="border quill-container">
     <quill-view class="preview-quill" [content]="campaign.content" [preserveWhitespace]="true" format="object"></quill-view>
   </div>
-  <div class="btn-group" role="group">
-    <button class="btn btn-primary btn-sm new" routerLink='/new' [queryParams]="{ id: campaign.id }" placement="bottom" ngbTooltip="Create new from this">
-      <fa-icon [icon]="faPlus"></fa-icon>
-    </button>
-    <button class="btn btn-light btn-sm view" [routerLink]="['/view', campaign.id]" placement="bottom" ngbTooltip="Details">
-      <fa-icon [icon]="faSearch"></fa-icon>
-    </button>
-    <button class="btn btn-light btn-sm edit" [routerLink]="['/edit', campaign.id]" placement="bottom" ngbTooltip="Edit">
-      <fa-icon [icon]="faPen"></fa-icon>
-    </button>
-    <button class="btn btn-danger btn-sm delete" [routerLink]="" (click)="delete()" placement="bottom" ngbTooltip="Delete">
-      <fa-icon [icon]="faTrash" [styles]="{'color': 'white'}"></fa-icon>
-    </button>
+  <div>
+    <div class="btn-group" role="group">
+      <button class="btn btn-primary btn-sm new" routerLink='/new' [queryParams]="{ id: campaign.id }" placement="bottom" ngbTooltip="Create new from this">
+        <fa-icon [icon]="faPlus"></fa-icon>
+      </button>
+      <button class="btn btn-light btn-sm view" [routerLink]="['/view', campaign.id]" placement="bottom" ngbTooltip="Details">
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </button>
+      <button class="btn btn-light btn-sm edit" [routerLink]="['/edit', campaign.id]" placement="bottom" ngbTooltip="Edit">
+        <fa-icon [icon]="faPen"></fa-icon>
+      </button>
+      <button class="btn btn-danger btn-sm delete" [routerLink]="" (click)="delete()" placement="bottom" ngbTooltip="Delete">
+        <fa-icon [icon]="faTrash" [styles]="{'color': 'white'}"></fa-icon>
+      </button>
+    </div>
+    <small class="text-muted float-right">Started on <u>{{campaign.schedule.dateStart.year}}-{{campaign.schedule.dateStart.month}}-{{campaign.schedule.dateStart.day}}</u></small>
   </div>
 </div>

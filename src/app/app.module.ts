@@ -20,6 +20,7 @@ import { ViewCampaignComponent } from './components/view-campaign/view-campaign.
 import { ModalConfirmComponent } from './components/shared/modal-confirm/modal-confirm.component';
 import { SchedulePickerComponent } from './components/shared/schedule-picker/schedule-picker.component';
 import { QuillComponent } from './components/shared/quill/quill.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { QuillComponent } from './components/shared/quill/quill.component';
     ViewCampaignComponent,
     ModalConfirmComponent,
     SchedulePickerComponent,
-    QuillComponent
+    QuillComponent,
+    NotFoundComponent
   ],
   imports: [
     FormsModule,

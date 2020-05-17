@@ -4,7 +4,7 @@ export class Campaign extends Model {
   public id: string;
   public name: string;
   public content: object;
-  public schedule: object;
+  public schedule: any;
 
   constructor(id: string, name: string, content: object, schedule: object) {
     super();
