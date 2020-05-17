@@ -34,7 +34,9 @@
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/quill-emoji/dist/quill-emoji.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/quill/dist/quill.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -102,7 +104,9 @@
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/quill-emoji/dist/quill-emoji.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/quill/dist/quill.min.js"
+            ]
           }
         },
         "lint": {

@@ -1,7 +1,11 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+import Quill from 'quill';
 import 'quill-emoji/dist/quill-emoji.js';
+
+import ImageResize from 'quill-image-resize-module';
+Quill.register('modules/imageResize', ImageResize);
 
 @Component({
   selector: 'app-quill',
@@ -27,6 +31,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
     this.modules = {
       'emoji-shortname': true,
       'emoji-toolbar': true,
+      imageResize: true,
       toolbar: {
         container: [
           ['bold', 'italic', 'underline', 'strike'],
