@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule, FormsModule, FormControl, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormBuilder } from '@angular/forms';
 import { Component, ViewChild, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
@@ -113,7 +113,7 @@ describe('Component: SchedulePickerComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule, FormsModule, NgbModule ],
+        imports: [ReactiveFormsModule, NgbModule ],
         providers: [
           FormBuilder, {
             privide: NgbDateParserFormatter,
@@ -176,7 +176,7 @@ describe('Component: SchedulePickerComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule, FormsModule, NgbModule ],
+        imports: [ReactiveFormsModule, NgbModule ],
         providers: [
           FormBuilder, {
             privide: NgbDateParserFormatter,
@@ -211,7 +211,7 @@ describe('Component: SchedulePickerComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule, FormsModule, NgbModule ],
+        imports: [ReactiveFormsModule, NgbModule ],
         providers: [
           FormBuilder, {
             privide: NgbDateParserFormatter,
@@ -274,7 +274,7 @@ describe('Component: SchedulePickerComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule, FormsModule, NgbModule ],
+        imports: [ReactiveFormsModule, NgbModule ],
         providers: [
           FormBuilder, {
             privide: NgbDateParserFormatter,
