@@ -2,5 +2,6 @@
   [formControl]="content"
   [modules]="modules"
   [styles]="styles"
-  format="object">
+  format="object"
+  (onEditorCreated)="initializeQuill($event)">
 </quill-editor>

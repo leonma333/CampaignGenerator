@@ -1,7 +1,11 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+import Quill from 'quill';
 import 'quill-emoji/dist/quill-emoji.js';
+
+import ImageResize from 'quill-image-resize-module';
+Quill.register('modules/imageResize', ImageResize);
 
 @Component({
   selector: 'app-quill',
@@ -27,6 +31,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
     this.modules = {
       'emoji-shortname': true,
       'emoji-toolbar': true,
+      imageResize: true,
       toolbar: {
         container: [
           ['bold', 'italic', 'underline', 'strike'],
@@ -36,10 +41,10 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
           [{script: 'sub' }, {script: 'super' }],
           [{indent: '-1' }, {indent: '+1' }],
           [{direction: 'rtl' }],
-          [{header: [1, 2, 3, 4, 5, 6, false] }],
-          [{color: [] }, {background: [] }],
-          [{font: [] }],
-          [{align: [] }],
+          [{header: [1, 2, 3, 4, 5, 6, false]}],
+          [{color: []}, {background: []}],
+          [{font: []}],
+          [{align: []}],
           ['clean'],
           ['emoji'],
           ['link', 'image', 'video']
@@ -65,4 +70,24 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
   }
 
   registerOnTouched() { }
+
+  initializeQuill(quill: any) {
+    const tooltip = quill.theme.tooltip;
+    tooltip.textbox.setAttribute('data-image', 'Image URL');
+
+    const imageHandler = () => {
+      const originalSave = tooltip.save;
+      tooltip.save = () => {
+        const range = quill.getSelection(true);
+        const value = tooltip.textbox.value;
+        if (value) {
+          quill.insertEmbed(range.index, 'image', value, 'user');
+        }
+        tooltip.save = originalSave;
+      };
+      tooltip.edit('image');
+    };
+    const toolbar = quill.getModule('toolbar');
+    toolbar.addHandler('image', imageHandler);
+  }
 }
