@@ -5,6 +5,7 @@ import { Component, ViewChild } from '@angular/core';
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 
 import { QuillComponent } from './quill.component';
+import { Model } from '../../../models/model';
 
 @Component({
   template: '<app-quill [formControl]="content"></app-quill>'
@@ -50,6 +51,21 @@ describe('Component: QuillComponent', () => {
       component.content.setValue({ops: [{insert: {emoji: 'dog'}}]});
       fixture.detectChanges();
       expectEditorContent('\u{1F436}', fixture);
+    });
+
+    it('add image', (done) => {
+      new Promise(resolve => setTimeout(resolve, 1000)).then(() => { // wait for onEditorCreated
+        const imageEl = fixture.nativeElement.querySelector('button.ql-image');
+        imageEl.click();
+        fixture.detectChanges();
+        const urlEl = fixture.nativeElement.querySelector('input[data-image="Image URL"]');
+        urlEl.value = 'image.jpg';
+        const saveEl = fixture.nativeElement.querySelector('.ql-tooltip .ql-action');
+        saveEl.click();
+        fixture.detectChanges();
+        expect(Model.sanitize(component.content.value)).toEqual({ops: [{insert: {image: 'image.jpg'}}, {insert: '\n'}]});
+        done();
+      });
     });
   });
 

@@ -1,0 +1,7 @@
+::ng-deep .ql-snow {
+  .ql-tooltip {
+    &[data-mode=image]::before {
+      content: "Image link:";
+    }
+  }
+}
