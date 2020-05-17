@@ -7,12 +7,13 @@ import { DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { of } from 'rxjs';
-import { QuillModule, QuillEditorComponent } from 'ngx-quill';
+import { QuillModule } from 'ngx-quill';
 
 import { Schedule } from '../../models/schedule';
 import { campaigns } from '../../mocks/campaigns';
 import { CampaignService } from '../../services/campaign.service';
 import { NewCampaignComponent } from './new-campaign.component';
+import { QuillComponent } from '../shared/quill/quill.component';
 import { SchedulePickerComponent } from '../shared/schedule-picker/schedule-picker.component';
 
 describe('Component: NewCampaignComponent', () => {
@@ -36,7 +37,7 @@ describe('Component: NewCampaignComponent', () => {
           }
         }
       ],
-      declarations: [ NewCampaignComponent, QuillEditorComponent, SchedulePickerComponent ]
+      declarations: [ NewCampaignComponent, QuillComponent, SchedulePickerComponent ]
     })
     .compileComponents();
   }));
