@@ -25,10 +25,11 @@ class ImageFormat extends BaseImageFormat {
   }
   format(name, value) {
     if (ImageFormatAttributesList.indexOf(name) > -1) {
+      const instance = this as any;
       if (value) {
-        this.domNode.setAttribute(name, value);
+        instance.domNode.setAttribute(name, value);
       } else {
-        this.domNode.removeAttribute(name);
+        instance.domNode.removeAttribute(name);
       }
     } else {
       super.format(name, value);
