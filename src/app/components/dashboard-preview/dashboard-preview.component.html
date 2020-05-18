@@ -18,6 +18,6 @@
         <fa-icon [icon]="faTrash" [styles]="{'color': 'white'}"></fa-icon>
       </button>
     </div>
-    <small class="text-muted float-right date">Started on <u>{{campaign.schedule.dateStart.year}}-{{campaign.schedule.dateStart.month}}-{{campaign.schedule.dateStart.day}}</u></small>
+    <small class="text-muted float-right start-date">Started on <u>{{dateFormatter.format(campaign.schedule.dateStart)}}</u></small>
   </div>
 </div>

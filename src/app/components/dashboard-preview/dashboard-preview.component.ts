@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { faPlus, faPen, faTrash, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import { Campaign } from '../../models/campaign';
@@ -20,7 +20,7 @@ export class DashboardPreviewComponent implements OnInit {
   faTrash = faTrash;
   faSearch = faSearch;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(public dateFormatter: NgbDateParserFormatter, private modalService: NgbModal) { }
 
   ngOnInit(): void {
   }

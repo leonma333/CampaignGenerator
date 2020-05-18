@@ -4,11 +4,12 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuillModule, QuillViewComponent } from 'ngx-quill';
+import { NgbModal, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
+import { NgbDateISOParserFormatter } from '../../mocks/ngb-date';
 import { DashboardPreviewComponent } from './dashboard-preview.component';
 import { NewCampaignComponent } from '../new-campaign/new-campaign.component';
 import { ViewCampaignComponent } from '../view-campaign/view-campaign.component';
@@ -31,7 +32,12 @@ describe('Component: DashboardPreviewComponent', () => {
           { path: 'view/:id', component: ViewCampaignComponent }
         ])
       ],
-      providers: [ NgbModal ],
+      providers: [
+        NgbModal, {
+          privide: NgbDateParserFormatter,
+          useClass: NgbDateISOParserFormatter
+        }
+      ],
       declarations: [ DashboardPreviewComponent, QuillViewComponent ]
     })
     .compileComponents();
@@ -55,9 +61,11 @@ describe('Component: DashboardPreviewComponent', () => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('h3'));
     const editorEl: DebugElement = de.query(By.css('.ql-editor'));
+    const startDateEl: DebugElement = de.query(By.css('.start-date'));
 
     expect(nameEl.nativeElement.innerText).toBe('first campaign');
     expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
+    expect(startDateEl.nativeElement.innerText).toBe('Started on 2020-06-30');
   });
 
   it('should direct to new page with id when click new button', fakeAsync(() => {
