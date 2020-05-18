@@ -16,7 +16,7 @@ const ImageFormatAttributesList = [
 ];
 class ImageFormat extends BaseImageFormat {
   static formats(domNode) {
-    return ImageFormatAttributesList.reduce(function(formats, attribute) {
+    return ImageFormatAttributesList.reduce((formats, attribute) => {
       if (domNode.hasAttribute(attribute)) {
         formats[attribute] = domNode.getAttribute(attribute);
       }
