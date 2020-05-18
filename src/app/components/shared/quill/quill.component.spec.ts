@@ -1,5 +1,5 @@
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { Component, ViewChild } from '@angular/core';
 
 import { QuillModule, QuillEditorComponent } from 'ngx-quill';
@@ -7,13 +7,42 @@ import { QuillModule, QuillEditorComponent } from 'ngx-quill';
 import { QuillComponent } from './quill.component';
 import { Model } from '../../../models/model';
 
+const displayContent1 = {
+  ops: [
+    {insert: 'Hello world!'},
+    {insert: '\n'},
+    {
+      insert: {image: 'https://www.w3schools.com/angular/pic_angular.jpg'},
+      attributes: {style: 'display:block;margin:auto', width: '300'}
+    }
+  ]
+};
+
+const displayContent2 = {
+  ops: [
+    {
+      insert: {image: 'https://www.w3schools.com/angular/pic_angular.jpg'},
+      attributes: {style: '', width: '300'}
+    }
+  ]
+};
+
 @Component({
   template: '<app-quill [formControl]="content"></app-quill>'
 })
 class TestDataQuillComponent {
   @ViewChild(QuillComponent)
   quillComponent: QuillComponent;
-  content: FormControl = new FormControl({ops: [{insert: 'Hello world!'}]});
+  content: FormControl = new FormControl(displayContent1);
+}
+
+@Component({
+  template: '<app-quill [formControl]="content"></app-quill>'
+})
+class TestDataEmptyAttributeQuillComponent {
+  @ViewChild(QuillComponent)
+  quillComponent: QuillComponent;
+  content: FormControl = new FormControl(displayContent2);
 }
 
 describe('Component: QuillComponent', () => {
@@ -70,27 +99,35 @@ describe('Component: QuillComponent', () => {
   });
 
   describe('with input', () => {
-    let component: TestDataQuillComponent;
-    let fixture: ComponentFixture<TestDataQuillComponent>;
-
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         imports: [ QuillModule.forRoot(), ReactiveFormsModule ],
-        declarations: [ TestDataQuillComponent, QuillComponent ]
+        declarations: [ TestDataQuillComponent, TestDataEmptyAttributeQuillComponent, QuillComponent ]
       })
       .compileComponents();
     }));
 
-    beforeEach(() => {
-      fixture = TestBed.createComponent(TestDataQuillComponent);
-      component = fixture.componentInstance;
+    it('should create', () => {
+      const fixture = TestBed.createComponent(TestDataQuillComponent);
+      const component = fixture.componentInstance;
       fixture.detectChanges();
+      expect(component.quillComponent).toBeTruthy();
+      expect(component.quillComponent.content.value).toEqual(displayContent1);
+      expectEditorContent('Hello world!', fixture);
+
+      const imageEl = fixture.nativeElement.querySelector('.ql-editor img');
+      expect(imageEl.getAttribute('style')).toBe('display:block;margin:auto');
     });
 
-    it('should create', () => {
+    it('empty attribute value should be removed', () => {
+      const fixture = TestBed.createComponent(TestDataEmptyAttributeQuillComponent);
+      const component = fixture.componentInstance;
+      fixture.detectChanges();
       expect(component.quillComponent).toBeTruthy();
-      expect(component.quillComponent.content.value).toEqual({ops: [{insert: 'Hello world!'}]});
-      expectEditorContent('Hello world!', fixture);
+      expect(component.quillComponent.content.value).toEqual(displayContent2);
+
+      const imageEl = fixture.nativeElement.querySelector('.ql-editor img');
+      expect(imageEl.getAttribute('style')).toBeNull();
     });
   });
 });

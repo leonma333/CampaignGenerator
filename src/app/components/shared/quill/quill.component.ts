@@ -7,6 +7,37 @@ import 'quill-emoji/dist/quill-emoji.js';
 import ImageResize from 'quill-image-resize-module';
 Quill.register('modules/imageResize', ImageResize);
 
+const BaseImageFormat = Quill.import('formats/image');
+const ImageFormatAttributesList = [
+    'alt',
+    'height',
+    'width',
+    'style'
+];
+class ImageFormat extends BaseImageFormat {
+  static formats(domNode) {
+    return ImageFormatAttributesList.reduce((formats, attribute) => {
+      if (domNode.hasAttribute(attribute)) {
+        formats[attribute] = domNode.getAttribute(attribute);
+      }
+      return formats;
+    }, {});
+  }
+  format(name, value) {
+    if (ImageFormatAttributesList.indexOf(name) > -1) {
+      const instance = this as any;
+      if (value) {
+        instance.domNode.setAttribute(name, value);
+      } else {
+        instance.domNode.removeAttribute(name);
+      }
+    } else {
+      super.format(name, value);
+    }
+  }
+}
+Quill.register(ImageFormat, true);
+
 @Component({
   selector: 'app-quill',
   templateUrl: './quill.component.html',

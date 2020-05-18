@@ -11,10 +11,10 @@ import { DashboardPreviewComponent } from '../dashboard-preview/dashboard-previe
 
 describe('Component: DashboardComponent', () => {
   const campaigns = of([
-    new Campaign('1', '', {ops: []}, {type: 'onetime'}),
-    new Campaign('2', '', {ops: []}, {type: 'onetime'}),
-    new Campaign('3', '', {ops: []}, {type: 'onetime'}),
-    new Campaign('4', '', {ops: []}, {type: 'onetime'})
+    new Campaign('1', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 30}}),
+    new Campaign('2', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 30}}),
+    new Campaign('3', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 30}}),
+    new Campaign('4', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 30}})
   ]);
 
   let component: DashboardComponent;
