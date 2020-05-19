@@ -7,7 +7,7 @@
 
 CampaignGenerator is a fully working open-sourced web boilerplate project that allows admin users to create marketing campaigns using WYSIWYG (What You See Is What You Get) editor. By using the rich text editor, admins can create nice-looking campaigns easily and quickly. Admins can also save the template and reuse it when creating a new campaign. For each campaign, the admin can apply the demographics that the campaign is targeting and the desired schedule to send. In the end, there is a list of campaigns and templates for marketing.
 
-See [Wiki](https://github.com/Liang-Hsuan/CampaignGenerator/wiki) page for more details.
+See [wiki](https://github.com/Liang-Hsuan/CampaignGenerator/wiki) page for more details.
 
 ## Quick start
 
@@ -21,7 +21,7 @@ Go to https://campaign-generator-prod.web.app/
 
 [Docker Hub](https://hub.docker.com/repository/docker/leonma333/campaign-generator)
 
-Go to your Firebase console and find the web config then run:
+Go to your Firebase console and find your web config then run:
 
 ``` Bash
 docker run \
