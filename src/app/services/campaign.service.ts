@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 
+import * as firebase from 'firebase';
+
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Campaign } from '../models/campaign';
+import { Schedule } from '../models/schedule';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +17,11 @@ export class CampaignService {
 
   constructor(public db: AngularFirestore) {}
 
-  getAll(): Observable<Array<Campaign>> {
-    return this.db.collection(this.collection).snapshotChanges().pipe(
+  asIsOrder = (a, b) => 1;
+
+  getAll(sort: string): Observable<Array<Campaign>> {
+    const dbRef = this.db.collection(this.collection, ref => ref.orderBy(sort, 'desc'));
+    return dbRef.snapshotChanges().pipe(
       map(snapshots => {
         return snapshots.map(snapshot => {
           const doc = snapshot.payload.doc as any;
@@ -34,16 +40,20 @@ export class CampaignService {
     );
   }
 
-  add(name: string, content: object, schedule: object): Promise<any> {
+  add(name: string, content: any, schedule: any): Promise<any> {
     return this.db.collection(this.collection).add({
       name,
       content: Campaign.sanitize(content),
-      schedule: Campaign.sanitize(schedule)
+      schedule: Campaign.sanitize(schedule),
+      start: Schedule.toTimestamp(schedule.dateStart, schedule.time),
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
   }
 
   save(campaign: Campaign): Promise<any> {
-    const value = campaign.value();
+    const value = campaign.value() as any;
+    value.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+    value.start = Schedule.toTimestamp(value.schedule.dateStart, value.schedule.time);
     return this.db.collection(this.collection).doc(campaign.id).set(value);
   }
 
