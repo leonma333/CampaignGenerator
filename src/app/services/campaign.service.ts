@@ -61,7 +61,14 @@ export class CampaignService {
       .startAt(term)
       .endAt(term + '\uf8ff')
       .limit(5)
-    ).valueChanges();
+    ).snapshotChanges().pipe(
+      map(snapshots => {
+        return snapshots.map(snapshot => {
+          const doc = snapshot.payload.doc as any;
+          return new Campaign(doc.id, doc.data().name, doc.data().content, doc.data().schedule);
+        });
+      })
+    );
   }
 
   delete(id: string): Promise<any> {

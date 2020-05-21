@@ -1,7 +1,8 @@
+import { FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { Subscription, Observable } from 'rxjs';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { Campaign } from '../../models/campaign';
@@ -19,7 +20,7 @@ export class DashboardComponent implements OnInit {
 
   loading = true;
   faSpinner = faSpinner;
-  searchTerm: any;
+  searchTerm = new FormControl(null);
   selectedSort = 'timestamp';
   sorts = {
     timestamp: 'Updated at',
@@ -36,6 +37,14 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeCampaigns();
+    this.searchTerm.valueChanges.subscribe(result => {
+      if (result instanceof Campaign) {
+        this.campaigns = [result];
+        this.resetCampaignGroups();
+      } else if (!result) {
+        this.initializeCampaigns(this.selectedSort);
+      }
+    });
   }
 
   initializeCampaigns(sort = 'timestamp'): void {
@@ -68,7 +77,6 @@ export class DashboardComponent implements OnInit {
   }
 
   changeSort(newSort: string): void {
-    console.log(`change to ${newSort}`);
     this.selectedSort = newSort;
     this.initializeCampaigns(newSort);
   }

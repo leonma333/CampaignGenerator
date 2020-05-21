@@ -6,7 +6,7 @@
       <button class="btn btn-primary" routerLink='/new'>Add Campaign</button>
     </div>
     <div class="col-sm-8 col-md-4">
-      <input class="float-sm-right mb-2 form-control search" type="text" [(ngModel)]="searchTerm" [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter" placeholder="Campaign search" />
+      <input class="float-sm-right mb-2 form-control search" type="text" [formControl]="searchTerm" [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter" placeholder="Campaign search" />
       <div ngbDropdown class="d-inline-block float-sm-right">
         Sort by:
         <button class="btn btn-outline-primary" id="sortBy" ngbDropdownToggle>{{sorts[selectedSort]}}</button>
