@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Subscription } from 'rxjs';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { Subscription, Observable } from 'rxjs';
+import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
 
 @Component({
   selector: 'app-dashboard',
+  providers: [CampaignService],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -17,6 +19,7 @@ export class DashboardComponent implements OnInit {
 
   loading = true;
   faSpinner = faSpinner;
+  searchTerm: any;
   selectedSort = 'timestamp';
   sorts = {
     timestamp: 'Updated at',
@@ -26,6 +29,10 @@ export class DashboardComponent implements OnInit {
   private campaigns$: Subscription;
 
   constructor(private campaignService: CampaignService) { }
+
+  asIsOrder = (a, b) => 1;
+
+  formatter = (result: any) => result.name;
 
   ngOnInit(): void {
     this.initializeCampaigns();
@@ -48,6 +55,16 @@ export class DashboardComponent implements OnInit {
     for (let i = 0; i < this.campaigns.length; i += 3) {
       this.campaignGroups.push(this.campaigns.slice(i, i + 3));
     }
+  }
+
+  search = (text$: Observable<string>) => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(term =>
+        this.campaignService.search(term)
+      ),
+    );
   }
 
   changeSort(newSort: string): void {

@@ -1,12 +1,19 @@
 <h1 class="bd-title">My Campaigns</h1>
 <hr>
 <div class="mb-3 mb-md-5">
-  <button class="btn btn-primary" routerLink='/new'>Add Campaign</button>
-  <div ngbDropdown class="d-inline-block float-right">
-    Sort by:
-    <button class="btn btn-outline-primary" id="sortBy" ngbDropdownToggle>{{sorts[selectedSort]}}</button>
-    <div ngbDropdownMenu aria-labelledby="sortBy">
-      <button type="button" *ngFor="let sort of sorts | keyvalue: asIsOrder" (click)="changeSort(sort.key)" ngbDropdownItem>{{sort.value}}</button>
+  <div class="row">
+    <div class="col-sm-4 col-md-8 mb-2 mb-sm-0">
+      <button class="btn btn-primary" routerLink='/new'>Add Campaign</button>
+    </div>
+    <div class="col-sm-8 col-md-4">
+      <input class="float-sm-right mb-2 form-control search" type="text" [(ngModel)]="searchTerm" [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter" placeholder="Campaign search" />
+      <div ngbDropdown class="d-inline-block float-sm-right">
+        Sort by:
+        <button class="btn btn-outline-primary" id="sortBy" ngbDropdownToggle>{{sorts[selectedSort]}}</button>
+        <div ngbDropdownMenu aria-labelledby="sortBy">
+          <button type="button" *ngFor="let sort of sorts | keyvalue: asIsOrder" (click)="changeSort(sort.key)" ngbDropdownItem>{{sort.value}}</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

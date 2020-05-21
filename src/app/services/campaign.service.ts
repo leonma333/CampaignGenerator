@@ -17,8 +17,6 @@ export class CampaignService {
 
   constructor(public db: AngularFirestore) {}
 
-  asIsOrder = (a, b) => 1;
-
   getAll(sort: string): Observable<Array<Campaign>> {
     const dbRef = this.db.collection(this.collection, ref => ref.orderBy(sort, 'desc'));
     return dbRef.snapshotChanges().pipe(
@@ -55,6 +53,15 @@ export class CampaignService {
     value.timestamp = firebase.firestore.FieldValue.serverTimestamp();
     value.start = Schedule.toTimestamp(value.schedule.dateStart, value.schedule.time);
     return this.db.collection(this.collection).doc(campaign.id).set(value);
+  }
+
+  search(term: string): Observable<any> {
+    return this.db.collection(this.collection, ref =>
+      ref.orderBy('name')
+      .startAt(term)
+      .endAt(term + '\uf8ff')
+      .limit(5)
+    ).valueChanges();
   }
 
   delete(id: string): Promise<any> {
