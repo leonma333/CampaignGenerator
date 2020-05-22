@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { AngularFirestore } from '@angular/fire/firestore';
 
+import * as moment from 'moment';
+
 import { Campaign } from '../models/campaign';
 import { CampaignService } from './campaign.service';
 import { FirestoreStub } from '../mocks/firestore';
@@ -27,16 +29,22 @@ describe('Service: CampaignService', () => {
 
   describe('#getAll', () => {
     it('should return 2 campaigns', (done) => {
-      service.getAll().subscribe(result => {
+      service.getAll('timestamp').subscribe(result => {
         expect(result.length).toEqual(2);
         expect(result[0].id).toEqual('1');
         expect(result[0].name).toEqual('first campaign');
         expect(result[0].content).toEqual({ops: [{insert: 'Foo'}]});
-        expect(result[0].schedule).toEqual({type: 'onetime'});
+        expect(result[0].schedule).toEqual({
+          dateStart: {year: 2020, month: 5, day: 25},
+          time: {hour: 10, minute: 10, second: 0}
+        });
         expect(result[1].id).toEqual('2');
         expect(result[1].name).toEqual('second campaign');
         expect(result[1].content).toEqual({ops: [{insert: 'Bar'}]});
-        expect(result[1].schedule).toEqual({type: 'recurring'});
+        expect(result[1].schedule).toEqual({
+          dateStart: {year: 2020, month: 6, day: 30},
+          time: {hour: 20, minute: 20, second: 0}
+        });
         done();
       });
     });
@@ -48,7 +56,10 @@ describe('Service: CampaignService', () => {
         expect(result.id).toEqual('1');
         expect(result.name).toEqual('first campaign');
         expect(result.content).toEqual({ops: [{insert: 'Foo'}]});
-        expect(result.schedule).toEqual({type: 'onetime'});
+        expect(result.schedule).toEqual({
+          dateStart: {year: 2020, month: 5, day: 25},
+          time: {hour: 10, minute: 10, second: 0}
+        });
         done();
       });
     });
@@ -56,15 +67,22 @@ describe('Service: CampaignService', () => {
 
   describe('#add', () => {
     it('should add new campaign#3', (done) => {
-      const campaign = new Campaign('3', 'My campaign', {ops: [{insert: 'Hello world'}]}, {type: 'onetime'});
+      const today = moment.utc('2020-05-20').toDate();
+      jasmine.clock().mockDate(today);
+
+      const campaign = new Campaign('3', 'My campaign', {ops: [{insert: 'Hello world'}]}, {
+          dateStart: {year: 2020, month: 5, day: 25},
+          time: {hour: 10, minute: 10, second: 0}
+        });
       service.add(campaign.name, campaign.content, campaign.schedule).then(result => {
         expect(result).toBe('You just added it');
         expect(firestore.collection().add).toHaveBeenCalledTimes(1);
-        expect(firestore.collection().add).toHaveBeenCalledWith({
-          name: campaign.name,
-          content: campaign.content,
-          schedule: campaign.schedule
-        });
+        const args = firestore.collection().add.calls.argsFor(0)[0];
+        expect(args.name).toBe(campaign.name);
+        expect(args.content).toEqual(campaign.content);
+        expect(args.schedule).toEqual(campaign.schedule);
+        expect(args.start).toBe(1590401400);
+        expect(args.timestamp.Rc).toBe('FieldValue.serverTimestamp');
         done();
       });
     });
@@ -72,16 +90,23 @@ describe('Service: CampaignService', () => {
 
   describe('#save', () => {
     it('should override campaign#1', (done) => {
-      const campaign = new Campaign('1', 'My campaign', {ops: [{insert: 'Hello world'}]}, {type: 'onetime'});
+      const today = moment.utc('2020-05-20').toDate();
+      jasmine.clock().mockDate(today);
+
+      const campaign = new Campaign('1', 'My campaign', {ops: [{insert: 'Hello world'}]}, {
+          dateStart: {year: 2020, month: 5, day: 25},
+          time: {hour: 10, minute: 10, second: 0}
+        });
       service.save(campaign).then(result => {
         expect(result).toBe('You just saved it');
         expect(firestore.collection().doc().set.calls.count()).toBe(1);
         expect(firestore.collection().doc).toHaveBeenCalledWith('1');
-        expect(firestore.collection().doc().set).toHaveBeenCalledWith({
-          name: campaign.name,
-          content: campaign.content,
-          schedule: campaign.schedule
-        });
+        const args = firestore.collection().doc().set.calls.argsFor(0)[0];
+        expect(args.name).toBe(campaign.name);
+        expect(args.content).toEqual(campaign.content);
+        expect(args.schedule).toEqual(campaign.schedule);
+        expect(args.start).toBe(1590401400);
+        expect(args.timestamp.Rc).toBe('FieldValue.serverTimestamp');
         done();
       });
     });

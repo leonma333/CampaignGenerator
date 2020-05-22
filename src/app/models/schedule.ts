@@ -1,4 +1,4 @@
-import { NgbDate, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDate, NgbDateStruct, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import * as moment from 'moment';
 
@@ -91,6 +91,10 @@ export class Schedule extends Model {
 
   static getWeekOfMonthNameFromDate(date: any): string {
     return nthToStringMap[Schedule.getWeekOfMonth(date)];
+  }
+
+  static toTimestamp(date: NgbDateStruct, time: NgbTimeStruct): number {
+    return moment.utc([date.year, date.month - 1, date.day, time.hour, time.minute, time.second]).utcOffset(0).unix();
   }
 
   value(): object {

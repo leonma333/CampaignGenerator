@@ -71,7 +71,7 @@ describe('Component: SchedulePickerComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule, NgbModule ],
+        imports: [ReactiveFormsModule, NgbModule],
         providers: [
           FormBuilder, {
             privide: NgbDateParserFormatter,

@@ -1,13 +1,29 @@
 <h1 class="bd-title">My Campaigns</h1>
 <hr>
-<button class="btn btn-primary mb-3 mb-md-5" routerLink='/new'>Add Campaign</button>
+<div class="mb-3 mb-md-5">
+  <div class="row">
+    <div class="col-sm-4 col-md-8 mb-2 mb-sm-0">
+      <button class="btn btn-primary" routerLink='/new'>Add Campaign</button>
+    </div>
+    <div class="col-sm-8 col-md-4">
+      <input class="float-sm-right mb-2 form-control search" type="text" [formControl]="searchTerm" [ngbTypeahead]="search" [resultFormatter]="formatter" [inputFormatter]="formatter" placeholder="Campaign search" />
+      <div ngbDropdown class="d-inline-block float-sm-right">
+        Sort by:
+        <button class="btn btn-outline-primary" id="sortBy" ngbDropdownToggle>{{sorts[selectedSort]}}</button>
+        <div ngbDropdownMenu aria-labelledby="sortBy">
+          <button type="button" *ngFor="let sort of sorts | keyvalue: asIsOrder" (click)="changeSort(sort.key)" ngbDropdownItem>{{sort.value}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="d-flex justify-content-center loading" *ngIf="loading">
-	<fa-icon [icon]="faSpinner" [spin]="true" size="2x"></fa-icon>
+  <fa-icon [icon]="faSpinner" [spin]="true" size="2x"></fa-icon>
 </div>
 <ng-container *ngIf="!loading">
-	<div class="row" *ngFor="let group of campaignGroups">
-	  <div class="col-md-4 mb-md-4 mb-2" *ngFor="let campaign of group">
-	    <app-dashboard-preview [campaign]="campaign" (deleteId)="delete($event)"></app-dashboard-preview>
-	  </div>
-	</div>
+  <div class="row campaign-group" *ngFor="let group of campaignGroups">
+    <div class="col-md-4 mb-md-4 mb-2" *ngFor="let campaign of group">
+      <app-dashboard-preview [campaign]="campaign" (deleteId)="delete($event)"></app-dashboard-preview>
+    </div>
+  </div>
 </ng-container>
