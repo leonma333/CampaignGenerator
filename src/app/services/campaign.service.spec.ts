@@ -7,7 +7,7 @@ import { Campaign } from '../models/campaign';
 import { CampaignService } from './campaign.service';
 import { FirestoreStub } from '../mocks/firestore';
 
-fdescribe('Service: CampaignService', () => {
+describe('Service: CampaignService', () => {
   let service: CampaignService;
   let firestore: any;
 

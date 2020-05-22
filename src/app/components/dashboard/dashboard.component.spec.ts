@@ -160,5 +160,35 @@ describe('Component: DashboardComponent', () => {
       tick(1500);
       expect(mockCampaignService.search).toHaveBeenCalledTimes(5);
     }));
+
+    it('update search term should show new result', fakeAsync(() => {
+      component.searchTerm.setValue(campaigns[0]);
+
+      tick();
+      fixture.detectChanges();
+
+      let rowEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.campaign-group'));
+      expect(rowEl.length).toBe(1);
+      expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(1);
+      expect(component.campaigns.length).toBe(1);
+
+      component.searchTerm.setValue('Bin');
+
+      tick();
+      fixture.detectChanges();
+
+      rowEl = fixture.debugElement.queryAll(By.css('.campaign-group'));
+      expect(rowEl.length).toBe(1);
+      expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(1);
+      expect(component.campaigns.length).toBe(1);
+
+      component.searchTerm.setValue('');
+
+      tick();
+      fixture.detectChanges();
+
+      rowEl = fixture.debugElement.queryAll(By.css('.campaign-group'));
+      expect(rowEl.length).toBe(2);
+    }));
   });
 });

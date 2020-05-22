@@ -85,5 +85,4 @@ export class DashboardComponent implements OnInit {
     this.resetCampaignGroups();
     this.campaignService.delete(event).then();
   }
-
 }
