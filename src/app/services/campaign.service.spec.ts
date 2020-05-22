@@ -7,7 +7,7 @@ import { Campaign } from '../models/campaign';
 import { CampaignService } from './campaign.service';
 import { FirestoreStub } from '../mocks/firestore';
 
-describe('Service: CampaignService', () => {
+fdescribe('Service: CampaignService', () => {
   let service: CampaignService;
   let firestore: any;
 
@@ -67,7 +67,7 @@ describe('Service: CampaignService', () => {
 
   describe('#add', () => {
     it('should add new campaign#3', (done) => {
-      const today = moment('2020-05-20').toDate();
+      const today = moment.utc('2020-05-20').toDate();
       jasmine.clock().mockDate(today);
 
       const campaign = new Campaign('3', 'My campaign', {ops: [{insert: 'Hello world'}]}, {
@@ -81,7 +81,7 @@ describe('Service: CampaignService', () => {
         expect(args.name).toBe(campaign.name);
         expect(args.content).toEqual(campaign.content);
         expect(args.schedule).toEqual(campaign.schedule);
-        expect(args.start).toBe(1590415800);
+        expect(args.start).toBe(1590401400);
         expect(args.timestamp.Rc).toBe('FieldValue.serverTimestamp');
         done();
       });
@@ -90,7 +90,7 @@ describe('Service: CampaignService', () => {
 
   describe('#save', () => {
     it('should override campaign#1', (done) => {
-      const today = moment('2020-05-20').toDate();
+      const today = moment.utc('2020-05-20').toDate();
       jasmine.clock().mockDate(today);
 
       const campaign = new Campaign('1', 'My campaign', {ops: [{insert: 'Hello world'}]}, {
@@ -105,7 +105,7 @@ describe('Service: CampaignService', () => {
         expect(args.name).toBe(campaign.name);
         expect(args.content).toEqual(campaign.content);
         expect(args.schedule).toEqual(campaign.schedule);
-        expect(args.start).toBe(1590415800);
+        expect(args.start).toBe(1590401400);
         expect(args.timestamp.Rc).toBe('FieldValue.serverTimestamp');
         done();
       });

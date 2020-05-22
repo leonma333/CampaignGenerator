@@ -1,9 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { of } from 'rxjs';
+import { take, map } from 'rxjs/operators';
+import { Observable, interval, of } from 'rxjs';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign } from '../../models/campaign';
@@ -48,13 +49,6 @@ describe('Component: DashboardComponent', () => {
       }
       return of(campaigns);
     });
-    mockCampaignService.search.and.callFake(term => {
-      if (term) {
-        return of([campaigns[0]]);
-      }
-      return of(campaigns);
-    });
-    mockCampaignService.delete.and.returnValue(new Promise(resolve => resolve(true)));
 
     fixture.detectChanges();
   });
@@ -92,6 +86,8 @@ describe('Component: DashboardComponent', () => {
   });
 
   it('should delete campaign', () => {
+    mockCampaignService.delete.and.returnValue(new Promise(resolve => resolve(true)));
+
     let previewComponents: Array<DebugElement> = fixture.debugElement.queryAll(By.directive(DashboardPreviewComponent));
     previewComponents[1].componentInstance.deleteId.emit('2');
 
@@ -136,8 +132,33 @@ describe('Component: DashboardComponent', () => {
   });
 
   describe('search bar', () => {
-    it('#search should return result from campaign service', () => {
+    it('#search should return result from campaign service', fakeAsync(() => {
+      mockCampaignService.search.and.callFake(term => {
+        if (term === 'Bing' || term === 'Bingo') {
+          return of([campaigns[0]]);
+        } else if (term.startsWith('Bin')) {
+          return of([campaigns[0], campaigns[1]]);
+        }
+        return of(campaigns);
+      });
 
-    });
+      const inputTests = ['B', 'Bi', 'Bin', 'Bing', 'Bingo'];
+      const textMock$: Observable<string> = interval(250).pipe(take(5), map(index => inputTests[index]));
+      let i = 0;
+
+      component.search(textMock$).subscribe(result => {
+        if (i < 2) {
+          expect(result).toEqual(campaigns);
+        } else if (i === 2) {
+          expect(result).toEqual([campaigns[0], campaigns[1]]);
+        } else {
+          expect(result).toEqual([campaigns[0]]);
+        }
+        i += 1;
+      });
+
+      tick(1500);
+      expect(mockCampaignService.search).toHaveBeenCalledTimes(5);
+    }));
   });
 });

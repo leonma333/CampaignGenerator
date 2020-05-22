@@ -94,7 +94,7 @@ export class Schedule extends Model {
   }
 
   static toTimestamp(date: NgbDateStruct, time: NgbTimeStruct): number {
-    return moment().year(date.year).month(date.month - 1).date(date.day).hour(time.hour).minute(time.minute).unix();
+    return moment.utc([date.year, date.month - 1, date.day, time.hour, time.minute, time.second]).utcOffset(0).unix();
   }
 
   value(): object {
