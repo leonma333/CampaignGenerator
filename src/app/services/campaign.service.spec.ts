@@ -82,7 +82,7 @@ describe('Service: CampaignService', () => {
         expect(args.content).toEqual(campaign.content);
         expect(args.schedule).toEqual(campaign.schedule);
         expect(args.start).toBe(1590401400);
-        expect(args.timestamp.Rc).toBe('FieldValue.serverTimestamp');
+        expect(args.timestamp).toBeDefined();
         done();
       });
     });
@@ -106,7 +106,7 @@ describe('Service: CampaignService', () => {
         expect(args.content).toEqual(campaign.content);
         expect(args.schedule).toEqual(campaign.schedule);
         expect(args.start).toBe(1590401400);
-        expect(args.timestamp.Rc).toBe('FieldValue.serverTimestamp');
+        expect(args.timestamp).toBeDefined();
         done();
       });
     });
