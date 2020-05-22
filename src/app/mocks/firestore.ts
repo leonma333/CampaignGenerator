@@ -4,11 +4,17 @@ const campaignObjs = [
   {
     name: 'first campaign',
     content: {ops: [{insert: 'Foo'}]},
-    schedule: {type: 'onetime'}
+    schedule: {
+      dateStart: {year: 2020, month: 5, day: 25},
+      time: {hour: 10, minute: 10, second: 0}
+    }
   }, {
     name: 'second campaign',
     content: {ops: [{insert: 'Bar'}]},
-    schedule: {type: 'recurring'}
+    schedule: {
+      dateStart: {year: 2020, month: 6, day: 30},
+      time: {hour: 20, minute: 20, second: 0}
+    }
   }
 ];
 
@@ -38,11 +44,11 @@ class Doc {
 const campaignDocs = [
   {
     payload: {
-      doc: new Doc('1', 'first campaign', {ops: [{insert: 'Foo'}]}, {type: 'onetime'})
+      doc: new Doc('1', 'first campaign', campaignObjs[0].content, campaignObjs[0].schedule)
     }
   }, {
     payload: {
-      doc: new Doc('2', 'second campaign', {ops: [{insert: 'Bar'}]}, {type: 'recurring'})
+      doc: new Doc('2', 'second campaign', campaignObjs[1].content, campaignObjs[1].schedule)
     }
   }
 ];

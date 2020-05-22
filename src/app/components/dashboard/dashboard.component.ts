@@ -10,7 +10,6 @@ import { CampaignService } from '../../services/campaign.service';
 
 @Component({
   selector: 'app-dashboard',
-  providers: [CampaignService],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

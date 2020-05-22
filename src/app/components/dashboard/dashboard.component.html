@@ -21,7 +21,7 @@
   <fa-icon [icon]="faSpinner" [spin]="true" size="2x"></fa-icon>
 </div>
 <ng-container *ngIf="!loading">
-  <div class="row" *ngFor="let group of campaignGroups">
+  <div class="row campaign-group" *ngFor="let group of campaignGroups">
     <div class="col-md-4 mb-md-4 mb-2" *ngFor="let campaign of group">
       <app-dashboard-preview [campaign]="campaign" (deleteId)="delete($event)"></app-dashboard-preview>
     </div>

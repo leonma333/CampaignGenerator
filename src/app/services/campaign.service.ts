@@ -19,14 +19,8 @@ export class CampaignService {
 
   getAll(sort: string): Observable<Array<Campaign>> {
     const dbRef = this.db.collection(this.collection, ref => ref.orderBy(sort, 'desc'));
-    return dbRef.snapshotChanges().pipe(
-      map(snapshots => {
-        return snapshots.map(snapshot => {
-          const doc = snapshot.payload.doc as any;
-          return new Campaign(doc.id, doc.data().name, doc.data().content, doc.data().schedule);
-        });
-      })
-    );
+    const obs$ = dbRef.snapshotChanges();
+    return this.transformSnapshotsToCampaignsPipe(obs$);
   }
 
   byId(id: string): Observable<Campaign> {
@@ -56,12 +50,21 @@ export class CampaignService {
   }
 
   search(term: string): Observable<any> {
-    return this.db.collection(this.collection, ref =>
+    const obs$ = this.db.collection(this.collection, ref =>
       ref.orderBy('name')
       .startAt(term)
       .endAt(term + '\uf8ff')
       .limit(5)
-    ).snapshotChanges().pipe(
+    ).snapshotChanges();
+    return this.transformSnapshotsToCampaignsPipe(obs$);
+  }
+
+  delete(id: string): Promise<any> {
+    return this.db.collection(this.collection).doc(id).delete();
+  }
+
+  private transformSnapshotsToCampaignsPipe(obs$: Observable<any>) {
+    return obs$.pipe(
       map(snapshots => {
         return snapshots.map(snapshot => {
           const doc = snapshot.payload.doc as any;
@@ -69,9 +72,5 @@ export class CampaignService {
         });
       })
     );
-  }
-
-  delete(id: string): Promise<any> {
-    return this.db.collection(this.collection).doc(id).delete();
   }
 }
