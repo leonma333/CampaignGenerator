@@ -17,8 +17,17 @@ export class CampaignService {
 
   constructor(public db: AngularFirestore) {}
 
-  getAll(sort: string): Observable<Array<Campaign>> {
-    const dbRef = this.db.collection(this.collection, ref => ref.orderBy(sort, 'desc'));
+  getAll(sort: string, options: any = {}): Observable<Array<Campaign>> {
+    const dbRef = this.db.collection(this.collection, ref => {
+      let finalRef = ref.orderBy(sort, 'desc').limit(6);
+      if (options.startAfter) {
+        finalRef = finalRef.startAfter(options.startAfter);
+      }
+      if (options.endBefore)  {
+        finalRef = finalRef.endBefore(options.endBefore);
+      }
+      return finalRef;
+    });
     const obs$ = dbRef.snapshotChanges();
     return this.transformSnapshotsToCampaignsPipe(obs$);
   }
@@ -68,7 +77,9 @@ export class CampaignService {
       map(snapshots => {
         return snapshots.map(snapshot => {
           const doc = snapshot.payload.doc as any;
-          return new Campaign(doc.id, doc.data().name, doc.data().content, doc.data().schedule);
+          const campaign = new Campaign(doc.id, doc.data().name, doc.data().content, doc.data().schedule);
+          campaign.doc = doc;
+          return campaign;
         });
       })
     );

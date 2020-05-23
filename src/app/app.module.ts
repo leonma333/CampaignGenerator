@@ -21,6 +21,7 @@ import { ModalConfirmComponent } from './components/shared/modal-confirm/modal-c
 import { SchedulePickerComponent } from './components/shared/schedule-picker/schedule-picker.component';
 import { QuillComponent } from './components/shared/quill/quill.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { DashboardPaginationComponent } from './components/dashboard-pagination/dashboard-pagination.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
     ModalConfirmComponent,
     SchedulePickerComponent,
     QuillComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    DashboardPaginationComponent
   ],
   imports: [
     FormsModule,
