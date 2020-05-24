@@ -30,21 +30,64 @@ describe('Service: CampaignService', () => {
   describe('#getAll', () => {
     it('should return 2 campaigns', (done) => {
       service.getAll('timestamp').subscribe(result => {
-        expect(result.length).toEqual(2);
-        expect(result[0].id).toEqual('1');
+        expect(result.length).toBe(2);
+        expect(result[0].id).toBe('1');
+        expect(result[0].doc.id).toBe('1');
         expect(result[0].name).toEqual('first campaign');
         expect(result[0].content).toEqual({ops: [{insert: 'Foo'}]});
         expect(result[0].schedule).toEqual({
           dateStart: {year: 2020, month: 5, day: 25},
           time: {hour: 10, minute: 10, second: 0}
         });
-        expect(result[1].id).toEqual('2');
+        expect(result[1].id).toBe('2');
+        expect(result[1].doc.id).toBe('2');
         expect(result[1].name).toEqual('second campaign');
         expect(result[1].content).toEqual({ops: [{insert: 'Bar'}]});
         expect(result[1].schedule).toEqual({
           dateStart: {year: 2020, month: 6, day: 30},
           time: {hour: 20, minute: 20, second: 0}
         });
+        done();
+      });
+    });
+
+    it('should sort result', (done) => {
+      service.getAll('start').subscribe(result => {
+        expect(result.length).toBe(2);
+        expect(result[0].id).toBe('2');
+        expect(result[0].doc.id).toBe('2');
+        expect(result[0].name).toEqual('second campaign');
+        expect(result[0].content).toEqual({ops: [{insert: 'Bar'}]});
+        expect(result[0].schedule).toEqual({
+          dateStart: {year: 2020, month: 6, day: 30},
+          time: {hour: 20, minute: 20, second: 0}
+        });
+        expect(result[1].id).toBe('1');
+        expect(result[1].doc.id).toBe('1');
+        expect(result[1].name).toEqual('first campaign');
+        expect(result[1].content).toEqual({ops: [{insert: 'Foo'}]});
+        expect(result[1].schedule).toEqual({
+          dateStart: {year: 2020, month: 5, day: 25},
+          time: {hour: 10, minute: 10, second: 0}
+        });
+        done();
+      });
+    });
+
+    it('should paginate next', (done) => {
+      service.getAll('timestamp', {startAt: {id: '1'}}).subscribe(result => {
+        expect(result.length).toBe(1);
+        expect(result[0].id).toBe('2');
+        expect(result[0].doc.id).toBe('2');
+        done();
+      });
+    });
+
+    it('should paginate previous', (done) => {
+      service.getAll('timestamp', {startAfter: {id: '0'}, endBefore: {id: '2'}}).subscribe(result => {
+        expect(result.length).toBe(1);
+        expect(result[0].id).toBe('1');
+        expect(result[0].doc.id).toBe('1');
         done();
       });
     });
@@ -107,6 +150,16 @@ describe('Service: CampaignService', () => {
         expect(args.schedule).toEqual(campaign.schedule);
         expect(args.start).toBe(1590401400);
         expect(args.timestamp).toBeDefined();
+        done();
+      });
+    });
+  });
+
+  describe('#search', () => {
+    it('should return search result', (done) => {
+      service.search('Foo').subscribe(campaigns => {
+        expect(campaigns.length).toBe(1);
+        expect(campaigns[0].name).toBe('Foo');
         done();
       });
     });
