@@ -15,6 +15,13 @@ const campaignObjs = [
       dateStart: {year: 2020, month: 6, day: 30},
       time: {hour: 20, minute: 20, second: 0}
     }
+  }, {
+    name: 'Foo',
+    content: {ops: [{insert: 'Bar'}]},
+    schedule: {
+      dateStart: {year: 2020, month: 6, day: 30},
+      time: {hour: 12, minute: 30, second: 0}
+    }
   }
 ];
 
@@ -50,8 +57,14 @@ const campaignDocs = [
     payload: {
       doc: new Doc('2', 'second campaign', campaignObjs[1].content, campaignObjs[1].schedule)
     }
+  }, {
+    payload: {
+      doc: new Doc('3', 'Foo', campaignObjs[2].content, campaignObjs[2].schedule)
+    }
   }
 ];
+
+let state = '';
 
 const docValueStub = {
   set: jasmine.createSpy('set').and.returnValue(new Promise<string>(resolve => resolve('You just saved it'))),
@@ -63,9 +76,59 @@ const collectionValueStub = {
   doc: jasmine.createSpy('doc').and.returnValue(docValueStub),
   add: jasmine.createSpy('add').and.returnValue(new Promise<string>(resolve => resolve('You just added it'))),
   valueChanges: jasmine.createSpy('valueChanges').and.returnValue(of(campaignObjs)),
-  snapshotChanges: jasmine.createSpy('snapshotChanges').and.returnValue(of(campaignDocs))
+  snapshotChanges: jasmine.createSpy('snapshotChanges').and.callFake(() => {
+    if (state === 'search') {
+      return of([campaignDocs[2]]);
+    }
+    if (state === 'sort') {
+      return of(campaignDocs.slice(0, 2).reverse());
+    }
+    if (state === 'next') {
+      return of([campaignDocs[1]]);
+    }
+    if (state === 'prev') {
+      return of([campaignDocs[0]]);
+    }
+    return of(campaignDocs.slice(0, 2));
+  })
 };
 
 export const FirestoreStub = {
-  collection: jasmine.createSpy('collection').and.returnValue(collectionValueStub)
+  collection: jasmine.createSpy('collection').and.callFake((_, query?) => {
+    if (query) {
+      const ref = jasmine.createSpyObj('ref', ['orderBy', 'startAt', 'endAt', 'limit', 'startAfter', 'endBefore']);
+      ref.startAfter.and.returnValue(ref);
+      ref.endBefore.and.returnValue(ref);
+      ref.orderBy.and.returnValue(ref);
+      ref.startAt.and.returnValue(ref);
+      ref.endAt.and.returnValue(ref);
+      ref.limit.and.returnValue(ref);
+      query(ref);
+
+      if (ref.startAt.calls.mostRecent()) {
+        if (ref.startAt.calls.mostRecent().args[0] === 'Foo') {
+          expect(ref.limit.calls.mostRecent().args[0]).toBe(5);
+          expect(ref.orderBy.calls.mostRecent().args[0]).toBe('name');
+          expect(ref.endAt.calls.mostRecent().args[0]).toBe('Foo\uf8ff');
+          state = 'search';
+        } else if (ref.startAt.calls.mostRecent().args[0].id === '1') {
+          expect(ref.limit.calls.mostRecent().args[0]).toBe(6);
+          expect(ref.orderBy.calls.mostRecent().args[0]).toBe('timestamp');
+          state = 'next';
+        }
+      } else if (ref.startAfter.calls.mostRecent()) {
+        expect(ref.limit.calls.mostRecent().args[0]).toBe(6);
+        expect(ref.orderBy.calls.mostRecent().args[0]).toBe('timestamp');
+        expect(ref.startAfter.calls.mostRecent().args[0]).toEqual({id: '0'});
+        expect(ref.endBefore.calls.mostRecent().args[0]).toEqual({id: '2'});
+        state = 'prev';
+      } else if (ref.orderBy.calls.mostRecent().args[0] === 'start') {
+        state = 'sort';
+      } else {
+        state = '';
+      }
+    }
+
+    return collectionValueStub;
+  })
 };

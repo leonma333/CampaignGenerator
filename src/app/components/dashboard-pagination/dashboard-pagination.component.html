@@ -1,0 +1,12 @@
+<div class="text-center">
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-outline-primary prev-page" (click)="prevPage()" [disabled]="disabledPrev">
+      <fa-icon [icon]="faBackward"></fa-icon>
+    </button>
+    <button type="button" class="btn btn-outline-primary next-page" (click)="nextPage()" [disabled]="disabledNext">
+      <fa-icon [icon]="faForward"></fa-icon>
+    </button>
+  </div>
+  <br>
+  <small class="text-muted">Page {{page}}</small>
+</div>

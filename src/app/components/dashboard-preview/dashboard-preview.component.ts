@@ -22,8 +22,7 @@ export class DashboardPreviewComponent implements OnInit {
 
   constructor(public dateFormatter: NgbDateParserFormatter, private modalService: NgbModal) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   delete(): void {
     const modalRef = this.modalService.open(ModalConfirmComponent);

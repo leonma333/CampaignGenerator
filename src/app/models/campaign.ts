@@ -6,6 +6,8 @@ export class Campaign extends Model {
   public content: object;
   public schedule: any;
 
+  public doc: any;
+
   constructor(id: string, name: string, content: object, schedule: object) {
     super();
     this.id = id;
