@@ -11,6 +11,7 @@ import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardPreviewComponent } from '../dashboard-preview/dashboard-preview.component';
+import { DashboardPaginationComponent } from '../dashboard-pagination/dashboard-pagination.component';
 
 describe('Component: DashboardComponent', () => {
   const campaigns = [
@@ -31,7 +32,7 @@ describe('Component: DashboardComponent', () => {
         provide: CampaignService,
         useValue: jasmine.createSpyObj('mockCampaignService', ['getAll', 'delete', 'search'])
       }],
-      declarations: [ DashboardComponent, DashboardPreviewComponent ]
+      declarations: [ DashboardComponent, DashboardPreviewComponent, DashboardPaginationComponent ]
     })
     .compileComponents();
   }));
@@ -41,6 +42,8 @@ describe('Component: DashboardComponent', () => {
     component = fixture.componentInstance;
 
     expect(component.loading).toBeTrue();
+
+    campaigns.forEach(campaign => campaign.doc = campaign.id);
 
     mockCampaignService = TestBed.inject(CampaignService);
     mockCampaignService.getAll.and.callFake(sort => {
@@ -75,8 +78,8 @@ describe('Component: DashboardComponent', () => {
 
     const rowEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.campaign-group'));
     expect(rowEl.length).toBe(2);
-    expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(3);
-    expect(rowEl[1].nativeElement.querySelectorAll('div.col-md-4').length).toBe(1);
+    expect(rowEl[0].nativeElement.querySelectorAll('.campaign-col').length).toBe(3);
+    expect(rowEl[1].nativeElement.querySelectorAll('.campaign-col').length).toBe(1);
 
     const startDateEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.start-date'));
     expect(startDateEl[0].nativeElement.innerText).toBe('Started on 2020-06-15');
@@ -98,7 +101,7 @@ describe('Component: DashboardComponent', () => {
 
     const rowEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.campaign-group'));
     expect(rowEl.length).toBe(1);
-    expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(3);
+    expect(rowEl[0].nativeElement.querySelectorAll('.campaign-col').length).toBe(3);
     expect(mockCampaignService.delete).toHaveBeenCalledTimes(1);
     expect(mockCampaignService.delete).toHaveBeenCalledWith('2');
   });
@@ -169,7 +172,7 @@ describe('Component: DashboardComponent', () => {
 
       let rowEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.campaign-group'));
       expect(rowEl.length).toBe(1);
-      expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(1);
+      expect(rowEl[0].nativeElement.querySelectorAll('.campaign-col').length).toBe(1);
       expect(component.campaigns.length).toBe(1);
 
       component.searchTerm.setValue('Bin');
@@ -179,7 +182,7 @@ describe('Component: DashboardComponent', () => {
 
       rowEl = fixture.debugElement.queryAll(By.css('.campaign-group'));
       expect(rowEl.length).toBe(1);
-      expect(rowEl[0].nativeElement.querySelectorAll('div.col-md-4').length).toBe(1);
+      expect(rowEl[0].nativeElement.querySelectorAll('.campaign-col').length).toBe(1);
       expect(component.campaigns.length).toBe(1);
 
       component.searchTerm.setValue('');
@@ -190,5 +193,71 @@ describe('Component: DashboardComponent', () => {
       rowEl = fixture.debugElement.queryAll(By.css('.campaign-group'));
       expect(rowEl.length).toBe(2);
     }));
+  });
+
+  describe('pagination', () => {
+    function nextPage() {
+      const nextPageEl: DebugElement = fixture.debugElement.query(By.css('.next-page'));
+      nextPageEl.nativeElement.click();
+    }
+
+    function prevPage() {
+      const prevPageEl: DebugElement = fixture.debugElement.query(By.css('.prev-page'));
+      prevPageEl.nativeElement.click();
+    }
+
+    it('should change page', () => {
+      const moreCampaigns = [...campaigns];
+      moreCampaigns.push(
+        new Campaign('5', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}),
+        new Campaign('6', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}),
+        new Campaign('7', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}})
+      );
+      moreCampaigns.forEach(campaign => campaign.doc = campaign.id);
+      mockCampaignService.getAll.and.callFake((sort, options) => {
+        if (options && options.startAfter) {
+          if (options.startAfter === '7') {
+            return of([]);
+          }
+          expect(options.startAfter).toEqual('6');
+          return of([moreCampaigns[6]]);
+        } else if (options && options.startAt && options.endBefore) {
+          expect(options.startAt).toEqual('1');
+          expect(options.endBefore).toEqual('7');
+        }
+        return of(moreCampaigns.slice(0, 6));
+      });
+
+      component.pagination.ngOnInit();
+      fixture.detectChanges();
+
+      let rowEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('.campaign-group'));
+      expect(rowEl.length).toBe(2);
+      expect(fixture.debugElement.queryAll(By.css('.campaign-col')).length).toBe(6);
+
+      nextPage();
+      fixture.detectChanges();
+
+      rowEl = fixture.debugElement.queryAll(By.css('.campaign-group'));
+      expect(rowEl.length).toBe(1);
+      expect(fixture.debugElement.queryAll(By.css('.campaign-col')).length).toBe(1);
+
+      nextPage();
+      fixture.detectChanges();
+
+      rowEl = fixture.debugElement.queryAll(By.css('.campaign-group'));
+      expect(rowEl.length).toBe(1);
+      expect(fixture.debugElement.queryAll(By.css('.campaign-col')).length).toBe(1);
+
+      const nextPageEl: DebugElement = fixture.debugElement.query(By.css('.next-page'));
+      expect(nextPageEl.nativeElement.disabled).toBeTrue();
+
+      prevPage();
+      fixture.detectChanges();
+
+      rowEl = fixture.debugElement.queryAll(By.css('.campaign-group'));
+      expect(rowEl.length).toBe(2);
+      expect(fixture.debugElement.queryAll(By.css('.campaign-col')).length).toBe(6);
+    });
   });
 });

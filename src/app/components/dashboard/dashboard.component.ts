@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
     start: 'Started on'
   };
 
-  constructor(private campaignService: CampaignService) { }
+  constructor(private campaignService: CampaignService, private cdr: ChangeDetectorRef) { }
 
   asIsOrder = (a, b) => 1;
 
@@ -77,5 +77,10 @@ export class DashboardComponent implements OnInit {
   setCampaigns(event: Array<Campaign>): void {
     this.campaigns = event;
     this.resetCampaignGroups();
+  }
+
+  setLoading(event: boolean): void {
+    this.loading = event;
+    this.cdr.detectChanges();
   }
 }

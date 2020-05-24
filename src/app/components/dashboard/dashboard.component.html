@@ -22,9 +22,9 @@
 </div>
 <ng-container *ngIf="!loading">
   <div class="row campaign-group" *ngFor="let group of campaignGroups">
-    <div class="border-bottom col-md-4 mb-4 pb-2" *ngFor="let campaign of group">
+    <div class="border-bottom col-md-4 mb-4 pb-2 campaign-col" *ngFor="let campaign of group">
       <app-dashboard-preview [campaign]="campaign" (deleteId)="delete($event)"></app-dashboard-preview>
     </div>
   </div>
 </ng-container>
-<app-dashboard-pagination [sort]="selectedSort" (campaigns)="setCampaigns($event)" (loading)="loading = $event"></app-dashboard-pagination>
+<app-dashboard-pagination [sort]="selectedSort" (campaigns)="setCampaigns($event)" (loading)="setLoading($event)"></app-dashboard-pagination>

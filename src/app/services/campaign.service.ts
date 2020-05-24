@@ -23,6 +23,9 @@ export class CampaignService {
       if (options.startAfter) {
         finalRef = finalRef.startAfter(options.startAfter);
       }
+      if (options.startAt) {
+        finalRef = finalRef.startAt(options.startAt);
+      }
       if (options.endBefore)  {
         finalRef = finalRef.endBefore(options.endBefore);
       }
