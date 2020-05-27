@@ -22,6 +22,8 @@ import { SchedulePickerComponent } from './components/shared/schedule-picker/sch
 import { QuillComponent } from './components/shared/quill/quill.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { DashboardPaginationComponent } from './components/dashboard-pagination/dashboard-pagination.component';
+import { DemographicsComponent } from './components/shared/demographics/demographics.component';
+import { DigitOnlyDirective } from './directives/digit-only.directive';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { DashboardPaginationComponent } from './components/dashboard-pagination/
     SchedulePickerComponent,
     QuillComponent,
     NotFoundComponent,
-    DashboardPaginationComponent
+    DashboardPaginationComponent,
+    DemographicsComponent,
+    DigitOnlyDirective
   ],
   imports: [
     FormsModule,

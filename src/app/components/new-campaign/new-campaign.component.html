@@ -1,6 +1,6 @@
 <form [formGroup]="campaignForm" (ngSubmit)="save()">
   <div>
-    <input type="text" class="form-control name" placeholder="Campaign's name" aria-label="Campaign's name" aria-describedby="button-addon2" formControlName="name" required>
+    <input type="text" class="form-control name" placeholder="Campaign's name" aria-label="Campaign's name" formControlName="name" required>
   </div>
   <div class="mt-2">
     <app-quill [styles]="{'min-height': '300px'}" [formControl]="campaignForm.controls['content']"></app-quill>
@@ -10,6 +10,11 @@
       <ngb-panel id="static-1" title="Schedule">
         <ng-template ngbPanelContent>
           <app-schedule-picker formControlName="schedule"></app-schedule-picker>
+        </ng-template>
+      </ngb-panel>
+      <ngb-panel id="static-2" title="Demographic">
+        <ng-template ngbPanelContent>
+          <app-demographics></app-demographics>
         </ng-template>
       </ngb-panel>
     </ngb-accordion>

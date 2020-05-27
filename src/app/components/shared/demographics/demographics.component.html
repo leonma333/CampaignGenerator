@@ -1,0 +1,21 @@
+<form [formGroup]="mainForm">
+  Gender:
+  <div class="btn-group btn-group-toggle" ngbRadioGroup formControlName="gender">
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="male">Male
+    </label>
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="female">Female
+    </label>
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="neutral">Neutral
+    </label>
+  </div>
+  <div class="input-group mt-2">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="">Min and max age</span>
+    </div>
+    <input type="text" class="form-control" appDigitOnly maxlength="3" placeholder="Min" formControlName="age_min" />
+    <input type="text" class="form-control" appDigitOnly maxlength="3" placeholder="Max" formControlName="age_max" />
+  </div>
+</form>
