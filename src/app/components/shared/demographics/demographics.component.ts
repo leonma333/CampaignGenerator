@@ -15,14 +15,15 @@ import { FormBuilder, FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from 
 })
 export class DemographicsComponent implements OnInit {
   mainForm: FormGroup;
-  countrySettings: object;
 
-  countries = [
-    {id: 'US', name: 'United States'},
-    {id: 'CA', name: 'Canada'}
-  ]
+  countrySettings: any = {};
+  countries = [];
 
   constructor(private formBuilder: FormBuilder) {
+    this.countries = [
+      { id: 'US', name: 'United States' },
+      { id: 'CA', name: 'Canada' }
+    ];
     this.countrySettings = {
       singleSelection: false,
       idField: 'id',
@@ -39,7 +40,7 @@ export class DemographicsComponent implements OnInit {
       gender: 'neutral',
       age_min: 0,
       age_max: 100,
-      country: [[]]
+      country: []
     });
   }
 

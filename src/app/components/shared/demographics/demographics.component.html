@@ -22,9 +22,9 @@
     <ng-multiselect-dropdown
       name="country"
       placeholder="Select Countries"
+      [settings]="countrySettings"
       [data]="countries"
       formControlName="country"
-      [settings]="countrySettings"
       (onSelect)="onCountrySelect($event)">
     </ng-multiselect-dropdown>
   </div>
