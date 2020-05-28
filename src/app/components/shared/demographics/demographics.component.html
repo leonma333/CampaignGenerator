@@ -11,11 +11,21 @@
       <input ngbButton type="radio" value="neutral">Neutral
     </label>
   </div>
-  <div class="input-group mt-2">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="">Min and max age</span>
-    </div>
-    <input type="text" class="form-control" appDigitOnly maxlength="3" placeholder="Min" formControlName="age_min" />
+  <div class="form-inline mt-2">
+    <span class="mr-1">Min age:</span>
+    <input type="text" class="form-control mr-2" appDigitOnly maxlength="3" placeholder="Min" formControlName="age_min" />
+    <span class="mr-1">Max age:</span>
     <input type="text" class="form-control" appDigitOnly maxlength="3" placeholder="Max" formControlName="age_max" />
+  </div>
+  <div class="mt-2">
+    Countries:
+    <ng-multiselect-dropdown
+      name="country"
+      placeholder="Select Countries"
+      [data]="countries"
+      formControlName="country"
+      [settings]="countrySettings"
+      (onSelect)="onCountrySelect($event)">
+    </ng-multiselect-dropdown>
   </div>
 </form>
