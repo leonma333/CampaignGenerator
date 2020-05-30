@@ -1,5 +1,9 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, forwardRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import { MultiSelectComponent } from 'ng-multiselect-dropdown';
+
+import { COUNTRIES } from '../../../constants';
 
 @Component({
   selector: 'app-demographics',
@@ -13,39 +17,47 @@ import { FormBuilder, FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from 
     }
   ]
 })
-export class DemographicsComponent implements OnInit {
+export class DemographicsComponent implements OnInit, AfterViewInit {
+  @ViewChild(MultiSelectComponent) multiSelect: MultiSelectComponent;
+
   mainForm: FormGroup;
 
-  countrySettings: any = {};
   countries = [];
+  countrySettings = {};
+  
+  private defaultCountries = ['CA', 'US', 'JP', 'UK', 'DE', 'CN', 'TW', 'HK'];
+  private selectedCountries = [];
 
   constructor(private formBuilder: FormBuilder) {
-    this.countries = [
-      { id: 'US', name: 'United States' },
-      { id: 'CA', name: 'Canada' }
-    ];
+    for (let [key, value] of Object.entries(COUNTRIES)) {
+      this.countries.push({id: key, name: value});
+      if (this.defaultCountries.includes(key)) {
+        this.selectedCountries.push({id: key, name: value});
+      }
+    }
+  }
+
+  ngOnInit(): void {
     this.countrySettings = {
-      singleSelection: false,
       idField: 'id',
       textField: 'name',
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 3,
-      allowSearchFilter: true
+      itemsShowLimit: 10,
+      singleSelection: false,
+      defaultOpen: true,
+      allowSearchFilter: true,
+      showSelectedItemsAtTop: true
     };
-  }
-
-  ngOnInit(): void {
     this.mainForm = this.formBuilder.group({
       gender: 'neutral',
       age_min: 0,
       age_max: 100,
-      country: []
+      countries: [this.selectedCountries]
     });
   }
 
-  onCountrySelect(country: any) {
-    console.log(country);
+  ngAfterViewInit() {
+    this.multiSelect.closeDropdown = () => {};
   }
-
 }
