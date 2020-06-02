@@ -75,8 +75,8 @@ export class DigitOnlyDirective implements OnChanges {
 
     // check the input pattern RegExp
     if (this.regex) {
-      const newValue = this.forecastValue(e.key);
-      if (!this.regex.test(newValue)) {
+      const value = this.forecastValue(e.key);
+      if (!this.regex.test(value)) {
         e.preventDefault();
       }
     }
@@ -136,16 +136,16 @@ export class DigitOnlyDirective implements OnChanges {
     return result;
   }
 
-  private isValidDecimal(string: string): boolean {
+  private isValidDecimal(str: string): boolean {
     if (!this.hasDecimalPoint) {
-      return string.split(this.decimalSeparator).length <= 2;
+      return str.split(this.decimalSeparator).length <= 2;
     } else {
       // the input element already has a decimal separator
       const selectedText = this.getSelection();
       if (selectedText && selectedText.indexOf(this.decimalSeparator) > -1) {
-        return string.split(this.decimalSeparator).length <= 2;
+        return str.split(this.decimalSeparator).length <= 2;
       } else {
-        return string.indexOf(this.decimalSeparator) < 0;
+        return str.indexOf(this.decimalSeparator) < 0;
       }
     }
   }

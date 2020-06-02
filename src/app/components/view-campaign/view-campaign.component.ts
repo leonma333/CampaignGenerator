@@ -6,6 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Campaign } from '../../models/campaign';
 import { Schedule } from '../../models/schedule';
+import { Demographic } from '../../models/demographic';
 import { CampaignService } from '../../services/campaign.service';
 import { ModalConfirmComponent } from '../shared/modal-confirm/modal-confirm.component';
 
@@ -15,7 +16,7 @@ import { ModalConfirmComponent } from '../shared/modal-confirm/modal-confirm.com
   styleUrls: ['./view-campaign.component.scss']
 })
 export class ViewCampaignComponent implements OnInit {
-  campaign = new Campaign('', '', {}, Schedule.default());
+  campaign = new Campaign('', '', {}, Schedule.default(), Demographic.default());
   scheduleFormat: string;
 
   constructor(
@@ -54,4 +55,9 @@ export class ViewCampaignComponent implements OnInit {
     return schedule.format();
   }
 
+  formatDemographic(): string {
+    const demographic = new Demographic(null, null, null, null);
+    demographic.from(this.campaign.demographic);
+    return demographic.format();
+  }
 }

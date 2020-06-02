@@ -36,10 +36,14 @@ export class DashboardPaginationComponent implements OnInit {
   initializeCampaigns(sort = 'timestamp'): void {
     this.loading.emit(true);
     this.campaignService.getAll(sort).pipe(first()).subscribe(campaigns => {
-      this.disabledPrev = true;
-      this.disabledNext = false;
-      this.firstDoc = campaigns[0].doc;
-      this.lastDoc = campaigns[campaigns.length - 1].doc;
+      if (campaigns.length) {
+        this.disabledPrev = true;
+        this.disabledNext = false;
+        this.firstDoc = campaigns[0].doc;
+        this.lastDoc = campaigns[campaigns.length - 1].doc;
+      } else {
+        this.disabledNext = true;
+      }
 
       this.campaigns.emit(campaigns);
       this.loading.emit(false);

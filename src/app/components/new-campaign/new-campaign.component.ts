@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { Schedule } from '../../models/schedule';
+import { Demographic } from '../../models/demographic';
 import { CampaignService } from '../../services/campaign.service';
 
 @Component({
@@ -33,7 +34,8 @@ export class NewCampaignComponent implements OnInit {
     this.campaignForm = new FormGroup({
       name: new FormControl('', Validators.required),
       content: new FormControl(null),
-      schedule: new FormControl(Schedule.default())
+      schedule: new FormControl(Schedule.default()),
+      demographic: new FormControl(Demographic.default())
     });
 
     this.route.queryParams
@@ -43,7 +45,8 @@ export class NewCampaignComponent implements OnInit {
             this.campaignForm.patchValue({
               name: campaign.name,
               content: campaign.content,
-              schedule: campaign.schedule
+              schedule: campaign.schedule,
+              demographic: campaign.demographic
             });
           });
         }
@@ -56,7 +59,8 @@ export class NewCampaignComponent implements OnInit {
     this.campaignService.add(
       this.campaignForm.get('name').value,
       this.campaignForm.get('content').value,
-      this.campaignForm.get('schedule').value
+      this.campaignForm.get('schedule').value,
+      this.campaignForm.get('demographic').value
     ).then(() => {
       this.router.navigate(['/']);
     }).catch(error => {

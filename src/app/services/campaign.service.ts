@@ -39,16 +39,17 @@ export class CampaignService {
     return this.db.collection(this.collection).doc(id).valueChanges().pipe(
       map(value => {
         const data = value as any;
-        return new Campaign(id, data.name, data.content, data.schedule);
+        return new Campaign(id, data.name, data.content, data.schedule, data.demographic);
       })
     );
   }
 
-  add(name: string, content: any, schedule: any): Promise<any> {
+  add(name: string, content: any, schedule: any, demographic: any): Promise<any> {
     return this.db.collection(this.collection).add({
       name,
       content: Campaign.sanitize(content),
       schedule: Campaign.sanitize(schedule),
+      demographic: Campaign.sanitize(demographic),
       start: Schedule.toTimestamp(schedule.dateStart, schedule.time),
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
@@ -80,7 +81,7 @@ export class CampaignService {
       map(snapshots => {
         return snapshots.map(snapshot => {
           const doc = snapshot.payload.doc as any;
-          const campaign = new Campaign(doc.id, doc.data().name, doc.data().content, doc.data().schedule);
+          const campaign = new Campaign(doc.id, doc.data().name, doc.data().content, doc.data().schedule, doc.data().demographic);
           campaign.doc = doc;
           return campaign;
         });
