@@ -7,6 +7,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { Campaign } from '../../models/campaign';
 import { Schedule } from '../../models/schedule';
+import { Demographic } from '../../models/demographic';
 import { CampaignService } from '../../services/campaign.service';
 
 @Component({
@@ -35,7 +36,8 @@ export class EditCampaignComponent implements OnInit {
     this.campaignForm = new FormGroup({
       name: new FormControl('', Validators.required),
       content: new FormControl(null),
-      schedule: new FormControl(Schedule.default())
+      schedule: new FormControl(Schedule.default()),
+      demographic: new FormControl(Demographic.default())
     });
 
     const id = this.route.snapshot.paramMap.get('id');
@@ -44,7 +46,8 @@ export class EditCampaignComponent implements OnInit {
       this.campaignForm.patchValue({
         name: campaign.name,
         content: campaign.content,
-        schedule: campaign.schedule
+        schedule: campaign.schedule,
+        demographic: campaign.demographic
       });
     });
   }
@@ -55,6 +58,7 @@ export class EditCampaignComponent implements OnInit {
     this.campaign.name = this.campaignForm.get('name').value;
     this.campaign.content = this.campaignForm.get('content').value;
     this.campaign.schedule = this.campaignForm.get('schedule').value;
+    this.campaign.demographic = this.campaignForm.get('demographic').value;
     this.campaignService.save(this.campaign).then(() => {
       this.router.navigate(['/']);
     }).catch(error => {
