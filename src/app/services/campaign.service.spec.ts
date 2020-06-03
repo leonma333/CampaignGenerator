@@ -116,8 +116,8 @@ describe('Service: CampaignService', () => {
       const campaign = new Campaign('3', 'My campaign', {ops: [{insert: 'Hello world'}]}, {
           dateStart: {year: 2020, month: 5, day: 25},
           time: {hour: 10, minute: 10, second: 0}
-        });
-      service.add(campaign.name, campaign.content, campaign.schedule).then(result => {
+        }, {});
+      service.add(campaign.name, campaign.content, campaign.schedule, campaign.demographic).then(result => {
         expect(result).toBe('You just added it');
         expect(firestore.collection().add).toHaveBeenCalledTimes(1);
         const args = firestore.collection().add.calls.argsFor(0)[0];
@@ -139,7 +139,7 @@ describe('Service: CampaignService', () => {
       const campaign = new Campaign('1', 'My campaign', {ops: [{insert: 'Hello world'}]}, {
           dateStart: {year: 2020, month: 5, day: 25},
           time: {hour: 10, minute: 10, second: 0}
-        });
+        }, {});
       service.save(campaign).then(result => {
         expect(result).toBe('You just saved it');
         expect(firestore.collection().doc().set.calls.count()).toBe(1);

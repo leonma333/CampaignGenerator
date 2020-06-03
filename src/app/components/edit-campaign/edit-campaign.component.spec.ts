@@ -50,7 +50,8 @@ describe('Component: EditCampaignComponent', () => {
     fixture = TestBed.createComponent(EditCampaignComponent);
     component = fixture.componentInstance;
 
-    const campaign = new Campaign(campaigns[0].id, campaigns[0].name, campaigns[0].content, campaigns[0].schedule);
+    const campaign = new Campaign(campaigns[0].id, campaigns[0].name, campaigns[0].content,
+      campaigns[0].schedule, campaigns[0].demographic);
 
     mockCampaignService = TestBed.inject(CampaignService);
     mockCampaignService.byId.and.returnValue(of(campaign));
@@ -147,7 +148,7 @@ describe('Component: EditCampaignComponent', () => {
     saveEl.nativeElement.click();
     tick();
 
-    const campaign = new Campaign('1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, {type: 'recurring'});
+    const campaign = new Campaign('1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, {type: 'recurring'}, null);
 
     expect(mockRouter.navigate.calls.count()).toBe(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
