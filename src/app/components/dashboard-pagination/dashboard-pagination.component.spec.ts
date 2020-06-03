@@ -95,6 +95,13 @@ describe('Component: DashboardPaginationComponent', () => {
     expect(emitSpy.calls.allArgs()[0][0]).toEqual(campaigns.slice(0, 3));
   });
 
+  it('should handle no campaigns', () => {
+    mockCampaignService.getAll.and.returnValue(of([]));
+    component.ngOnInit();
+    expect(component.disabledPrev).toBeTrue();
+    expect(component.disabledNext).toBeTrue();
+  });
+
   it('should emit campaigns when change page', () => {
     nextPage();
     fixture.detectChanges();

@@ -72,13 +72,15 @@ export class DemographicsComponent implements OnInit, AfterViewInit, ControlValu
 
   writeValue(obj: any) {
     if (obj) {
-      const countries = obj.countries.map(country => {
+      const countries = obj.countries ? obj.countries.map(country => {
+        return {id: country, name: COUNTRIES[country]};
+      }) : DEFAULT_COUNTRIES.map(country => {
         return {id: country, name: COUNTRIES[country]};
       });
       this.mainForm.patchValue({
-        gender: obj.gender,
-        minAge: obj.minAge,
-        maxAge: obj.maxAge,
+        gender: obj.gender || this.mainForm.get('gender').value,
+        minAge: obj.minAge || this.mainForm.get('minAge').value,
+        maxAge: obj.maxAge || this.mainForm.get('maxAge').value,
         countries
       });
     }
