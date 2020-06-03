@@ -10,7 +10,7 @@ export const campaigns: Array<Campaign> = [
     monthDay: null,
     yearDay: null
   }, {
-    gender: 'netrual',
+    gender: 'neutral',
     minAge: 6,
     maxAge: 30,
     countries: ['US', 'CA', 'CN', 'TW']

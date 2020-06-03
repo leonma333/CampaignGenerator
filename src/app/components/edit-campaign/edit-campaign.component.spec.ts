@@ -11,9 +11,10 @@ import { QuillModule } from 'ngx-quill';
 
 import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
+import { QuillComponent } from '../shared/quill/quill.component';
 import { CampaignService } from '../../services/campaign.service';
 import { EditCampaignComponent } from './edit-campaign.component';
-import { QuillComponent } from '../shared/quill/quill.component';
+import { DemographicsComponent } from '../shared/demographics/demographics.component';
 import { SchedulePickerComponent } from '../shared/schedule-picker/schedule-picker.component';
 
 describe('Component: EditCampaignComponent', () => {
@@ -41,7 +42,7 @@ describe('Component: EditCampaignComponent', () => {
           }
         }
       ],
-      declarations: [ EditCampaignComponent, QuillComponent, SchedulePickerComponent ]
+      declarations: [ EditCampaignComponent, QuillComponent, SchedulePickerComponent, DemographicsComponent ]
     })
     .compileComponents();
   }));
@@ -131,6 +132,7 @@ describe('Component: EditCampaignComponent', () => {
     expect(nameEl.nativeElement.value).toBe('first campaign');
     expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
     expect(component.campaignForm.controls.schedule.value).toEqual(campaigns[0].schedule);
+    expect(component.campaignForm.controls.demographic.value).toEqual(campaigns[0].demographic);
   });
 
   it('should save edited campaign', fakeAsync(() => {
@@ -143,12 +145,15 @@ describe('Component: EditCampaignComponent', () => {
 
     component.campaignForm.controls.content.setValue({ ops: [{insert: 'This is another campaign'}] });
     component.campaignForm.controls.schedule.setValue({ type: 'recurring' });
+    component.campaignForm.controls.demographic.setValue({ gender: 'male' });
 
     fixture.detectChanges();
     saveEl.nativeElement.click();
     tick();
 
-    const campaign = new Campaign('1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, {type: 'recurring'}, null);
+    const campaign = new Campaign(
+      '1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, {type: 'recurring'}, {gender: 'male'}
+    );
 
     expect(mockRouter.navigate.calls.count()).toBe(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);

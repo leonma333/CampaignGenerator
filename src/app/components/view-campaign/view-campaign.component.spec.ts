@@ -70,10 +70,18 @@ describe('Component: ViewCampaignComponent', () => {
     const nameEl: DebugElement = de.query(By.css('input.name'));
     const editorEl: DebugElement = de.query(By.css('.ql-editor'));
     const scheduleEl: DebugElement = de.query(By.css('div#static-1 .card-body'));
+    const demographicEl: DebugElement = de.query(By.css('button[aria-controls="static-2"]'));
 
     expect(nameEl.nativeElement.value).toBe('first campaign');
     expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
     expect(scheduleEl.nativeElement.innerText).toBe('Scheduled on 2020-06-30 @ 12:00');
+
+    demographicEl.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(de.query(By.css('div#static-2 .card-body')).nativeElement.innerText).toBe(
+      'Targeting all genders from age 6 to 30 in countries: United States, Canada, China, Taiwan'
+    );
   });
 
   it('should call back when click back button', () => {
@@ -150,5 +158,4 @@ describe('Component: ViewCampaignComponent', () => {
       expect(mockCampaignService.delete.calls.count()).toEqual(0);
     }));
   });
-
 });

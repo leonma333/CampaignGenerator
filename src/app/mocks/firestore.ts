@@ -7,21 +7,24 @@ const campaignObjs = [
     schedule: {
       dateStart: {year: 2020, month: 5, day: 25},
       time: {hour: 10, minute: 10, second: 0}
-    }
+    },
+    demographic: {gender: 'male'}
   }, {
     name: 'second campaign',
     content: {ops: [{insert: 'Bar'}]},
     schedule: {
       dateStart: {year: 2020, month: 6, day: 30},
       time: {hour: 20, minute: 20, second: 0}
-    }
+    },
+    demographic: {gender: 'female'}
   }, {
     name: 'Foo',
     content: {ops: [{insert: 'Bar'}]},
     schedule: {
       dateStart: {year: 2020, month: 6, day: 30},
       time: {hour: 12, minute: 30, second: 0}
-    }
+    },
+    demographic: {gender: 'female'}
   }
 ];
 
@@ -30,12 +33,14 @@ class Doc {
   private name: string;
   private content: object;
   private schedule: object;
+  private demographic: object;
 
-  constructor(id: string, name: string, content: object, schedule: object) {
+  constructor(id: string, name: string, content: object, schedule: object, demographic: object) {
     this.id = id;
     this.name = name;
     this.content = content;
     this.schedule = schedule;
+    this.demographic = demographic;
   }
 
   data() {
@@ -43,7 +48,8 @@ class Doc {
       id: this.id,
       name: this.name,
       content: this.content,
-      schedule: this.schedule
+      schedule: this.schedule,
+      demographic: this.demographic
     };
   }
 }
@@ -51,15 +57,15 @@ class Doc {
 const campaignDocs = [
   {
     payload: {
-      doc: new Doc('1', 'first campaign', campaignObjs[0].content, campaignObjs[0].schedule)
+      doc: new Doc('1', 'first campaign', campaignObjs[0].content, campaignObjs[0].schedule, campaignObjs[0].demographic)
     }
   }, {
     payload: {
-      doc: new Doc('2', 'second campaign', campaignObjs[1].content, campaignObjs[1].schedule)
+      doc: new Doc('2', 'second campaign', campaignObjs[1].content, campaignObjs[1].schedule, campaignObjs[1].demographic)
     }
   }, {
     payload: {
-      doc: new Doc('3', 'Foo', campaignObjs[2].content, campaignObjs[2].schedule)
+      doc: new Doc('3', 'Foo', campaignObjs[2].content, campaignObjs[2].schedule, campaignObjs[2].demographic)
     }
   }
 ];

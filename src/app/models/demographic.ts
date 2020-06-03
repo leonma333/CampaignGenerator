@@ -1,7 +1,7 @@
 import { Model } from './model';
 import { COUNTRIES } from '../constants';
 
-export enum Gender {
+enum Gender {
   neutral = 'neutral',
   male = 'male',
   female = 'female'

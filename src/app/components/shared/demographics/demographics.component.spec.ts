@@ -10,7 +10,7 @@ import { DEFAULT_COUNTRIES } from '../../../models/demographic';
 import { DemographicsComponent } from './demographics.component';
 import { DigitOnlyDirective } from '../../../directives/digit-only.directive';
 
-fdescribe('Component: DemographicsComponent', () => {
+describe('Component: DemographicsComponent', () => {
   function changeGender(gender: string, fixture: ComponentFixture<any>) {
     const genderEl: DebugElement = fixture.debugElement.query(By.css(`input[value="${gender}"]`));
     genderEl.nativeElement.click();

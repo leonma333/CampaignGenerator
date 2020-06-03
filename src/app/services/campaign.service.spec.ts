@@ -39,6 +39,7 @@ describe('Service: CampaignService', () => {
           dateStart: {year: 2020, month: 5, day: 25},
           time: {hour: 10, minute: 10, second: 0}
         });
+        expect(result[0].demographic).toEqual({gender: 'male'});
         expect(result[1].id).toBe('2');
         expect(result[1].doc.id).toBe('2');
         expect(result[1].name).toEqual('second campaign');
@@ -47,6 +48,7 @@ describe('Service: CampaignService', () => {
           dateStart: {year: 2020, month: 6, day: 30},
           time: {hour: 20, minute: 20, second: 0}
         });
+        expect(result[1].demographic).toEqual({gender: 'female'});
         done();
       });
     });
@@ -62,6 +64,7 @@ describe('Service: CampaignService', () => {
           dateStart: {year: 2020, month: 6, day: 30},
           time: {hour: 20, minute: 20, second: 0}
         });
+        expect(result[0].demographic).toEqual({gender: 'female'});
         expect(result[1].id).toBe('1');
         expect(result[1].doc.id).toBe('1');
         expect(result[1].name).toEqual('first campaign');
@@ -70,6 +73,7 @@ describe('Service: CampaignService', () => {
           dateStart: {year: 2020, month: 5, day: 25},
           time: {hour: 10, minute: 10, second: 0}
         });
+        expect(result[1].demographic).toEqual({gender: 'male'});
         done();
       });
     });
@@ -103,6 +107,7 @@ describe('Service: CampaignService', () => {
           dateStart: {year: 2020, month: 5, day: 25},
           time: {hour: 10, minute: 10, second: 0}
         });
+        expect(result.demographic).toEqual({gender: 'male'});
         done();
       });
     });
@@ -116,7 +121,7 @@ describe('Service: CampaignService', () => {
       const campaign = new Campaign('3', 'My campaign', {ops: [{insert: 'Hello world'}]}, {
           dateStart: {year: 2020, month: 5, day: 25},
           time: {hour: 10, minute: 10, second: 0}
-        }, {});
+        }, {gender: 'neutral'});
       service.add(campaign.name, campaign.content, campaign.schedule, campaign.demographic).then(result => {
         expect(result).toBe('You just added it');
         expect(firestore.collection().add).toHaveBeenCalledTimes(1);
@@ -124,6 +129,7 @@ describe('Service: CampaignService', () => {
         expect(args.name).toBe(campaign.name);
         expect(args.content).toEqual(campaign.content);
         expect(args.schedule).toEqual(campaign.schedule);
+        expect(args.demographic).toEqual(campaign.demographic);
         expect(args.start).toBe(1590401400);
         expect(args.timestamp).toBeDefined();
         done();
@@ -139,7 +145,7 @@ describe('Service: CampaignService', () => {
       const campaign = new Campaign('1', 'My campaign', {ops: [{insert: 'Hello world'}]}, {
           dateStart: {year: 2020, month: 5, day: 25},
           time: {hour: 10, minute: 10, second: 0}
-        }, {});
+        }, {gender: 'neutral'});
       service.save(campaign).then(result => {
         expect(result).toBe('You just saved it');
         expect(firestore.collection().doc().set.calls.count()).toBe(1);
@@ -148,6 +154,7 @@ describe('Service: CampaignService', () => {
         expect(args.name).toBe(campaign.name);
         expect(args.content).toEqual(campaign.content);
         expect(args.schedule).toEqual(campaign.schedule);
+        expect(args.demographic).toEqual(campaign.demographic);
         expect(args.start).toBe(1590401400);
         expect(args.timestamp).toBeDefined();
         done();

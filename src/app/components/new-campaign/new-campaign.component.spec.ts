@@ -11,9 +11,11 @@ import { QuillModule } from 'ngx-quill';
 
 import { Schedule } from '../../models/schedule';
 import { campaigns } from '../../mocks/campaigns';
-import { CampaignService } from '../../services/campaign.service';
+import { Demographic } from '../../models/demographic';
 import { NewCampaignComponent } from './new-campaign.component';
 import { QuillComponent } from '../shared/quill/quill.component';
+import { CampaignService } from '../../services/campaign.service';
+import { DemographicsComponent } from '../shared/demographics/demographics.component';
 import { SchedulePickerComponent } from '../shared/schedule-picker/schedule-picker.component';
 
 describe('Component: NewCampaignComponent', () => {
@@ -37,7 +39,7 @@ describe('Component: NewCampaignComponent', () => {
           }
         }
       ],
-      declarations: [ NewCampaignComponent, QuillComponent, SchedulePickerComponent ]
+      declarations: [ NewCampaignComponent, QuillComponent, SchedulePickerComponent, DemographicsComponent ]
     })
     .compileComponents();
   }));
@@ -125,6 +127,7 @@ describe('Component: NewCampaignComponent', () => {
       expect(component.campaignForm.controls.name.value).toEqual('');
       expect(component.campaignForm.controls.content.value).toBeNull();
       expect(component.campaignForm.controls.schedule.value).toEqual(Schedule.default());
+      expect(component.campaignForm.controls.demographic.value).toEqual(Demographic.default());
     });
 
     it('should change value and save', fakeAsync(() => {
@@ -137,6 +140,7 @@ describe('Component: NewCampaignComponent', () => {
 
       component.campaignForm.controls.content.setValue('This is my campaign');
       component.campaignForm.controls.schedule.setValue({type: 'recurring'});
+      component.campaignForm.controls.demographic.setValue({gender: 'male'});
 
       fixture.detectChanges();
 
@@ -148,7 +152,12 @@ describe('Component: NewCampaignComponent', () => {
       expect(mockRouter.navigate.calls.count()).toBe(1);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
       expect(mockCampaignService.add.calls.count()).toEqual(1);
-      expect(mockCampaignService.add).toHaveBeenCalledWith('My campaign', 'This is my campaign', {type: 'recurring'});
+      expect(mockCampaignService.add).toHaveBeenCalledWith(
+        'My campaign',
+        'This is my campaign',
+        {type: 'recurring'},
+        {gender: 'male'}
+      );
     }));
   });
 
@@ -171,6 +180,7 @@ describe('Component: NewCampaignComponent', () => {
       expect(nameEl.nativeElement.value).toBe('first campaign');
       expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
       expect(component.campaignForm.controls.schedule.value).toEqual(campaigns[0].schedule);
+      expect(component.campaignForm.controls.demographic.value).toEqual(campaigns[0].demographic);
     });
 
     it('should add new campaign', fakeAsync(() => {
@@ -183,6 +193,7 @@ describe('Component: NewCampaignComponent', () => {
 
       component.campaignForm.controls.content.setValue('This is another campaign');
       component.campaignForm.controls.schedule.setValue({type: 'recurring'});
+      component.campaignForm.controls.demographic.setValue({gender: 'male'});
 
       fixture.detectChanges();
       saveEl.nativeElement.click();
@@ -191,7 +202,12 @@ describe('Component: NewCampaignComponent', () => {
       expect(mockRouter.navigate.calls.count()).toBe(1);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
       expect(mockCampaignService.add.calls.count()).toEqual(1);
-      expect(mockCampaignService.add).toHaveBeenCalledWith('Another campaign', 'This is another campaign', {type: 'recurring'});
+      expect(mockCampaignService.add).toHaveBeenCalledWith(
+        'Another campaign',
+        'This is another campaign',
+        {type: 'recurring'},
+        {gender: 'male'}
+      );
     }));
   });
 });
