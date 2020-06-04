@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, forwardRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, ControlValueAccessor, Validator, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
 import { MultiSelectComponent } from 'ng-multiselect-dropdown';
 
@@ -14,11 +14,15 @@ import { Demographic, DEFAULT_COUNTRIES } from '../../../models/demographic';
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => DemographicsComponent),
-      multi: true,
+      multi: true
+    }, {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => DemographicsComponent),
+      multi: true
     }
   ]
 })
-export class DemographicsComponent implements OnInit, AfterViewInit, ControlValueAccessor {
+export class DemographicsComponent implements OnInit, AfterViewInit, ControlValueAccessor, Validator {
   @ViewChild(MultiSelectComponent) multiSelect: MultiSelectComponent;
 
   mainForm: FormGroup;
@@ -91,6 +95,13 @@ export class DemographicsComponent implements OnInit, AfterViewInit, ControlValu
   }
 
   registerOnTouched() { }
+
+  validate(c: FormControl) {
+    if (c.value.minAge > c.value.maxAge) {
+      return {ageError: {valid: false}};
+    }
+    return null;
+  }
 
   private output() {
     this.demographicData.setGender(this.mainForm.get('gender').value);

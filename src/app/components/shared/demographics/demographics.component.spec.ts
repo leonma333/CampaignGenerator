@@ -195,6 +195,14 @@ describe('Component: DemographicsComponent', () => {
         jasmine.arrayWithExactContents(countries)
       );
     });
+
+    it('invalidate form when min age greater than max age', () => {
+      changeMinAge(20, fixture);
+      fixture.detectChanges();
+      changeMaxAge(10, fixture);
+      fixture.detectChanges();
+      expect(component.demographicData.invalid).toBeTrue();
+    });
   });
 
   describe('with non-empty input', () => {

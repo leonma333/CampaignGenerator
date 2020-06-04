@@ -22,7 +22,7 @@ export class EditCampaignComponent implements OnInit {
   saving = false;
   faSpinner = faSpinner;
 
-  showErrorAlert = false;
+  showError = false;
   errorMessage = '';
 
   constructor(
@@ -50,6 +50,24 @@ export class EditCampaignComponent implements OnInit {
         demographic: campaign.demographic
       });
     });
+
+    this.campaignForm.get('name').statusChanges.subscribe(result => {
+      if (result === 'INVALID') {
+        this.showError = true;
+        this.errorMessage = 'Campaign name cannot be empty';
+      } else {
+        this.showError = false;
+      }
+    });
+
+    this.campaignForm.get('demographic').statusChanges.subscribe(result => {
+      if (result === 'INVALID') {
+        this.showError = true;
+        this.errorMessage = 'Min age must be greater than max age';
+      } else {
+        this.showError = false;
+      }
+    });
   }
 
   save(): void {
@@ -63,7 +81,7 @@ export class EditCampaignComponent implements OnInit {
       this.router.navigate(['/']);
     }).catch(error => {
       this.saving = false;
-      this.showErrorAlert = true;
+      this.showError = true;
       this.errorMessage = error.message;
     });
   }

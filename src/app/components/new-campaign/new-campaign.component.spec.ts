@@ -64,7 +64,7 @@ describe('Component: NewCampaignComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('form invalid when empty', () => {
+  it('form invalid when name empty', () => {
     expect(component.campaignForm.valid).toBeFalsy();
 
     const name = component.campaignForm.controls.name;
@@ -88,6 +88,9 @@ describe('Component: NewCampaignComponent', () => {
 
     const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
     expect(saveEl.nativeElement.disabled).toBeFalse();
+
+    const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl).toBeNull();
   });
 
   it('should call back when click back button', () => {
@@ -98,7 +101,7 @@ describe('Component: NewCampaignComponent', () => {
     expect(mockLocation.back.calls.count()).toEqual(1);
   });
 
-  it('should handle error', fakeAsync(() => {
+  it('should handle save error', fakeAsync(() => {
     mockCampaignService.add.and.returnValue(Promise.reject(new Error('error')));
 
     let alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));

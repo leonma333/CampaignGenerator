@@ -79,9 +79,12 @@ describe('Component: EditCampaignComponent', () => {
 
     const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
     expect(saveEl.nativeElement.disabled).toBeFalse();
+
+    const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl).toBeNull();
   });
 
-  it('form invalid when empty', () => {
+  it('form invalid when name empty', () => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('input.name'));
 
@@ -99,6 +102,9 @@ describe('Component: EditCampaignComponent', () => {
 
     const saveEl: DebugElement = de.query(By.css('button.save'));
     expect(saveEl.nativeElement.disabled).toBeTrue();
+
+    const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl.nativeElement.textContent).toBe('Campaign name cannot be empty');
   });
 
   it('should call back when click back button', () => {
