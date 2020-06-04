@@ -1,0 +1,30 @@
+<form [formGroup]="mainForm">
+  Gender:
+  <div class="btn-group btn-group-toggle" ngbRadioGroup formControlName="gender">
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="male">Male
+    </label>
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="female">Female
+    </label>
+    <label ngbButtonLabel class="btn-light">
+      <input ngbButton type="radio" value="neutral">Neutral
+    </label>
+  </div>
+  <div class="form-inline mt-2">
+    <span class="mr-1">Min age:</span>
+    <input type="text" class="form-control mr-2 min-age" appDigitOnly maxlength="3" placeholder="Min" formControlName="minAge" />
+    <span class="mr-1">Max age:</span>
+    <input type="text" class="form-control max-age" appDigitOnly maxlength="3" placeholder="Max" formControlName="maxAge" />
+  </div>
+  <div class="mt-2">
+    Countries:
+    <ng-multiselect-dropdown
+      name="country"
+      placeholder="Select Countries"
+      [settings]="countrySettings"
+      [data]="countries"
+      formControlName="countries">
+    </ng-multiselect-dropdown>
+  </div>
+</form>

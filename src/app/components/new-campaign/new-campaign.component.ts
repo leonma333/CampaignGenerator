@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { Schedule } from '../../models/schedule';
+import { Demographic } from '../../models/demographic';
 import { CampaignService } from '../../services/campaign.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class NewCampaignComponent implements OnInit {
   saving = false;
   faSpinner = faSpinner;
 
-  showErrorAlert = false;
+  showError = false;
   errorMessage = '';
 
   constructor(
@@ -33,7 +34,8 @@ export class NewCampaignComponent implements OnInit {
     this.campaignForm = new FormGroup({
       name: new FormControl('', Validators.required),
       content: new FormControl(null),
-      schedule: new FormControl(Schedule.default())
+      schedule: new FormControl(Schedule.default()),
+      demographic: new FormControl(Demographic.default())
     });
 
     this.route.queryParams
@@ -43,25 +45,45 @@ export class NewCampaignComponent implements OnInit {
             this.campaignForm.patchValue({
               name: campaign.name,
               content: campaign.content,
-              schedule: campaign.schedule
+              schedule: campaign.schedule,
+              demographic: campaign.demographic
             });
           });
         }
       });
+
+    this.campaignForm.get('name').statusChanges.subscribe(result => {
+      if (result === 'INVALID') {
+        this.showError = true;
+        this.errorMessage = 'Campaign name cannot be empty';
+      } else {
+        this.showError = false;
+      }
+    });
+
+    this.campaignForm.get('demographic').statusChanges.subscribe(result => {
+      if (result === 'INVALID') {
+        this.showError = true;
+        this.errorMessage = 'Min age must be greater than max age';
+      } else {
+        this.showError = false;
+      }
+    });
   }
 
   save() {
     this.saving = true;
-    this.showErrorAlert = false;
+    this.showError = false;
     this.campaignService.add(
       this.campaignForm.get('name').value,
       this.campaignForm.get('content').value,
-      this.campaignForm.get('schedule').value
+      this.campaignForm.get('schedule').value,
+      this.campaignForm.get('demographic').value
     ).then(() => {
       this.router.navigate(['/']);
     }).catch(error => {
       this.saving = false;
-      this.showErrorAlert = true;
+      this.showError = true;
       this.errorMessage = error.message;
     });
   }

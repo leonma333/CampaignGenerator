@@ -7,6 +7,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { QuillModule } from 'ngx-quill';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,6 +23,8 @@ import { SchedulePickerComponent } from './components/shared/schedule-picker/sch
 import { QuillComponent } from './components/shared/quill/quill.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { DashboardPaginationComponent } from './components/dashboard-pagination/dashboard-pagination.component';
+import { DemographicsComponent } from './components/shared/demographics/demographics.component';
+import { DigitOnlyDirective } from './directives/digit-only.directive';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,9 @@ import { DashboardPaginationComponent } from './components/dashboard-pagination/
     SchedulePickerComponent,
     QuillComponent,
     NotFoundComponent,
-    DashboardPaginationComponent
+    DashboardPaginationComponent,
+    DemographicsComponent,
+    DigitOnlyDirective
   ],
   imports: [
     FormsModule,
@@ -47,7 +52,8 @@ import { DashboardPaginationComponent } from './components/dashboard-pagination/
     FontAwesomeModule,
     NgbModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

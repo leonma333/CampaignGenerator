@@ -12,7 +12,7 @@ describe('Model: Campaign', () => {
   let campaign: Campaign;
 
   beforeEach(() => {
-    campaign = new Campaign('1', 'My campaign', null, null);
+    campaign = new Campaign('1', 'My campaign', null, null, null);
   });
 
   it('#default should thorw error', () => {
@@ -23,20 +23,24 @@ describe('Model: Campaign', () => {
     it('all objects', () => {
       campaign.content = {ops: true};
       campaign.schedule = {type: 'onetime'};
+      campaign.demographic = {gender: 'male'};
       expect(campaign.value()).toEqual({
         name: 'My campaign',
         content: {ops: true},
-        schedule: {type: 'onetime'}
+        schedule: {type: 'onetime'},
+        demographic: {gender: 'male'}
       });
     });
 
     it('with classes', () => {
       campaign.content = {ops: true} as Content;
       campaign.schedule = {type: 'onetime'} as ScheduleStruct;
+      campaign.demographic = {gender: 'male'};
       expect(campaign.value()).toEqual({
         name: 'My campaign',
         content: {ops: true},
-        schedule: {type: 'onetime'}
+        schedule: {type: 'onetime'},
+        demographic: {gender: 'male'}
       });
     });
   });
@@ -47,12 +51,14 @@ describe('Model: Campaign', () => {
         id: '2',
         name: 'His campaign',
         content: {ops: false},
-        schedule: {type: 'recurring'}
+        schedule: {type: 'recurring'},
+        demographic: {gender: 'male'}
       });
       expect(campaign.id).toBe('2');
       expect(campaign.name).toBe('His campaign');
       expect(campaign.content).toEqual({ops: false});
       expect(campaign.schedule).toEqual({type: 'recurring'});
+      expect(campaign.demographic).toEqual({gender: 'male'});
     });
   });
 });

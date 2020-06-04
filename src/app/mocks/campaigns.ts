@@ -7,8 +7,14 @@ export const campaigns: Array<Campaign> = [
     time: {hour: 12, minute: 0, second: 0},
     dateEnd: null,
     repeat: null,
+    weekDays: null,
     monthDay: null,
     yearDay: null
+  }, {
+    gender: 'neutral',
+    minAge: 6,
+    maxAge: 30,
+    countries: ['US', 'CA', 'CN', 'TW']
   }),
   new Campaign('2', 'second campaign', {ops: [{ insert: 'Bar' }]}, {
     type: 'recurring',
@@ -16,7 +22,13 @@ export const campaigns: Array<Campaign> = [
     time: {hour: 12, minute: 0, second: 0},
     dateEnd: null,
     repeat: 'day',
+    weekDays: null,
     monthDay: null,
     yearDay: null
+  }, {
+    gender: 'male',
+    minAge: 18,
+    maxAge: 60,
+    countries: ['BR', 'AR', 'CL']
   })
 ];

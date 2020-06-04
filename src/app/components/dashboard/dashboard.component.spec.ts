@@ -15,10 +15,10 @@ import { DashboardPaginationComponent } from '../dashboard-pagination/dashboard-
 
 describe('Component: DashboardComponent', () => {
   const campaigns = [
-    new Campaign('1', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 15}}),
-    new Campaign('2', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 30}}),
-    new Campaign('3', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 20}}),
-    new Campaign('4', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}})
+    new Campaign('1', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 15}}, null),
+    new Campaign('2', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 30}}, null),
+    new Campaign('3', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 20}}, null),
+    new Campaign('4', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}, null)
   ];
 
   let component: DashboardComponent;
@@ -209,9 +209,9 @@ describe('Component: DashboardComponent', () => {
     it('should change page', () => {
       const moreCampaigns = [...campaigns];
       moreCampaigns.push(
-        new Campaign('5', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}),
-        new Campaign('6', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}),
-        new Campaign('7', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}})
+        new Campaign('5', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}, null),
+        new Campaign('6', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}, null),
+        new Campaign('7', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}, null)
       );
       moreCampaigns.forEach(campaign => campaign.doc = campaign.id);
       mockCampaignService.getAll.and.callFake((sort, options) => {

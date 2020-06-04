@@ -8,12 +8,15 @@ import { Location } from '@angular/common';
 
 import { of } from 'rxjs';
 import { QuillModule } from 'ngx-quill';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
+import { QuillComponent } from '../shared/quill/quill.component';
 import { CampaignService } from '../../services/campaign.service';
 import { EditCampaignComponent } from './edit-campaign.component';
-import { QuillComponent } from '../shared/quill/quill.component';
+import { DemographicsComponent } from '../shared/demographics/demographics.component';
 import { SchedulePickerComponent } from '../shared/schedule-picker/schedule-picker.component';
 
 describe('Component: EditCampaignComponent', () => {
@@ -25,7 +28,7 @@ describe('Component: EditCampaignComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [QuillModule.forRoot(), ReactiveFormsModule, RouterTestingModule],
+      imports: [QuillModule.forRoot(), NgMultiSelectDropDownModule.forRoot(), NgbModule, ReactiveFormsModule, RouterTestingModule],
       providers: [
         Location, {
           provide: CampaignService,
@@ -41,7 +44,7 @@ describe('Component: EditCampaignComponent', () => {
           }
         }
       ],
-      declarations: [ EditCampaignComponent, QuillComponent, SchedulePickerComponent ]
+      declarations: [ EditCampaignComponent, QuillComponent, SchedulePickerComponent, DemographicsComponent ]
     })
     .compileComponents();
   }));
@@ -50,7 +53,8 @@ describe('Component: EditCampaignComponent', () => {
     fixture = TestBed.createComponent(EditCampaignComponent);
     component = fixture.componentInstance;
 
-    const campaign = new Campaign(campaigns[0].id, campaigns[0].name, campaigns[0].content, campaigns[0].schedule);
+    const campaign = new Campaign(campaigns[0].id, campaigns[0].name, campaigns[0].content,
+      campaigns[0].schedule, campaigns[0].demographic);
 
     mockCampaignService = TestBed.inject(CampaignService);
     mockCampaignService.byId.and.returnValue(of(campaign));
@@ -77,9 +81,12 @@ describe('Component: EditCampaignComponent', () => {
 
     const saveEl: DebugElement = fixture.debugElement.query(By.css('button.save'));
     expect(saveEl.nativeElement.disabled).toBeFalse();
+
+    const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl).toBeNull();
   });
 
-  it('form invalid when empty', () => {
+  it('form invalid when name empty', () => {
     const de: DebugElement = fixture.debugElement;
     const nameEl: DebugElement = de.query(By.css('input.name'));
 
@@ -97,6 +104,23 @@ describe('Component: EditCampaignComponent', () => {
 
     const saveEl: DebugElement = de.query(By.css('button.save'));
     expect(saveEl.nativeElement.disabled).toBeTrue();
+
+    const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl.nativeElement.textContent.startsWith('Campaign name cannot be empty')).toBeTrue();
+  });
+
+  it('invalid demographic form should show error', () => {
+    const demographicEl: DebugElement = fixture.debugElement.query(By.css('button[aria-controls="static-2"]'));
+    demographicEl.nativeElement.click();
+    fixture.detectChanges();
+
+    component.campaignForm.controls.demographic.setValue({minAge: 20, maxAge: 10});
+    fixture.detectChanges();
+
+    expect(component.campaignForm.controls.demographic.valid).toBeFalse();
+    expect(component.campaignForm.controls.demographic.errors.ageError).toBeTruthy();
+    const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl.nativeElement.textContent.startsWith('Min age must be greater than max age')).toBeTrue();
   });
 
   it('should call back when click back button', () => {
@@ -119,7 +143,7 @@ describe('Component: EditCampaignComponent', () => {
     fixture.detectChanges();
 
     alertEl = fixture.debugElement.query(By.css('ngb-alert'));
-    expect(alertEl.nativeElement.textContent).toBe('error');
+    expect(alertEl.nativeElement.textContent.startsWith('error')).toBeTrue();
   }));
 
   it('should display campaign', () => {
@@ -130,6 +154,7 @@ describe('Component: EditCampaignComponent', () => {
     expect(nameEl.nativeElement.value).toBe('first campaign');
     expect(editorEl.nativeElement.innerText.trim()).toBe('Foo');
     expect(component.campaignForm.controls.schedule.value).toEqual(campaigns[0].schedule);
+    expect(component.campaignForm.controls.demographic.value).toEqual(campaigns[0].demographic);
   });
 
   it('should save edited campaign', fakeAsync(() => {
@@ -141,13 +166,16 @@ describe('Component: EditCampaignComponent', () => {
     nameEl.nativeElement.dispatchEvent(new Event('input'));
 
     component.campaignForm.controls.content.setValue({ ops: [{insert: 'This is another campaign'}] });
-    component.campaignForm.controls.schedule.setValue({ type: 'recurring' });
+    component.campaignForm.controls.schedule.setValue(campaigns[1].schedule);
+    component.campaignForm.controls.demographic.setValue(campaigns[1].demographic);
 
     fixture.detectChanges();
     saveEl.nativeElement.click();
     tick();
 
-    const campaign = new Campaign('1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, {type: 'recurring'});
+    const campaign = new Campaign(
+      '1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, campaigns[1].schedule, campaigns[1].demographic
+    );
 
     expect(mockRouter.navigate.calls.count()).toBe(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);

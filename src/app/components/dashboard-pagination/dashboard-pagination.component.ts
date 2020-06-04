@@ -1,10 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { first } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { faForward, faBackward } from '@fortawesome/free-solid-svg-icons';
 
 import { Campaign } from '../../models/campaign';
 import { CampaignService } from '../../services/campaign.service';
+
+// NOTE: flaky Firebase behaviour use take(2) instead of take(1) or first() to avoid missing data
 
 @Component({
   selector: 'app-dashboard-pagination',
@@ -35,11 +37,15 @@ export class DashboardPaginationComponent implements OnInit {
 
   initializeCampaigns(sort = 'timestamp'): void {
     this.loading.emit(true);
-    this.campaignService.getAll(sort).pipe(first()).subscribe(campaigns => {
-      this.disabledPrev = true;
-      this.disabledNext = false;
-      this.firstDoc = campaigns[0].doc;
-      this.lastDoc = campaigns[campaigns.length - 1].doc;
+    this.campaignService.getAll(sort).pipe(take(2)).subscribe(campaigns => {
+      if (campaigns.length) {
+        this.disabledPrev = true;
+        this.disabledNext = false;
+        this.firstDoc = campaigns[0].doc;
+        this.lastDoc = campaigns[campaigns.length - 1].doc;
+      } else {
+        this.disabledNext = true;
+      }
 
       this.campaigns.emit(campaigns);
       this.loading.emit(false);
@@ -49,7 +55,7 @@ export class DashboardPaginationComponent implements OnInit {
   nextPage(): void {
     this.loading.emit(true);
     this.disabledNext = true;
-    this.campaignService.getAll(this.sort, {startAfter: this.lastDoc}).pipe(first()).subscribe(campaigns => {
+    this.campaignService.getAll(this.sort, {startAfter: this.lastDoc}).pipe(take(2)).subscribe(campaigns => {
       if (!campaigns.length) {
         this.loading.emit(false);
         return;
@@ -72,7 +78,7 @@ export class DashboardPaginationComponent implements OnInit {
     this.loading.emit(true);
     this.disabledPrev = true;
     this.campaignService.getAll(this.sort, {startAt: this.prevStartAt.pop(), endBefore: this.firstDoc})
-      .pipe(first()).subscribe(campaigns => {
+      .pipe(take(2)).subscribe(campaigns => {
         this.firstDoc = campaigns[0].doc;
         this.lastDoc = campaigns[campaigns.length - 1].doc;
 

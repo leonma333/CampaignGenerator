@@ -14,13 +14,13 @@ describe('Component: DashboardPaginationComponent', () => {
   let mockCampaignService: any;
 
   const campaigns = [
-    new Campaign('1', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 15}}),
-    new Campaign('2', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 30}}),
-    new Campaign('3', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 20}}),
-    new Campaign('4', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}),
-    new Campaign('5', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}),
-    new Campaign('6', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}),
-    new Campaign('7', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}})
+    new Campaign('1', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 15}}, null),
+    new Campaign('2', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 30}}, null),
+    new Campaign('3', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 20}}, null),
+    new Campaign('4', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}, null),
+    new Campaign('5', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}, null),
+    new Campaign('6', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}, null),
+    new Campaign('7', '', {ops: []}, {dateStart: {year: 2020, month: 6, day: 25}}, null)
   ];
 
   beforeEach(async(() => {
@@ -93,6 +93,13 @@ describe('Component: DashboardPaginationComponent', () => {
     emitSpy = component.campaigns.emit as any;
     expect(emitSpy).toHaveBeenCalledTimes(1);
     expect(emitSpy.calls.allArgs()[0][0]).toEqual(campaigns.slice(0, 3));
+  });
+
+  it('should handle no campaigns', () => {
+    mockCampaignService.getAll.and.returnValue(of([]));
+    component.ngOnInit();
+    expect(component.disabledPrev).toBeTrue();
+    expect(component.disabledNext).toBeTrue();
   });
 
   it('should emit campaigns when change page', () => {
