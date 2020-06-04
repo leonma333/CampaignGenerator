@@ -9,7 +9,7 @@
     <ngb-accordion [closeOthers]="true" activeIds="static-1">
       <ngb-panel id="static-1" title="Schedule">
         <ng-template ngbPanelContent>
-          <app-schedule-picker formControlName="schedule"></app-schedule-picker>
+          <app-schedule-picker [formControl]="campaignForm.controls['schedule']"></app-schedule-picker>
         </ng-template>
       </ngb-panel>
       <ngb-panel id="static-2" title="Demographic">

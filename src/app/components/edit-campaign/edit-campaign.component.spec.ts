@@ -8,6 +8,8 @@ import { Location } from '@angular/common';
 
 import { of } from 'rxjs';
 import { QuillModule } from 'ngx-quill';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { Campaign } from '../../models/campaign';
 import { campaigns } from '../../mocks/campaigns';
@@ -26,7 +28,7 @@ describe('Component: EditCampaignComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [QuillModule.forRoot(), ReactiveFormsModule, RouterTestingModule],
+      imports: [QuillModule.forRoot(), NgMultiSelectDropDownModule.forRoot(), NgbModule, ReactiveFormsModule, RouterTestingModule],
       providers: [
         Location, {
           provide: CampaignService,
@@ -104,7 +106,21 @@ describe('Component: EditCampaignComponent', () => {
     expect(saveEl.nativeElement.disabled).toBeTrue();
 
     const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
-    expect(alertEl.nativeElement.textContent).toBe('Campaign name cannot be empty');
+    expect(alertEl.nativeElement.textContent.startsWith('Campaign name cannot be empty')).toBeTrue();
+  });
+
+  it('invalid demographic form should show error', () => {
+    const demographicEl: DebugElement = fixture.debugElement.query(By.css('button[aria-controls="static-2"]'));
+    demographicEl.nativeElement.click();
+    fixture.detectChanges();
+
+    component.campaignForm.controls.demographic.setValue({minAge: 20, maxAge: 10});
+    fixture.detectChanges();
+
+    expect(component.campaignForm.controls.demographic.valid).toBeFalse();
+    expect(component.campaignForm.controls.demographic.errors.ageError).toBeTruthy();
+    const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl.nativeElement.textContent.startsWith('Min age must be greater than max age')).toBeTrue();
   });
 
   it('should call back when click back button', () => {
@@ -127,7 +143,7 @@ describe('Component: EditCampaignComponent', () => {
     fixture.detectChanges();
 
     alertEl = fixture.debugElement.query(By.css('ngb-alert'));
-    expect(alertEl.nativeElement.textContent).toBe('error');
+    expect(alertEl.nativeElement.textContent.startsWith('error')).toBeTrue();
   }));
 
   it('should display campaign', () => {
@@ -150,15 +166,15 @@ describe('Component: EditCampaignComponent', () => {
     nameEl.nativeElement.dispatchEvent(new Event('input'));
 
     component.campaignForm.controls.content.setValue({ ops: [{insert: 'This is another campaign'}] });
-    component.campaignForm.controls.schedule.setValue({ type: 'recurring' });
-    component.campaignForm.controls.demographic.setValue({ gender: 'male' });
+    component.campaignForm.controls.schedule.setValue(campaigns[1].schedule);
+    component.campaignForm.controls.demographic.setValue(campaigns[1].demographic);
 
     fixture.detectChanges();
     saveEl.nativeElement.click();
     tick();
 
     const campaign = new Campaign(
-      '1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, {type: 'recurring'}, {gender: 'male'}
+      '1', 'Another campaign', {ops: [{insert: 'This is another campaign'}]}, campaigns[1].schedule, campaigns[1].demographic
     );
 
     expect(mockRouter.navigate.calls.count()).toBe(1);

@@ -127,11 +127,13 @@ export class SchedulePickerComponent implements OnInit, ControlValueAccessor {
 
   writeValue(obj: any) {
     if (obj) {
-      this.mainForm.get('activeTab').setValue(obj.type || this.mainForm.get('activeTab').value);
-      this.mainForm.get('selectedDate').setValue(obj.dateStart || this.mainForm.get('selectedDate').value);
-      this.mainForm.get('toDate').setValue(obj.dateEnd);
-      this.mainForm.get('selectedTime').setValue(obj.time || this.mainForm.get('selectedTime').value);
-      this.mainForm.get('selectedRepeatPeriod').setValue(obj.repeat || this.mainForm.get('selectedRepeatPeriod').value);
+      this.mainForm.patchValue({
+        activeTab: obj.type || this.mainForm.get('activeTab').value,
+        selectedDate: obj.dateStart || this.mainForm.get('selectedDate').value,
+        toDate: obj.dateEnd,
+        selectedTime: obj.time || this.mainForm.get('selectedTime').value,
+        selectedRepeatPeriod: obj.repeat || this.mainForm.get('selectedRepeatPeriod').value,
+      });
       if (obj.weekDays) {
         for (let i = 1; i <= 7; i++) {
           if (obj.weekDays.includes(i)) {

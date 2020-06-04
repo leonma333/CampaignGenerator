@@ -8,6 +8,8 @@ import { Location } from '@angular/common';
 
 import { of } from 'rxjs';
 import { QuillModule } from 'ngx-quill';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { Schedule } from '../../models/schedule';
 import { campaigns } from '../../mocks/campaigns';
@@ -27,7 +29,7 @@ describe('Component: NewCampaignComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [QuillModule.forRoot(), ReactiveFormsModule, RouterTestingModule],
+      imports: [QuillModule.forRoot(), NgMultiSelectDropDownModule.forRoot(), NgbModule, ReactiveFormsModule, RouterTestingModule],
       providers: [
         Location, {
           provide: CampaignService,
@@ -93,6 +95,20 @@ describe('Component: NewCampaignComponent', () => {
     expect(alertEl).toBeNull();
   });
 
+  it('invalid demographic form should show error', () => {
+    const demographicEl: DebugElement = fixture.debugElement.query(By.css('button[aria-controls="static-2"]'));
+    demographicEl.nativeElement.click();
+    fixture.detectChanges();
+
+    component.campaignForm.controls.demographic.setValue({minAge: 20, maxAge: 10});
+    fixture.detectChanges();
+
+    expect(component.campaignForm.controls.demographic.valid).toBeFalse();
+    expect(component.campaignForm.controls.demographic.errors.ageError).toBeTruthy();
+    const alertEl: DebugElement = fixture.debugElement.query(By.css('ngb-alert'));
+    expect(alertEl.nativeElement.textContent.startsWith('Min age must be greater than max age')).toBeTrue();
+  });
+
   it('should call back when click back button', () => {
     const backEl: DebugElement = fixture.debugElement.query(By.css('button.back'));
 
@@ -116,7 +132,7 @@ describe('Component: NewCampaignComponent', () => {
     fixture.detectChanges();
 
     alertEl = fixture.debugElement.query(By.css('ngb-alert'));
-    expect(alertEl.nativeElement.textContent).toBe('error');
+    expect(alertEl.nativeElement.textContent.startsWith('error')).toBeTrue();
   }));
 
   describe('without id param', () => {
@@ -142,8 +158,8 @@ describe('Component: NewCampaignComponent', () => {
       nameEl.nativeElement.dispatchEvent(new Event('input'));
 
       component.campaignForm.controls.content.setValue('This is my campaign');
-      component.campaignForm.controls.schedule.setValue({type: 'recurring'});
-      component.campaignForm.controls.demographic.setValue({gender: 'male'});
+      component.campaignForm.controls.schedule.setValue(campaigns[1].schedule);
+      component.campaignForm.controls.demographic.setValue(campaigns[1].demographic);
 
       fixture.detectChanges();
 
@@ -158,8 +174,8 @@ describe('Component: NewCampaignComponent', () => {
       expect(mockCampaignService.add).toHaveBeenCalledWith(
         'My campaign',
         'This is my campaign',
-        {type: 'recurring'},
-        {gender: 'male'}
+        campaigns[1].schedule,
+        campaigns[1].demographic
       );
     }));
   });
@@ -195,8 +211,8 @@ describe('Component: NewCampaignComponent', () => {
       nameEl.nativeElement.dispatchEvent(new Event('input'));
 
       component.campaignForm.controls.content.setValue('This is another campaign');
-      component.campaignForm.controls.schedule.setValue({type: 'recurring'});
-      component.campaignForm.controls.demographic.setValue({gender: 'male'});
+      component.campaignForm.controls.schedule.setValue(campaigns[1].schedule);
+      component.campaignForm.controls.demographic.setValue(campaigns[1].demographic);
 
       fixture.detectChanges();
       saveEl.nativeElement.click();
@@ -208,9 +224,18 @@ describe('Component: NewCampaignComponent', () => {
       expect(mockCampaignService.add).toHaveBeenCalledWith(
         'Another campaign',
         'This is another campaign',
-        {type: 'recurring'},
-        {gender: 'male'}
+        campaigns[1].schedule,
+        campaigns[1].demographic
       );
     }));
+
+    it('form invalid when name empty', () => {
+      const nameEl: DebugElement = fixture.debugElement.query(By.css('input.name'));
+      nameEl.nativeElement.value = '';
+      nameEl.nativeElement.dispatchEvent(new Event('input'));
+
+      fixture.detectChanges();
+      expect(component.campaignForm.valid).toBeFalse();
+    });
   });
 });

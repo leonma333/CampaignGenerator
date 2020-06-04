@@ -7,6 +7,7 @@ export const campaigns: Array<Campaign> = [
     time: {hour: 12, minute: 0, second: 0},
     dateEnd: null,
     repeat: null,
+    weekDays: null,
     monthDay: null,
     yearDay: null
   }, {
@@ -21,6 +22,7 @@ export const campaigns: Array<Campaign> = [
     time: {hour: 12, minute: 0, second: 0},
     dateEnd: null,
     repeat: 'day',
+    weekDays: null,
     monthDay: null,
     yearDay: null
   }, {
