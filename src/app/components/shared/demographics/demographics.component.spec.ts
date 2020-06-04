@@ -68,13 +68,13 @@ describe('Component: DemographicsComponent', () => {
       dropdownButtonEl.nativeElement.click();
       fixture.detectChanges();
     }
-    const countriesEl: Array<DebugElement> = fixture.debugElement.queryAll(By.css('ul.item2 .multiselect-item-checkbox'));
-    for (const el of countriesEl) {
-      if (el.nativeElement.innerText === country) {
-        el.nativeElement.click();
-        break;
-      }
-    }
+    const searchEl: DebugElement = fixture.debugElement.query(By.css('input[aria-label="multiselect-search"]'));
+    searchEl.nativeElement.value = country;
+    searchEl.triggerEventHandler('input', { target: searchEl.nativeElement });
+    fixture.detectChanges();
+
+    const countryEl: DebugElement = fixture.debugElement.query(By.css('ul.item2 .multiselect-item-checkbox'));
+    countryEl.nativeElement.click();
   }
 
   describe('no input', () => {
