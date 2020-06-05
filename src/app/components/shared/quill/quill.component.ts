@@ -38,6 +38,10 @@ class ImageFormat extends BaseImageFormat {
 }
 Quill.register(ImageFormat, true);
 
+const Size = Quill.import('attributors/style/size');
+Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '22px'];
+Quill.register(Size, true);
+
 @Component({
   selector: 'app-quill',
   templateUrl: './quill.component.html',
@@ -106,7 +110,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
         container: [
           ['bold', 'italic', 'underline', 'strike'],
           ['blockquote', 'code-block'],
-          [{header: 1 }, {header: 2 }],
+          [{size: Size.whitelist}],
           [{list: 'ordered' }, {list: 'bullet' }],
           [{script: 'sub' }, {script: 'super' }],
           [{indent: '-1' }, {indent: '+1' }],
@@ -171,9 +175,10 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
           tooltip.save = originalSave;
         };
         tooltip.edit(type);
-      }
+      };
     };
-    
+
+    quill.format('size', '14px');
     quill.getModule('toolbar').addHandler('image', imageHandler);
     quill.getModule('toolbar').addHandler('color', colorHandler('color'));
     quill.getModule('toolbar').addHandler('background', colorHandler('background'));
