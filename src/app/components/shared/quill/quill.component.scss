@@ -3,5 +3,28 @@
     &[data-mode=image]::before {
       content: "Image link:";
     }
+
+    &[data-mode=color]::before {
+      content: "Color value:";
+    }
+  }
+}
+
+::ng-deep .ql-color, ::ng-deep .ql-background {
+  .ql-picker-options [data-value=custom-color] {
+    background: none !important;
+    width: 100% !important;
+    height: 20px !important;
+    text-align: center;
+  }
+
+  .ql-picker-options {
+    [data-value=custom-color]:before {
+      content: 'Custom Color';
+    }
+
+    [data-value=custom-color]:hover {
+      border-color: transparent !important;
+    }
   }
 }
