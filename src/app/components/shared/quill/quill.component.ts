@@ -42,6 +42,14 @@ const Size = Quill.import('attributors/style/size');
 Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '22px'];
 Quill.register(Size, true);
 
+const parchment = Quill.import('parchment')
+const lineHeightConfig = {
+  scope: parchment.Scope.BLOCK,
+  whitelist: ['0.5', '1', '1.5', '2', '2.5', '3']
+}
+const lineHeightStyle = new parchment.Attributor.Style('spacing', 'line-height', lineHeightConfig)
+Quill.register(lineHeightStyle, true);
+
 @Component({
   selector: 'app-quill',
   templateUrl: './quill.component.html',
@@ -110,7 +118,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
         container: [
           ['bold', 'italic', 'underline', 'strike'],
           ['blockquote', 'code-block'],
-          [{size: Size.whitelist}],
+          [{size: Size.whitelist}, {'spacing': lineHeightConfig.whitelist}],
           [{list: 'ordered' }, {list: 'bullet' }],
           [{script: 'sub' }, {script: 'super' }],
           [{indent: '-1' }, {indent: '+1' }],
@@ -165,16 +173,20 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
     };
 
     const colorHandler = (type) => {
-      return () => {
-        const originalSave = tooltip.save;
-        tooltip.save = () => {
-          const value = tooltip.textbox.value;
-          if (value) {
-            quill.format(type, value);
-          }
-          tooltip.save = originalSave;
-        };
-        tooltip.edit(type);
+      return (selection) => {
+        if (selection === 'custom-color') {
+          const originalSave = tooltip.save;
+          tooltip.save = () => {
+            const value = tooltip.textbox.value;
+            if (value) {
+              quill.format(type, value);
+            }
+            tooltip.save = originalSave;
+          };
+          tooltip.edit(type);
+        } else {
+          quill.format(type, selection);
+        }
       };
     };
 

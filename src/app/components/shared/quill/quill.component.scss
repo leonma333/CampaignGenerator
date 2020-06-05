@@ -1,3 +1,5 @@
+@use "sass:string";
+
 ::ng-deep .ql-snow {
   .ql-tooltip {
     &[data-mode=image]::before {
@@ -28,10 +30,22 @@
     }
   }
 
-  .ql-picker.ql-size {
-    .ql-picker-label::before, .ql-picker-item::before {
-      content: attr(data-value);
-      font-size: attr(data-value)
+  .ql-picker {
+    &.ql-size {
+      width: 60px;
+
+      .ql-picker-label::before, .ql-picker-item::before {
+        content: attr(data-value);
+        font-size: attr(data-value)
+      }
+    }
+
+    &.ql-spacing {
+      width: 50px;
+
+      .ql-picker-label::before, .ql-picker-item::before {
+        content: attr(data-value);
+      }
     }
   }
 }
