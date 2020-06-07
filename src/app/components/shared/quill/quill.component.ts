@@ -42,13 +42,15 @@ const Size = Quill.import('attributors/style/size');
 Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '22px'];
 Quill.register(Size, true);
 
-const parchment = Quill.import('parchment')
-const lineHeightConfig = {
-  scope: parchment.Scope.BLOCK,
-  whitelist: ['0.5', '1', '1.5', '2', '2.5', '3']
-}
-const lineHeightStyle = new parchment.Attributor.Style('spacing', 'line-height', lineHeightConfig)
-Quill.register(lineHeightStyle, true);
+const Parchment = Quill.import('parchment');
+Quill.register(new Parchment.Attributor.Style('padding', 'padding', {scope: Parchment.Scope.INLINE}), true);
+Quill.register(new Parchment.Attributor.Style('spacing', 'line-height', {scope: Parchment.Scope.BLOCK}), true);
+
+const BlockEmbed = Quill.import('blots/block/embed');
+class DividerBlot extends BlockEmbed {};
+(DividerBlot as any).blotName = 'divider';
+(DividerBlot as any).tagName = 'hr';
+Quill.register(DividerBlot);
 
 @Component({
   selector: 'app-quill',
@@ -58,7 +60,7 @@ Quill.register(lineHeightStyle, true);
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => QuillComponent),
-      multi: true,
+      multi: true
     }
   ]
 })
@@ -118,7 +120,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
         container: [
           ['bold', 'italic', 'underline', 'strike'],
           ['blockquote', 'code-block'],
-          [{size: Size.whitelist}, {'spacing': lineHeightConfig.whitelist}],
+          [{size: Size.whitelist}, {'spacing': ['0.5', '1', '1.5', '2', '2.5', '3']}],
           [{list: 'ordered' }, {list: 'bullet' }],
           [{script: 'sub' }, {script: 'super' }],
           [{indent: '-1' }, {indent: '+1' }],
@@ -128,7 +130,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
           [{font: []}],
           [{align: []}],
           ['clean'],
-          ['emoji'],
+          ['emoji', 'divider'],
           ['link', 'image', 'video']
         ]
       }
@@ -190,8 +192,26 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
       };
     };
 
+    const spacingHandler = (value) => {
+      const range = quill.getSelection();
+      quill.format('spacing', value);
+      quill.formatText(range.index, range.length, 'padding', `${value/2}em 0`);
+    };
+
+    const dividerHandler = () => {
+      const range = quill.getSelection(true);
+      quill.insertText(range.index, '\n', Quill.sources.USER);
+      quill.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER);
+      quill.setSelection(range.index + 2, Quill.sources.SILENT);
+    };
+
+    document.querySelector('.ql-divider').innerHTML =
+      '<svg viewBox="0 0 18 18"><line class="ql-stroke" x1="3" x2="15" y1="9" y2="9"></line></svg>';
+
     quill.format('size', '14px');
     quill.getModule('toolbar').addHandler('image', imageHandler);
+    quill.getModule('toolbar').addHandler('spacing', spacingHandler);
+    quill.getModule('toolbar').addHandler('divider', dividerHandler);
     quill.getModule('toolbar').addHandler('color', colorHandler('color'));
     quill.getModule('toolbar').addHandler('background', colorHandler('background'));
   }
