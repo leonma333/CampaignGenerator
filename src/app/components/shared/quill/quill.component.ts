@@ -268,8 +268,15 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
 
     document.querySelector('.ql-divider').innerHTML =
       '<svg viewBox="0 0 18 18"><line class="ql-stroke" x1="3" x2="15" y1="9" y2="9"></line></svg>';
+
     document.querySelector('.ql-dynamic-content').innerHTML =
-      '<svg viewBox="0 0 18 18"><line class="ql-stroke" x1="3" x2="15" y1="9" y2="9"></line></svg>';
+      '<svg viewBox="0 0 18 18"><line class="ql-stroke" x1="3.4" x2="9.4" y1="15.6" y2="9.6"/>' +
+      '<line class="ql-stroke" x1="11" x2="12" y1="8" y2="7"/>' +
+      '<line class="ql-stroke ql-thin" x1="10" x2="8.7" y1="6" y2="4.2"/>' +
+      '<line class="ql-stroke ql-thin" x1="11.7" x2="11.6" y1="5.1" y2="3"/>' +
+      '<line class="ql-stroke ql-thin" x1="13.6" x2="15.1" y1="5.7" y2="4.1"/>' +
+      '<line class="ql-stroke ql-thin" x1="14" x2="16.1" y1="7.5" y2="7.5"/>' +
+      '<line class="ql-stroke ql-thin" x1="13" x2="14.8" y1="9" y2="10.2"/></svg>';
 
     quill.format('size', '14px');
     quill.getModule('toolbar').addHandler('image', imageHandler);
