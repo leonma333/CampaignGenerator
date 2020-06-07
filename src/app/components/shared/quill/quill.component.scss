@@ -7,6 +7,10 @@
     &[data-mode=color]::before {
       content: "Color value:";
     }
+
+    &[data-mode=dynamic-content]::before {
+      content: "Field key:";
+    }
   }
 
   .ql-color, .ql-background {

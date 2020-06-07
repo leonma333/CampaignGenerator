@@ -56,14 +56,30 @@ const Inline = Quill.import('blots/inline');
 class DynamicBlot extends Inline {
   static create(key) {
     const node = super.create();
-    node.setAttribute('key', key);
-    node.setAttribute('style', 'border-style: dotted; border-width: 1px;');
-    node.innerText = `\$\{${key}\}`;
+    if (typeof key === 'object') {
+      node.setAttribute('key', key.key);
+      node.setAttribute('style', key.style);
+    } else {
+      node.setAttribute('key', key);
+      node.setAttribute('style', 'border-style: dotted; border-width: 1px;');
+      node.innerText = `\$\{${key}\}`;
+    }
     return node;
   }
 
   static value(node) {
     return node.getAttribute('key');
+  }
+
+  static formats(node) {
+    const format = {} as any;
+    if (node.hasAttribute('key')) {
+      format.key = node.getAttribute('key');
+    }
+    if (node.hasAttribute('style')) {
+      format.style = node.getAttribute('style');
+    }
+    return format;
   }
 
   format(name, value) {
