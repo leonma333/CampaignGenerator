@@ -47,10 +47,41 @@ Quill.register(new Parchment.Attributor.Style('padding', 'padding', {scope: Parc
 Quill.register(new Parchment.Attributor.Style('spacing', 'line-height', {scope: Parchment.Scope.BLOCK}), true);
 
 const BlockEmbed = Quill.import('blots/block/embed');
-class DividerBlot extends BlockEmbed {};
+class DividerBlot extends BlockEmbed {}
 (DividerBlot as any).blotName = 'divider';
 (DividerBlot as any).tagName = 'hr';
 Quill.register(DividerBlot);
+
+const Inline = Quill.import('blots/inline');
+class DynamicBlot extends Inline {
+  static create(key) {
+    const node = super.create();
+    node.setAttribute('key', key);
+    node.setAttribute('style', 'border-style: dotted; border-width: 1px;');
+    node.innerText = `\$\{${key}\}`;
+    return node;
+  }
+
+  static value(node) {
+    return node.getAttribute('key');
+  }
+
+  format(name, value) {
+    if (name === 'key' || name === 'style') {
+      const instance = this as any;
+      if (value) {
+        instance.domNode.setAttribute(name, value);
+      } else {
+        instance.domNode.removeAttribute(name, value);
+      }
+    } else {
+      super.format(name, value);
+    }
+  }
+}
+(DynamicBlot as any).blotName = 'dynamic-content';
+(DynamicBlot as any).tagName = 'dynamic';
+Quill.register(DynamicBlot);
 
 @Component({
   selector: 'app-quill',
@@ -120,7 +151,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
         container: [
           ['bold', 'italic', 'underline', 'strike'],
           ['blockquote', 'code-block'],
-          [{size: Size.whitelist}, {'spacing': ['0.5', '1', '1.5', '2', '2.5', '3']}],
+          [{size: Size.whitelist}, {spacing: ['0.5', '1', '1.5', '2', '2.5', '3']}],
           [{list: 'ordered' }, {list: 'bullet' }],
           [{script: 'sub' }, {script: 'super' }],
           [{indent: '-1' }, {indent: '+1' }],
@@ -129,7 +160,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
           [{color: this.colors}, {background: this.colors}],
           [{font: []}],
           [{align: []}],
-          ['clean'],
+          ['clean', 'dynamic-content'],
           ['emoji', 'divider'],
           ['link', 'image', 'video']
         ]
@@ -160,6 +191,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
     tooltip.textbox.setAttribute('data-image', 'Image URL');
     tooltip.textbox.setAttribute('data-color', 'Hex/RGB/RGBA');
     tooltip.textbox.setAttribute('data-background', 'Hex/RGB/RGBA');
+    tooltip.textbox.setAttribute('data-dynamic-content', 'Dynamic field key');
 
     const imageHandler = () => {
       const originalSave = tooltip.save;
@@ -195,7 +227,7 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
     const spacingHandler = (value) => {
       const range = quill.getSelection();
       quill.format('spacing', value);
-      quill.formatText(range.index, range.length, 'padding', `${value/2}em 0`);
+      quill.formatText(range.index, range.length, 'padding', `${value / 2}em 0`);
     };
 
     const dividerHandler = () => {
@@ -205,7 +237,22 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
       quill.setSelection(range.index + 2, Quill.sources.SILENT);
     };
 
+    const dynamicContentHandler = () => {
+      const originalSave = tooltip.save;
+      tooltip.save = () => {
+        const range = quill.getSelection(true);
+        const value = tooltip.textbox.value;
+        if (value) {
+          quill.insertEmbed(range.index, 'dynamic-content', value, 'user');
+        }
+        tooltip.save = originalSave;
+      };
+      tooltip.edit('dynamic-content');
+    };
+
     document.querySelector('.ql-divider').innerHTML =
+      '<svg viewBox="0 0 18 18"><line class="ql-stroke" x1="3" x2="15" y1="9" y2="9"></line></svg>';
+    document.querySelector('.ql-dynamic-content').innerHTML =
       '<svg viewBox="0 0 18 18"><line class="ql-stroke" x1="3" x2="15" y1="9" y2="9"></line></svg>';
 
     quill.format('size', '14px');
@@ -214,5 +261,6 @@ export class QuillComponent implements OnInit, ControlValueAccessor {
     quill.getModule('toolbar').addHandler('divider', dividerHandler);
     quill.getModule('toolbar').addHandler('color', colorHandler('color'));
     quill.getModule('toolbar').addHandler('background', colorHandler('background'));
+    quill.getModule('toolbar').addHandler('dynamic-content', dynamicContentHandler);
   }
 }
