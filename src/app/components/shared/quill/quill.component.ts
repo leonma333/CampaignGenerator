@@ -67,10 +67,6 @@ class DynamicBlot extends Inline {
     return node;
   }
 
-  static value(node) {
-    return node.getAttribute('key');
-  }
-
   static formats(node) {
     const format = {} as any;
     if (node.hasAttribute('key')) {
@@ -80,19 +76,6 @@ class DynamicBlot extends Inline {
       format.style = node.getAttribute('style');
     }
     return format;
-  }
-
-  format(name, value) {
-    if (name === 'key' || name === 'style') {
-      const instance = this as any;
-      if (value) {
-        instance.domNode.setAttribute(name, value);
-      } else {
-        instance.domNode.removeAttribute(name, value);
-      }
-    } else {
-      super.format(name, value);
-    }
   }
 }
 (DynamicBlot as any).blotName = 'dynamic-content';
