@@ -52,7 +52,7 @@ class TestDataEmptyAttributeQuillComponent {
 describe('Component: QuillComponent', () => {
   function expectEditorContent(content: string, fixture: ComponentFixture<any>) {
     const editorEl = fixture.nativeElement.querySelector('.ql-editor');
-    expect(editorEl.textContent).toBe(content);
+    expect(editorEl.textContent.trim()).toBe(content);
   }
 
   describe('no input', () => {
