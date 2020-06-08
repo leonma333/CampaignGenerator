@@ -175,7 +175,7 @@ describe('Component: QuillComponent', () => {
         saveEl.click();
         fixture.detectChanges();
         expect(Model.sanitize(component.content.value)).toEqual({
-          ops: [{insert: '${some_key}', attributes: {'dynamic-content': { 
+          ops: [{insert: '${some_key}', attributes: {'dynamic-content': {
             key: 'some_key', style: 'border-style:dotted;border-width:1px;' }
           }},
           {insert: '\n'}]
