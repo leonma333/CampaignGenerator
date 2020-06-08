@@ -153,7 +153,7 @@ describe('Component: QuillComponent', () => {
       });
     });
 
-    fit('add divider', (done) => {
+    it('add divider', (done) => {
       new Promise(resolve => setTimeout(resolve, 1000)).then(() => { // wait for onEditorCreated
         const dividerEl = fixture.nativeElement.querySelector('button.ql-divider');
         dividerEl.click();
