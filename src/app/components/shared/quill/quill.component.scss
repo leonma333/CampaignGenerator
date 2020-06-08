@@ -3,5 +3,42 @@
     &[data-mode=image]::before {
       content: "Image link:";
     }
+
+    &[data-mode=color]::before {
+      content: "Color value:";
+    }
+
+    &[data-mode=dynamic-content]::before {
+      content: "Field key:";
+    }
+  }
+
+  .ql-color, .ql-background {
+    .ql-picker-options [data-value=custom-color] {
+      background: none !important;
+      width: 100% !important;
+      height: 20px !important;
+      text-align: center;
+    }
+
+    .ql-picker-options {
+      [data-value=custom-color]:before {
+        content: 'Custom Color';
+      }
+
+      [data-value=custom-color]:hover {
+        border-color: transparent !important;
+      }
+    }
+  }
+
+  .ql-picker {
+    &.ql-size, &.ql-spacing {
+      width: 60px;
+
+      .ql-picker-label::before, .ql-picker-item::before {
+        content: attr(data-value);
+      }
+    }
   }
 }

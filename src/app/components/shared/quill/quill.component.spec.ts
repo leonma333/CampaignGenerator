@@ -14,6 +14,10 @@ const displayContent1 = {
     {
       insert: {image: 'https://www.w3schools.com/angular/pic_angular.jpg'},
       attributes: {style: 'display:block;margin:auto', width: '300'}
+    },
+    {
+      insert: '${some_key}',
+      attributes: {'dynamic-content': { key: 'some_key', style: 'border-style:dotted;border-width:1px;' }}
     }
   ]
 };
@@ -48,7 +52,7 @@ class TestDataEmptyAttributeQuillComponent {
 describe('Component: QuillComponent', () => {
   function expectEditorContent(content: string, fixture: ComponentFixture<any>) {
     const editorEl = fixture.nativeElement.querySelector('.ql-editor');
-    expect(editorEl.innerText.trim()).toBe(content);
+    expect(editorEl.textContent.trim()).toBe(content);
   }
 
   describe('no input', () => {
@@ -96,6 +100,89 @@ describe('Component: QuillComponent', () => {
         done();
       });
     });
+
+    it('add custom color', (done) => {
+      new Promise(resolve => setTimeout(resolve, 1000)).then(() => { // wait for onEditorCreated
+        const colorEl = fixture.nativeElement.querySelector('.ql-picker.ql-color .ql-picker-label');
+        colorEl.click();
+        fixture.detectChanges();
+        const customColorEl = fixture.nativeElement.querySelector('.ql-picker.ql-color [data-value="custom-color"]');
+        customColorEl.click();
+        fixture.detectChanges();
+        const rgbEl = fixture.nativeElement.querySelector('input[data-color="Hex/RGB/RGBA"]');
+        rgbEl.value = 'rgb(47,183,236)';
+        const saveEl = fixture.nativeElement.querySelector('.ql-tooltip .ql-action');
+        saveEl.click();
+        fixture.detectChanges();
+        const spanColorEl = fixture.nativeElement.querySelector('.ql-editor span');
+        expect(spanColorEl.getAttribute('style')).toBe('font-size: 14px; color: rgb(47, 183, 236);');
+        done();
+      });
+    });
+
+    it('add custom background color', (done) => {
+      new Promise(resolve => setTimeout(resolve, 1000)).then(() => { // wait for onEditorCreated
+        const backgroundEl = fixture.nativeElement.querySelector('.ql-picker.ql-background .ql-picker-label');
+        backgroundEl.click();
+        fixture.detectChanges();
+        const customColorEl = fixture.nativeElement.querySelector('.ql-picker.ql-background [data-value="custom-color"]');
+        customColorEl.click();
+        fixture.detectChanges();
+        const rgbEl = fixture.nativeElement.querySelector('input[data-background="Hex/RGB/RGBA"]');
+        rgbEl.value = 'rgb(47,183,236)';
+        const saveEl = fixture.nativeElement.querySelector('.ql-tooltip .ql-action');
+        saveEl.click();
+        fixture.detectChanges();
+        const spanColorEl = fixture.nativeElement.querySelector('.ql-editor span');
+        expect(spanColorEl.getAttribute('style')).toBe('font-size: 14px; background-color: rgb(47, 183, 236);');
+        done();
+      });
+    });
+
+    it('add spacing', (done) => {
+      new Promise(resolve => setTimeout(resolve, 1000)).then(() => { // wait for onEditorCreated
+        const spacingEl = fixture.nativeElement.querySelector('.ql-picker.ql-spacing .ql-picker-label');
+        spacingEl.click();
+        fixture.detectChanges();
+        const customSpacingEl = fixture.nativeElement.querySelector('.ql-picker.ql-spacing [data-value="2"]');
+        customSpacingEl.click();
+        fixture.detectChanges();
+        const pSpacingEl = fixture.nativeElement.querySelector('.ql-editor p');
+        expect(pSpacingEl.getAttribute('style')).toBe('line-height: 2;');
+        done();
+      });
+    });
+
+    it('add divider', (done) => {
+      new Promise(resolve => setTimeout(resolve, 1000)).then(() => { // wait for onEditorCreated
+        const dividerEl = fixture.nativeElement.querySelector('button.ql-divider');
+        dividerEl.click();
+        fixture.detectChanges();
+        const hrDividerEls = fixture.nativeElement.querySelectorAll('.ql-editor hr');
+        expect(hrDividerEls.length).toBe(1);
+        done();
+      });
+    });
+
+    it('add dynamic content', (done) => {
+      new Promise(resolve => setTimeout(resolve, 1000)).then(() => { // wait for onEditorCreated
+        const dynamicContentEl = fixture.nativeElement.querySelector('button.ql-dynamic-content');
+        dynamicContentEl.click();
+        fixture.detectChanges();
+        const keyEl = fixture.nativeElement.querySelector('input[data-dynamic-content="Dynamic field key"]');
+        keyEl.value = 'some_key';
+        const saveEl = fixture.nativeElement.querySelector('.ql-tooltip .ql-action');
+        saveEl.click();
+        fixture.detectChanges();
+        expect(Model.sanitize(component.content.value)).toEqual({
+          ops: [{insert: '${some_key}', attributes: {'dynamic-content': {
+            key: 'some_key', style: 'border-style:dotted;border-width:1px;' }
+          }},
+          {insert: '\n'}]
+        });
+        done();
+      });
+    });
   });
 
   describe('with input', () => {
@@ -113,10 +200,14 @@ describe('Component: QuillComponent', () => {
       fixture.detectChanges();
       expect(component.quillComponent).toBeTruthy();
       expect(component.quillComponent.content.value).toEqual(displayContent1);
-      expectEditorContent('Hello world!', fixture);
+      expectEditorContent('Hello world!${some_key}', fixture);
 
       const imageEl = fixture.nativeElement.querySelector('.ql-editor img');
       expect(imageEl.getAttribute('style')).toBe('display:block;margin:auto');
+
+      const dynamicContentEl = fixture.nativeElement.querySelector('.ql-editor dynamic');
+      expect(dynamicContentEl.getAttribute('key')).toBe('some_key');
+      expect(dynamicContentEl.getAttribute('style')).toBe('border-style:dotted;border-width:1px;');
     });
 
     it('empty attribute value should be removed', () => {
