@@ -61,7 +61,7 @@ class DynamicBlot extends Inline {
       node.setAttribute('style', key.style);
     } else {
       node.setAttribute('key', key);
-      node.setAttribute('style', 'border-style: dotted; border-width: 1px;');
+      node.setAttribute('style', 'border-style:dotted;border-width:1px;');
       node.innerText = `\$\{${key}\}`;
     }
     return node;
