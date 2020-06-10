@@ -4,7 +4,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { FireAuthStub } from '../mocks/fireauth';
 import { AuthenticationService } from './authentication.service';
 
-fdescribe('AuthenticationService', () => {
+describe('AuthenticationService', () => {
   let service: AuthenticationService;
 
   beforeEach(() => {
