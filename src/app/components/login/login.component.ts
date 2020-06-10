@@ -13,7 +13,7 @@ export class LoginComponent {
 
   googleLogin(){
     this.authService.googleLogin().then(() => {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['dashboard']);
     });
   }
 }

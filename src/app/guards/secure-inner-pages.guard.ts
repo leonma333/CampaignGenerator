@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
 
@@ -14,9 +14,10 @@ export class SecureInnerPagesGuard implements CanActivate {
     public router: Router
   ){ }
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+  canActivate(): Observable<boolean> | Promise<boolean> | boolean {
     if (this.authService.isLoggedIn) {
       this.router.navigate(['dashboard']);
+      return false;
     }
     return true;
   }

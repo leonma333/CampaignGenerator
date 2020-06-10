@@ -12,4 +12,8 @@ export class FireAuthStub {
     this.authStateChanges$.next({emailVerified: true});
     return Promise.resolve('Authentication success');
   }
+
+  emitEmptyUser(): void {
+    this.authStateChanges$.next(null);
+  }
 }
