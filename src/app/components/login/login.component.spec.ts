@@ -7,7 +7,7 @@ import { async, ComponentFixture, TestBed, fakeAsync, tick  } from '@angular/cor
 import { LoginComponent } from './login.component';
 import { AuthenticationService } from '../../services/authentication.service';
 
-fdescribe('Component: LoginComponent', () => {
+describe('Component: LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
