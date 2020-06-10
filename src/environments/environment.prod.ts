@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: window['env']['firebase_apikey'],
+    apiKey: window['env']['firebase_apikey_'],
     authDomain: window['env']['firebase_authDomain'],
     databaseURL: window['env']['firebase_databaseURL'],
     projectId: window['env']['firebase_projectId'],
