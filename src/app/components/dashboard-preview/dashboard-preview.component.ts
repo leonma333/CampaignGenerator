@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { NgbModal, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { faPlus, faPen, faTrash, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +11,7 @@ import { ModalConfirmComponent } from '../shared/modal-confirm/modal-confirm.com
   templateUrl: './dashboard-preview.component.html',
   styleUrls: ['./dashboard-preview.component.scss']
 })
-export class DashboardPreviewComponent implements OnInit {
+export class DashboardPreviewComponent {
   @Input() campaign: Campaign;
   @Output() deleteId: EventEmitter<string> = new EventEmitter();
 
@@ -21,8 +21,6 @@ export class DashboardPreviewComponent implements OnInit {
   faSearch = faSearch;
 
   constructor(public dateFormatter: NgbDateParserFormatter, private modalService: NgbModal) { }
-
-  ngOnInit(): void { }
 
   delete(): void {
     const modalRef = this.modalService.open(ModalConfirmComponent);
