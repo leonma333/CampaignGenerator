@@ -14,7 +14,7 @@ export class AuthenticationService {
       } else {
         localStorage.setItem('user', null);
       }
-    })
+    });
   }
 
   get isLoggedIn(): boolean {
@@ -25,7 +25,7 @@ export class AuthenticationService {
   googleLogin(): Promise<any> {
     return new Promise<any>(resolve => {
       const provider = new auth.GoogleAuthProvider();
-      this.afAuth.signInWithPopup(provider).then(res => resolve(res));
-    })
+      this.afAuth.signInWithPopup(provider).then(result => resolve(result));
+    });
   }
 }

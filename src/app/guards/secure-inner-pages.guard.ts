@@ -9,16 +9,14 @@ import { AuthenticationService } from '../services/authentication.service';
   providedIn: 'root'
 })
 export class SecureInnerPagesGuard implements CanActivate {
-	constructor(
+  constructor(
     public authService: AuthenticationService,
     public router: Router
   ){ }
 
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if(this.authService.isLoggedIn) {
-      this.router.navigate(['dashboard'])
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    if (this.authService.isLoggedIn) {
+      this.router.navigate(['dashboard']);
     }
     return true;
   }

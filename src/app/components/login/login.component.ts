@@ -12,9 +12,8 @@ export class LoginComponent {
   constructor(private authService: AuthenticationService, private router: Router) { }
 
   googleLogin(){
-    this.authService.googleLogin()
-    .then(res => {
+    this.authService.googleLogin().then(() => {
       this.router.navigate(['/dashboard']);
-    })
+    });
   }
 }
