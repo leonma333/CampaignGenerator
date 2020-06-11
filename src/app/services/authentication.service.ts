@@ -22,9 +22,18 @@ export class AuthenticationService {
     return (user !== null && user.emailVerified) ? true : false;
   }
 
-  googleLogin(): Promise<any> {
-    return new Promise<any>(resolve => {
-      const provider = new auth.GoogleAuthProvider();
+  login(type: string): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      let provider;
+      if (type === 'google') {
+        provider = new auth.GoogleAuthProvider();
+      } else if (type === 'github') {
+        provider = new auth.GithubAuthProvider();
+      } else {
+        reject('Invalid provider');
+        return;
+      }
+
       this.afAuth.signInWithPopup(provider).then(result => {
         localStorage.setItem('user', JSON.stringify(result.user));
         resolve(result);
