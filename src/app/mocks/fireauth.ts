@@ -9,8 +9,9 @@ export class FireAuthStub {
   }
 
   signInWithPopup(provider: any): Promise<any> {
-    this.authStateChanges$.next({emailVerified: true});
-    return Promise.resolve('Authentication success');
+    const result = {user: {emailVerified: true}};
+    this.authStateChanges$.next(result.user);
+    return Promise.resolve(result);
   }
 
   emitEmptyUser(): void {

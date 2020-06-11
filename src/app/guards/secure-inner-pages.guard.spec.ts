@@ -44,7 +44,7 @@ describe('Guard: SecureInnerPagesGuard', () => {
       mockAuthenticationService.isLoggedIn = true;
       expect(guard.canActivate()).toBeFalse();
       expect(mockRouter.navigate.calls.count()).toBe(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['dashboard']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
     });
   });
 });

@@ -44,7 +44,7 @@ describe('Guard: AuthenticationGuard', () => {
       mockAuthenticationService.isLoggedIn = false;
       expect(guard.canActivate()).toBeFalse();
       expect(mockRouter.navigate.calls.count()).toBe(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['login']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
     });
   });
 });

@@ -25,7 +25,7 @@ describe('Service: AuthenticationService', () => {
   it('#googleLogin', (done) => {
     expect(service.isLoggedIn).toBeFalse();
     service.googleLogin().then(result => {
-      expect(result).toEqual('Authentication success');
+      expect(result).toEqual({user: {emailVerified: true}});
       expect(service.isLoggedIn).toBeTrue();
       done();
     });

@@ -51,6 +51,6 @@ describe('Component: LoginComponent', () => {
     fixture.detectChanges();
 
     expect(mockRouter.navigate.calls.count()).toBe(1);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['dashboard']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
   }));
 });

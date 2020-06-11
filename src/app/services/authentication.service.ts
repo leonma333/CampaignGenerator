@@ -25,7 +25,10 @@ export class AuthenticationService {
   googleLogin(): Promise<any> {
     return new Promise<any>(resolve => {
       const provider = new auth.GoogleAuthProvider();
-      this.afAuth.signInWithPopup(provider).then(result => resolve(result));
+      this.afAuth.signInWithPopup(provider).then(result => {
+        localStorage.setItem('user', JSON.stringify(result.user));
+        resolve(result);
+      });
     });
   }
 }
