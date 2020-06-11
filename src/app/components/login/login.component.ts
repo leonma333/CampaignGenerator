@@ -11,8 +11,8 @@ import { AuthenticationService } from '../../services/authentication.service';
 export class LoginComponent {
   constructor(private authService: AuthenticationService, private router: Router) { }
 
-  googleLogin(){
-    this.authService.googleLogin().then(() => {
+  login(provider: string){
+    this.authService.login(provider).then(() => {
       this.router.navigate(['/dashboard']);
     });
   }

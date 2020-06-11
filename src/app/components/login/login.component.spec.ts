@@ -20,7 +20,7 @@ describe('Component: LoginComponent', () => {
       providers: [
         {
           provide: AuthenticationService,
-          useValue: jasmine.createSpyObj('mockAuthenticationService', ['googleLogin'])
+          useValue: jasmine.createSpyObj('mockAuthenticationService', ['login'])
         },
       ]
     })
@@ -30,7 +30,7 @@ describe('Component: LoginComponent', () => {
     spyOn(mockRouter, 'navigate');
 
     const mockAuthenticationService = TestBed.inject(AuthenticationService) as any;
-    mockAuthenticationService.googleLogin.and.returnValue(new Promise(resolve => resolve(true)));
+    mockAuthenticationService.login.and.returnValue(new Promise(resolve => resolve(true)));
   }));
 
   beforeEach(() => {
@@ -45,6 +45,17 @@ describe('Component: LoginComponent', () => {
 
   it('should redirect to dashboard page when login with Google', fakeAsync(() => {
     const googleEl: DebugElement = fixture.debugElement.query(By.css('.google-login'));
+    googleEl.nativeElement.click();
+
+    tick();
+    fixture.detectChanges();
+
+    expect(mockRouter.navigate.calls.count()).toBe(1);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
+  }));
+
+  it('should redirect to dashboard page when login with GitHub', fakeAsync(() => {
+    const googleEl: DebugElement = fixture.debugElement.query(By.css('.github-login'));
     googleEl.nativeElement.click();
 
     tick();

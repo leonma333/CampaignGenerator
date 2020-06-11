@@ -22,12 +22,32 @@ describe('Service: AuthenticationService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('#googleLogin', (done) => {
-    expect(service.isLoggedIn).toBeFalse();
-    service.googleLogin().then(result => {
-      expect(result).toEqual({user: {emailVerified: true}});
-      expect(service.isLoggedIn).toBeTrue();
-      done();
+  describe('#login', () => {
+    it('google login', (done) => {
+      expect(service.isLoggedIn).toBeFalse();
+      service.login('google').then(result => {
+        expect(result).toEqual({user: {emailVerified: true}, provider: 'google.com'});
+        expect(service.isLoggedIn).toBeTrue();
+        done();
+      });
+    });
+
+    it('github login', (done) => {
+      expect(service.isLoggedIn).toBeFalse();
+      service.login('github').then(result => {
+        expect(result).toEqual({user: {emailVerified: true}, provider: 'github.com'});
+        expect(service.isLoggedIn).toBeTrue();
+        done();
+      });
+    });
+
+    it('invalid login', (done) => {
+      expect(service.isLoggedIn).toBeFalse();
+      service.login('lhm').catch(err => {
+        expect(err).toBe('Invalid provider');
+        expect(service.isLoggedIn).toBeFalse();
+        done();
+      });
     });
   });
 
