@@ -26,7 +26,7 @@ describe('Service: AuthenticationService', () => {
     it('google login', (done) => {
       expect(service.isLoggedIn).toBeFalse();
       service.login('google').then(result => {
-        expect(result).toEqual({user: {emailVerified: true}, provider: 'google.com'});
+        expect(result).toEqual({user: {email: 'leon@lhm.rocks'}, provider: 'google.com'});
         expect(service.isLoggedIn).toBeTrue();
         done();
       });
@@ -35,7 +35,7 @@ describe('Service: AuthenticationService', () => {
     it('github login', (done) => {
       expect(service.isLoggedIn).toBeFalse();
       service.login('github').then(result => {
-        expect(result).toEqual({user: {emailVerified: true}, provider: 'github.com'});
+        expect(result).toEqual({user: {email: 'leon@lhm.rocks'}, provider: 'github.com'});
         expect(service.isLoggedIn).toBeTrue();
         done();
       });
@@ -53,9 +53,9 @@ describe('Service: AuthenticationService', () => {
 
   it('#isLoggedIn', () => {
     expect(service.isLoggedIn).toBeFalse();
-    localStorage.setItem('user', JSON.stringify({emailVerified: false}));
+    localStorage.setItem('user', JSON.stringify({email: ''}));
     expect(service.isLoggedIn).toBeFalse();
-    localStorage.setItem('user', JSON.stringify({emailVerified: true}));
+    localStorage.setItem('user', JSON.stringify({email: 'leon@lhm.rocks'}));
     expect(service.isLoggedIn).toBeTrue();
 
     const mockFireAuth = TestBed.inject(AngularFireAuth) as any;

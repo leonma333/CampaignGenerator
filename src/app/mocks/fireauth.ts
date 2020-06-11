@@ -9,7 +9,7 @@ export class FireAuthStub {
   }
 
   signInWithPopup(provider: any): Promise<any> {
-    const result = {user: {emailVerified: true}, provider: provider.providerId};
+    const result = {user: {email: 'leon@lhm.rocks'}, provider: provider.providerId};
     this.authStateChanges$.next(result.user);
     return Promise.resolve(result);
   }
